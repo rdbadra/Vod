@@ -8,6 +8,16 @@ class EntValue {
 		char name[20];
 };
 
+class CadValue {
+	public:
+		char* getValue();
+		char* getName();
+		CadValue(const char* a, const char* n);
+	private:
+		char value[20];
+		char name[20];
+};
+
 class StackElement {
   	public:
 		char* getName(void);

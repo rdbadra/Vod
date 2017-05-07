@@ -2,3 +2,7 @@ declar ent jua;
 jua=4;
 declar ent JUA;
 JUA=8;
+declar cad j;
+j = "hola";
+declar ent a;
+a=4;

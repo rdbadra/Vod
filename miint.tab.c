@@ -1608,18 +1608,17 @@ yyreduce:
 	if(!stack.exists((yyvsp[-2].cad))){
 		printf("la variable no existe\n");
 	} else {
-		printf("var: %s, num: %s\n", (yyvsp[-2].cad), (yyvsp[0].cad));
-		stack.getStackElement((yyvsp[-2].cad)).addCadValue((yyvsp[0].cad));	
+		printf("var: %s, value: %s\n", (yyvsp[-2].cad), (yyvsp[0].cad));
+		stack.addCadValue((yyvsp[0].cad), (yyvsp[-2].cad));
 		
-		printf("Identi: %s--->Value:%s-->name:%s\n",(yyvsp[-2].cad), stack.getStackElement((yyvsp[-2].cad)).getCadValue(),stack.getStackElement((yyvsp[-2].cad)).getName());
 	}	
 	
 	}
-#line 1619 "miint.tab.c" /* yacc.c:1646  */
+#line 1618 "miint.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1623 "miint.tab.c" /* yacc.c:1646  */
+#line 1622 "miint.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1847,7 +1846,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 251 "miint.y" /* yacc.c:1906  */
+#line 250 "miint.y" /* yacc.c:1906  */
 
 
 int main(int argc, char** argv) {

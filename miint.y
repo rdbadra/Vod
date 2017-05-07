@@ -240,10 +240,9 @@ inicializarcad:
 	if(!stack.exists($1)){
 		printf("la variable no existe\n");
 	} else {
-		printf("var: %s, num: %s\n", $1, $3);
-		stack.getStackElement($1).addCadValue($3);	
+		printf("var: %s, value: %s\n", $1, $3);
+		stack.addCadValue($3, $1);
 		
-		printf("Identi: %s--->Value:%s-->name:%s\n",$1, stack.getStackElement($1).getCadValue(),stack.getStackElement($1).getName());
 	}	
 	
 	}

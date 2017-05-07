@@ -19,6 +19,19 @@ char* EntValue::getName(){
 	return name;
 }
 
+CadValue::CadValue(const char* val, const char* n){
+	strcpy(value, val);
+	strcpy(name, n);
+}
+
+char* CadValue::getValue(){
+	return value;
+}
+
+char* CadValue::getName(){
+	return name;
+}
+
 void Stack::printStack(void){
 	//cout << "printing stack" << endl;
 	int size = stack.size();
@@ -26,7 +39,12 @@ void Stack::printStack(void){
 		StackElement el = stack.at(i);
 		cout << "name: " << el.getName();
 		cout << " type: " << el.getType();
-		cout << " value ent: " << getEntValue(el.getName()) << endl;
+		if(strcmp(el.getType(), "ent")==0){
+			cout << " value ent: " << getEntValue(el.getName()) << endl;
+		} else {
+			cout << " value cad: " << getCadValue(el.getName()) << endl;
+		}
+		
 		//cout << " value cad: " << el.getCadValue() << endl;
 	}
 	/*int size1 = entStack.size();
@@ -61,6 +79,20 @@ StackElement Stack::getStackElement(const char *name){
 		if(strcmp(stack.at(i).getName(), name)==0) return stack.at(i);
 	}
 }
+
+void Stack::addCadValue(const char *name, const char *value){
+	cadStack.push_back(CadValue(name, value));
+}
+
+char* Stack::getCadValue(const char *name){
+	int size = cadStack.size();
+	//cout << "size: " << size << endl;
+	for(int i = 0; i < size; i++){
+		//cout << "nombre: " << entStack.at(i).getName() << endl;
+		if(strcmp(cadStack.at(i).getName(), name)==0) return cadStack.at(i).getValue();
+	}
+}
+
 
 int Stack::getEntValue(const char *name){
 	int size = entStack.size();

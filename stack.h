@@ -8,14 +8,15 @@ class Stack {
 		int size(void);
 		void printStack(void);
 		bool exists(const char *name);
-		void goToGlobal();
-		void goToLocal();
 		void addEntValue(int x, const char *name);
 		int getEntValue(const char *name);
+		void addCadValue(const char *name, const char *value);
+		char* getCadValue(const char *name);
 
 	private:
 		std::vector<StackElement> stack;
 		std::vector<EntValue> entStack;
+		std::vector<CadValue> cadStack;
 
 };
 
