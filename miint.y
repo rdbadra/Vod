@@ -5,6 +5,7 @@
 #include <cstring>
 #include "stackElement.h"
 #include "stack.h"
+#include <typeinfo>
 
 
 // stuff from flex that bison needs to know about:
@@ -172,7 +173,7 @@ declarefunc:
 		printf("ya existe\n");
 	} else {
 		printf("adding %s\n", $2);
-		stack.addStackElement($2, "func", "global");	
+		stack.addStackElement($2, "func");	
 	}
 	
 	printf("funcion\n");
@@ -186,8 +187,8 @@ declareent:
 	if(stack.exists($3)){
 		printf("ya existe\n");
 	} else {
-		printf("adding %s\n", $3);
-		stack.addStackElement($3, "ent", "global");	
+		//printf("adding %s\n", $3);
+		stack.addStackElement($3, "ent");	
 	}
 	}
 	;
@@ -199,7 +200,7 @@ declarecad:
 		printf("ya existe\n");
 	} else {
 		printf("adding %s\n", $3);
-		stack.addStackElement($3, "cad", "global");	
+		stack.addStackElement($3, "cad");	
 	}
 	}
 	;
@@ -214,13 +215,38 @@ inicializar:
 
 inicializarent:
 	IDENTIFICADOR ASIGNACION identi {printf("esta\n");}
-	|IDENTIFICADOR ASIGNACION NUMERO {printf("inicializando con numero\n");}
+	|IDENTIFICADOR ASIGNACION NUMERO {
+	
+	if(!stack.exists($1)){
+		printf("la variable no existe\n");
+	} else {
+		//printf("var: %s, num: %d\n", $1, $3);
+		//stack.addEntValue($1, $3);
+			
+		StackElement el = stack.getStackElement($1);
+		//el.addEntValue($3);
+		stack.addEntValue($3, $1);
+		//printf("value: %d name:%s\n",el.getEntValue(),el.getName());
+	}	
+	
+	}
 	| IDENTIFICADOR ASIGNACION operacioncadosuma {printf("se inicializa con suma\n");}
 	| IDENTIFICADOR ASIGNACION operacionent {printf("se inicializa con operacion de enteros\n");}
 	;
 
 inicializarcad:
-	IDENTIFICADOR ASIGNACION RISTRA {printf("inicializando\n");}
+	IDENTIFICADOR ASIGNACION RISTRA {
+	
+	if(!stack.exists($1)){
+		printf("la variable no existe\n");
+	} else {
+		printf("var: %s, num: %s\n", $1, $3);
+		stack.getStackElement($1).addCadValue($3);	
+		
+		printf("Identi: %s--->Value:%s-->name:%s\n",$1, stack.getStackElement($1).getCadValue(),stack.getStackElement($1).getName());
+	}	
+	
+	}
 	;
 %%
 

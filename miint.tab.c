@@ -70,6 +70,7 @@
 #include <cstring>
 #include "stackElement.h"
 #include "stack.h"
+#include <typeinfo>
 
 
 // stuff from flex that bison needs to know about:
@@ -79,7 +80,7 @@ extern FILE *yyin;
 Stack stack;
 void yyerror(const char *s);
 
-#line 83 "miint.tab.c" /* yacc.c:339  */
+#line 84 "miint.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -147,12 +148,12 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 23 "miint.y" /* yacc.c:355  */
+#line 24 "miint.y" /* yacc.c:355  */
 
 	int ent;
 	char *cad;
 
-#line 156 "miint.tab.c" /* yacc.c:355  */
+#line 157 "miint.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -169,7 +170,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 173 "miint.tab.c" /* yacc.c:358  */
+#line 174 "miint.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -469,14 +470,14 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    46,    46,    47,    48,    49,    50,    51,    55,    60,
-      61,    62,    63,    64,    65,    66,    67,    68,    69,    70,
-      71,    72,    73,    74,    75,    76,    77,    78,    79,    80,
-      84,    88,    92,    93,    94,    95,   100,   104,   108,   112,
-     113,   114,   115,   116,   117,   121,   122,   123,   124,   125,
-     126,   127,   128,   132,   142,   143,   144,   145,   149,   153,
-     157,   162,   163,   164,   165,   169,   184,   196,   208,   209,
-     210,   211,   212,   216,   217,   218,   219,   223
+       0,    47,    47,    48,    49,    50,    51,    52,    56,    61,
+      62,    63,    64,    65,    66,    67,    68,    69,    70,    71,
+      72,    73,    74,    75,    76,    77,    78,    79,    80,    81,
+      85,    89,    93,    94,    95,    96,   101,   105,   109,   113,
+     114,   115,   116,   117,   118,   122,   123,   124,   125,   126,
+     127,   128,   129,   133,   143,   144,   145,   146,   150,   154,
+     158,   163,   164,   165,   166,   170,   185,   197,   209,   210,
+     211,   212,   213,   217,   218,   233,   234,   238
 };
 #endif
 
@@ -1378,222 +1379,247 @@ yyreduce:
   switch (yyn)
     {
         case 3:
-#line 47 "miint.y" /* yacc.c:1646  */
+#line 48 "miint.y" /* yacc.c:1646  */
     { printf("ristra %s\n", (yyvsp[0].cad));}
-#line 1384 "miint.tab.c" /* yacc.c:1646  */
+#line 1385 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 48 "miint.y" /* yacc.c:1646  */
+#line 49 "miint.y" /* yacc.c:1646  */
     { printf("numero %d\n", (yyvsp[0].ent));}
-#line 1390 "miint.tab.c" /* yacc.c:1646  */
+#line 1391 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 49 "miint.y" /* yacc.c:1646  */
+#line 50 "miint.y" /* yacc.c:1646  */
     { printf("ristra %s\n", (yyvsp[0].cad));}
-#line 1396 "miint.tab.c" /* yacc.c:1646  */
+#line 1397 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 50 "miint.y" /* yacc.c:1646  */
+#line 51 "miint.y" /* yacc.c:1646  */
     {printf("par\n");}
-#line 1402 "miint.tab.c" /* yacc.c:1646  */
+#line 1403 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 51 "miint.y" /* yacc.c:1646  */
+#line 52 "miint.y" /* yacc.c:1646  */
     {printf("cor\n");}
-#line 1408 "miint.tab.c" /* yacc.c:1646  */
+#line 1409 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 84 "miint.y" /* yacc.c:1646  */
+#line 85 "miint.y" /* yacc.c:1646  */
     {printf("si\n");}
-#line 1414 "miint.tab.c" /* yacc.c:1646  */
+#line 1415 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 88 "miint.y" /* yacc.c:1646  */
+#line 89 "miint.y" /* yacc.c:1646  */
     {printf("mientras\n");}
-#line 1420 "miint.tab.c" /* yacc.c:1646  */
+#line 1421 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 92 "miint.y" /* yacc.c:1646  */
+#line 93 "miint.y" /* yacc.c:1646  */
     {printf("MAYORQUE\n");}
-#line 1426 "miint.tab.c" /* yacc.c:1646  */
+#line 1427 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 93 "miint.y" /* yacc.c:1646  */
+#line 94 "miint.y" /* yacc.c:1646  */
     {printf("MENORQUE\n");}
-#line 1432 "miint.tab.c" /* yacc.c:1646  */
+#line 1433 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 94 "miint.y" /* yacc.c:1646  */
+#line 95 "miint.y" /* yacc.c:1646  */
     {printf("IGUAL\n");}
-#line 1438 "miint.tab.c" /* yacc.c:1646  */
+#line 1439 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 95 "miint.y" /* yacc.c:1646  */
+#line 96 "miint.y" /* yacc.c:1646  */
     {printf("DIFERENTE\n");}
-#line 1444 "miint.tab.c" /* yacc.c:1646  */
+#line 1445 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 100 "miint.y" /* yacc.c:1646  */
+#line 101 "miint.y" /* yacc.c:1646  */
     {printf("escanear\n");}
-#line 1450 "miint.tab.c" /* yacc.c:1646  */
+#line 1451 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 104 "miint.y" /* yacc.c:1646  */
+#line 105 "miint.y" /* yacc.c:1646  */
     {printf("imprimir\n");}
-#line 1456 "miint.tab.c" /* yacc.c:1646  */
+#line 1457 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 108 "miint.y" /* yacc.c:1646  */
+#line 109 "miint.y" /* yacc.c:1646  */
     {printf("llamada a funcion\n");}
-#line 1462 "miint.tab.c" /* yacc.c:1646  */
+#line 1463 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 53:
-#line 133 "miint.y" /* yacc.c:1646  */
+#line 134 "miint.y" /* yacc.c:1646  */
     {
 	//hay que comprobar si la variable es ent o cad para ver si es suma o concatenacion
 	if(strcmp(stack.getStackElement((yyvsp[-2].cad)).getType(), "ent")==0) printf("ent\n");
 	if(strcmp(stack.getStackElement((yyvsp[0].cad)).getType(), "ent")==0) printf("ent\n");
 	printf("suma\n");
 	}
-#line 1473 "miint.tab.c" /* yacc.c:1646  */
+#line 1474 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 54:
-#line 142 "miint.y" /* yacc.c:1646  */
+#line 143 "miint.y" /* yacc.c:1646  */
     {(yyval.cad)=(yyvsp[0].cad);}
-#line 1479 "miint.tab.c" /* yacc.c:1646  */
+#line 1480 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 55:
-#line 143 "miint.y" /* yacc.c:1646  */
+#line 144 "miint.y" /* yacc.c:1646  */
     {(yyval.cad)=(yyvsp[0].cad);}
-#line 1485 "miint.tab.c" /* yacc.c:1646  */
+#line 1486 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 56:
-#line 144 "miint.y" /* yacc.c:1646  */
+#line 145 "miint.y" /* yacc.c:1646  */
     {(yyval.cad) = (yyvsp[-1].cad);}
-#line 1491 "miint.tab.c" /* yacc.c:1646  */
+#line 1492 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 57:
-#line 145 "miint.y" /* yacc.c:1646  */
+#line 146 "miint.y" /* yacc.c:1646  */
     {(yyval.cad) = (yyvsp[-1].cad);}
-#line 1497 "miint.tab.c" /* yacc.c:1646  */
+#line 1498 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 58:
-#line 149 "miint.y" /* yacc.c:1646  */
+#line 150 "miint.y" /* yacc.c:1646  */
     {printf("resta\n");}
-#line 1503 "miint.tab.c" /* yacc.c:1646  */
+#line 1504 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 59:
-#line 153 "miint.y" /* yacc.c:1646  */
+#line 154 "miint.y" /* yacc.c:1646  */
     {printf("multiplicacion\n");}
-#line 1509 "miint.tab.c" /* yacc.c:1646  */
+#line 1510 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 60:
-#line 157 "miint.y" /* yacc.c:1646  */
+#line 158 "miint.y" /* yacc.c:1646  */
     {printf("division\n");}
-#line 1515 "miint.tab.c" /* yacc.c:1646  */
+#line 1516 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 65:
-#line 170 "miint.y" /* yacc.c:1646  */
+#line 171 "miint.y" /* yacc.c:1646  */
     {
 	if(stack.exists((yyvsp[-5].cad))){
 		printf("ya existe\n");
 	} else {
 		printf("adding %s\n", (yyvsp[-5].cad));
-		stack.addStackElement((yyvsp[-5].cad), "func", "global");	
+		stack.addStackElement((yyvsp[-5].cad), "func");	
 	}
 	
 	printf("funcion\n");
 	
 	}
-#line 1531 "miint.tab.c" /* yacc.c:1646  */
+#line 1532 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 66:
-#line 185 "miint.y" /* yacc.c:1646  */
+#line 186 "miint.y" /* yacc.c:1646  */
     {
 	if(stack.exists((yyvsp[0].cad))){
 		printf("ya existe\n");
 	} else {
-		printf("adding %s\n", (yyvsp[0].cad));
-		stack.addStackElement((yyvsp[0].cad), "ent", "global");	
+		//printf("adding %s\n", $3);
+		stack.addStackElement((yyvsp[0].cad), "ent");	
 	}
 	}
-#line 1544 "miint.tab.c" /* yacc.c:1646  */
+#line 1545 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 67:
-#line 197 "miint.y" /* yacc.c:1646  */
+#line 198 "miint.y" /* yacc.c:1646  */
     {
 	if(stack.exists((yyvsp[0].cad))){
 		printf("ya existe\n");
 	} else {
 		printf("adding %s\n", (yyvsp[0].cad));
-		stack.addStackElement((yyvsp[0].cad), "cad", "global");	
+		stack.addStackElement((yyvsp[0].cad), "cad");	
 	}
 	}
-#line 1557 "miint.tab.c" /* yacc.c:1646  */
+#line 1558 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 70:
-#line 210 "miint.y" /* yacc.c:1646  */
+#line 211 "miint.y" /* yacc.c:1646  */
     {printf("escaneando\n");}
-#line 1563 "miint.tab.c" /* yacc.c:1646  */
+#line 1564 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 73:
-#line 216 "miint.y" /* yacc.c:1646  */
+#line 217 "miint.y" /* yacc.c:1646  */
     {printf("esta\n");}
-#line 1569 "miint.tab.c" /* yacc.c:1646  */
+#line 1570 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 74:
-#line 217 "miint.y" /* yacc.c:1646  */
-    {printf("inicializando con numero\n");}
-#line 1575 "miint.tab.c" /* yacc.c:1646  */
+#line 218 "miint.y" /* yacc.c:1646  */
+    {
+	
+	if(!stack.exists((yyvsp[-2].cad))){
+		printf("la variable no existe\n");
+	} else {
+		//printf("var: %s, num: %d\n", $1, $3);
+		//stack.addEntValue($1, $3);
+			
+		StackElement el = stack.getStackElement((yyvsp[-2].cad));
+		//el.addEntValue($3);
+		stack.addEntValue((yyvsp[0].ent), (yyvsp[-2].cad));
+		//printf("value: %d name:%s\n",el.getEntValue(),el.getName());
+	}	
+	
+	}
+#line 1590 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 75:
-#line 218 "miint.y" /* yacc.c:1646  */
+#line 233 "miint.y" /* yacc.c:1646  */
     {printf("se inicializa con suma\n");}
-#line 1581 "miint.tab.c" /* yacc.c:1646  */
+#line 1596 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 76:
-#line 219 "miint.y" /* yacc.c:1646  */
+#line 234 "miint.y" /* yacc.c:1646  */
     {printf("se inicializa con operacion de enteros\n");}
-#line 1587 "miint.tab.c" /* yacc.c:1646  */
+#line 1602 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 77:
-#line 223 "miint.y" /* yacc.c:1646  */
-    {printf("inicializando\n");}
-#line 1593 "miint.tab.c" /* yacc.c:1646  */
+#line 238 "miint.y" /* yacc.c:1646  */
+    {
+	
+	if(!stack.exists((yyvsp[-2].cad))){
+		printf("la variable no existe\n");
+	} else {
+		printf("var: %s, num: %s\n", (yyvsp[-2].cad), (yyvsp[0].cad));
+		stack.getStackElement((yyvsp[-2].cad)).addCadValue((yyvsp[0].cad));	
+		
+		printf("Identi: %s--->Value:%s-->name:%s\n",(yyvsp[-2].cad), stack.getStackElement((yyvsp[-2].cad)).getCadValue(),stack.getStackElement((yyvsp[-2].cad)).getName());
+	}	
+	
+	}
+#line 1619 "miint.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1597 "miint.tab.c" /* yacc.c:1646  */
+#line 1623 "miint.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1821,7 +1847,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 225 "miint.y" /* yacc.c:1906  */
+#line 251 "miint.y" /* yacc.c:1906  */
 
 
 int main(int argc, char** argv) {

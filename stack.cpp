@@ -6,30 +6,37 @@
  
 using namespace std;
 
-
-StackElement::StackElement(const char nombre[], const char tipo[]){
-	strcpy(name, nombre);
-	strcpy(type, tipo); 
-	//cout << "Object is being created" << endl;
-	//cout << name << endl;
+EntValue::EntValue(int val, const char* n){
+	value = val;
+	strcpy(name, n);
 }
 
-char* StackElement::getName(void){
+int EntValue::getValue(){
+	return value;
+}
+
+char* EntValue::getName(){
 	return name;
 }
 
-char* StackElement::getType(void){
-	return type;
-}
-
 void Stack::printStack(void){
-	cout << "printing stack" << endl;
+	//cout << "printing stack" << endl;
 	int size = stack.size();
 	for(int i = 0; i < size; i++){
-		cout << "name: " << stack.at(i).getName();
-		cout << " type: " << stack.at(i).getType() << endl;
+		StackElement el = stack.at(i);
+		cout << "name: " << el.getName();
+		cout << " type: " << el.getType();
+		cout << " value ent: " << getEntValue(el.getName()) << endl;
+		//cout << " value cad: " << el.getCadValue() << endl;
 	}
+	/*int size1 = entStack.size();
+	for(int i = 0; i < size1; i++){
+		cout << "name: " << entStack.at(i).getName();
+		cout << " value ent: " << entStack.at(i).getValue() << endl;
+		//cout << " value cad: " << el.getCadValue() << endl;
+	}*/
 }
+
 
 int Stack::size(void){
 	return stack.size();
@@ -55,6 +62,17 @@ StackElement Stack::getStackElement(const char *name){
 	}
 }
 
+int Stack::getEntValue(const char *name){
+	int size = entStack.size();
+	//cout << "size: " << size << endl;
+	for(int i = 0; i < size; i++){
+		//cout << "nombre: " << entStack.at(i).getName() << endl;
+		if(strcmp(entStack.at(i).getName(), name)==0) return entStack.at(i).getValue();
+	}
+}
 
-// Main function for the program
+void Stack::addEntValue(int x, const char *name){
+	cout << x << " add " << name << endl;
+	entStack.push_back(EntValue(x, name));
+}
 

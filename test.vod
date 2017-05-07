@@ -1,2 +1,4 @@
-declar cad jua;
-declar cad JUA;
+declar ent jua;
+jua=4;
+declar ent JUA;
+JUA=8;

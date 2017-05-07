@@ -78,7 +78,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 23 "miint.y" /* yacc.c:1909  */
+#line 24 "miint.y" /* yacc.c:1909  */
 
 	int ent;
 	char *cad;
