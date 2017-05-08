@@ -71,7 +71,7 @@ si:
 	;
 
 mientras:
-	MIENTRAS ABREPAR cond CIERRAPAR ABRECOR sentencias CIERRACOR {printf("mientras\n");}
+	MIENTRAS ABREPAR cond CIERRAPAR ABRECOR sentencias CIERRACOR {printf("%d\n", $3);}
 	;
 
 cond:	
@@ -127,7 +127,17 @@ escaneo:
 	;
 
 imprime:
-	IMPRIMIR ABREPAR IDENTIFICADOR CIERRAPAR {printf("imprimir\n");}
+	IMPRIMIR ABREPAR IDENTIFICADOR CIERRAPAR 
+	{
+	printf("imprimir\n");
+	if(!stack.exists($3)){
+		printf("la variable no existe\n");
+	} else {
+	if(strcmp(stack.getStackElement($3).getType(), "cad")==0){
+		printf("%s\n",stack.getCadValue($3));
+	}	
+	}
+	}
 	;
 
 callfunc:
@@ -149,7 +159,6 @@ operacionent:
 suma:
 	identi SUMA identi 
 	{
-	//hay que comprobar si la variable es ent o cad para ver si es suma o concatenacion
 	if(strcmp(stack.getStackElement($1).getType(), "ent")==0 && strcmp(stack.getStackElement($3).getType(), "ent")==0){
 		$$ = stack.getEntValue($1) + stack.getEntValue($3);
 	}
