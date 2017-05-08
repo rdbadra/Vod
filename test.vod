@@ -3,6 +3,8 @@ declar ent a;
 a = 3;
 declar ent b;
 b = 4;
+mientras(a>b){
+}
 declar ent c;
 c = a - b;
 declar ent d;
@@ -15,3 +17,6 @@ declar ent f;
 f = (d);
 declar ent g;
 g = 8 + 3;
+si(a>b){
+}
+j();

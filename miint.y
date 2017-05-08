@@ -59,19 +59,10 @@ sentencias:
 	| sentencias declarefunc
 	| sentencias callfunc PYCOMA
 	| sentencias operacionent PYCOMA
-	| callfunc PYCOMA
-	| declarefunc
-	| declare PYCOMA
-	| inicializar PYCOMA
-	| operacionent PYCOMA
 	| sentencias escaneo PYCOMA
 	| sentencias imprime PYCOMA
-	| escaneo PYCOMA
-	| imprime PYCOMA
 	| sentencias si
 	| sentencias mientras 
-	| si
-	| mientras
 	|
 	;
 
