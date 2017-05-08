@@ -38,6 +38,7 @@ void yyerror(const char *s);
 %token <ent> NUMERO
 %token <cad> RISTRA
 %type <cad> identi
+%type <ent> suma resta division multiplicacion operacionent
 
 %%
 // this is the actual grammar that bison will parse, but for right now it's just
@@ -123,7 +124,6 @@ operacionent:
 	| operacionent multiplicacion
 	| operacionent division
 	| operacionent ABREPAR operacionent CIERRAPAR
-	| ABREPAR operacionent CIERRAPAR
 	| resta
 	| multiplicacion
 	| division
@@ -133,10 +133,13 @@ suma:
 	identi SUMA identi 
 	{
 	//hay que comprobar si la variable es ent o cad para ver si es suma o concatenacion
-	if(strcmp(stack.getStackElement($1).getType(), "ent")==0) printf("ent\n");
-	if(strcmp(stack.getStackElement($3).getType(), "ent")==0) printf("ent\n");
-	printf("suma\n");
+	if(strcmp(stack.getStackElement($1).getType(), "ent")==0 && strcmp(stack.getStackElement($3).getType(), "ent")==0){
+		printf("suma de variables ent\n");
+		$$ = stack.getEntValue($1) + stack.getEntValue($3);
 	}
+	;
+	}
+	| NUMERO SUMA NUMERO {$$=$1+$3;printf("sumita\n");}
 	;
 
 identi:
@@ -147,15 +150,42 @@ identi:
 	;
 
 resta:
-	identi RESTA identi {printf("resta\n");}
+	identi RESTA identi 
+	{
+	printf("resta\n");
+	if(strcmp(stack.getStackElement($1).getType(), "ent")==0 && strcmp(stack.getStackElement($3).getType(), "ent")==0){
+		printf("resta de variables ent\n");
+		$$ = stack.getEntValue($1) - stack.getEntValue($3);
+	}
+	;
+	}
+	| NUMERO RESTA NUMERO {$$=$1-$3;printf("restita\n");}
 	;
 
 multiplicacion:
-	identi MULTIPLICACION identi {printf("multiplicacion\n");}
+	identi MULTIPLICACION identi 
+	{
+	printf("MULTIPLICACION\n");
+	if(strcmp(stack.getStackElement($1).getType(), "ent")==0 && strcmp(stack.getStackElement($3).getType(), "ent")==0){
+		printf("multi de variables ent\n");
+		$$ = stack.getEntValue($1) * stack.getEntValue($3);
+	}
+	;
+	}
+	| NUMERO MULTIPLICACION NUMERO {$$=$1*$3;printf("MULTIPLICACIONITA\n");}
 	;
 
 division:
-	identi DIVISION identi {printf("division\n");}
+	identi DIVISION identi 
+	{
+	printf("DIVISION\n");
+	if(strcmp(stack.getStackElement($1).getType(), "ent")==0 && strcmp(stack.getStackElement($3).getType(), "ent")==0){
+		printf("divi de variables ent\n");
+		$$ = stack.getEntValue($1) / stack.getEntValue($3);
+	}
+	;
+	}
+	| NUMERO DIVISION NUMERO {$$=$1-$3;printf("DIVISIONITA\n");}
 	;
 	
 
@@ -220,18 +250,19 @@ inicializarent:
 	if(!stack.exists($1)){
 		printf("la variable no existe\n");
 	} else {
-		//printf("var: %s, num: %d\n", $1, $3);
-		//stack.addEntValue($1, $3);
-			
-		StackElement el = stack.getStackElement($1);
-		//el.addEntValue($3);
 		stack.addEntValue($3, $1);
-		//printf("value: %d name:%s\n",el.getEntValue(),el.getName());
 	}	
 	
 	}
-	| IDENTIFICADOR ASIGNACION operacioncadosuma {printf("se inicializa con suma\n");}
-	| IDENTIFICADOR ASIGNACION operacionent {printf("se inicializa con operacion de enteros\n");}
+	| IDENTIFICADOR ASIGNACION operacionent 
+	{
+	printf("se inicializa con suma: %d\n", $3);
+	if(!stack.exists($1)){
+		printf("la variable no existe\n");
+	} else {
+		stack.addEntValue($3, $1);
+	}
+	}
 	;
 
 inicializarcad:
@@ -242,7 +273,6 @@ inicializarcad:
 	} else {
 		printf("var: %s, value: %s\n", $1, $3);
 		stack.addCadValue($3, $1);
-		
 	}	
 	
 	}

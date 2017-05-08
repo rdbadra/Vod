@@ -1,8 +1,8 @@
-declar ent jua;
-jua=4;
-declar ent JUA;
-JUA=8;
-declar cad j;
-j = "hola";
 declar ent a;
-a=4;
+a = 3;
+declar ent b;
+b = 4;
+declar ent c;
+c = a - b;
+declar ent d;
+d = 3 * 8;
