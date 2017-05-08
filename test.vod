@@ -1,22 +1,8 @@
-funcion x(){}
 declar ent a;
 a = 3;
 declar ent b;
-b = 4;
-mientras(a>b){
-}
-declar ent c;
-c = a - b;
-declar ent d;
-d = 3 * 8;
-declar cad e;
-e = "hello";
-funcion j(){
-}
-declar ent f;
-f = (d);
-declar ent g;
-g = 8 + 3;
-si(a>b){
-}
-j();
+b = 2;
+si(a>b){}
+si(b<a){}
+si(b==a){}
+si(b!=a){}

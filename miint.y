@@ -38,7 +38,7 @@ void yyerror(const char *s);
 %token <ent> NUMERO
 %token <cad> RISTRA
 %type <cad> identi
-%type <ent> suma resta division multiplicacion operacionent
+%type <ent> suma resta division multiplicacion operacionent cond
 
 %%
 // this is the actual grammar that bison will parse, but for right now it's just
@@ -67,7 +67,7 @@ sentencias:
 	;
 
 si:
-	SI ABREPAR cond CIERRAPAR ABRECOR sentencias CIERRACOR {printf("si\n");}
+	SI ABREPAR cond CIERRAPAR ABRECOR sentencias CIERRACOR {printf("%d\n", $3);}
 	;
 
 mientras:
@@ -75,10 +75,50 @@ mientras:
 	;
 
 cond:	
-	identi MAYORQUE identi {printf("MAYORQUE\n");}
-	| identi MENORQUE identi {printf("MENORQUE\n");}
-	| identi IGUAL identi {printf("IGUAL\n");}
-	| identi DIFERENTE identi {printf("DIFERENTE\n");}
+	identi MAYORQUE identi 
+	{
+	printf("MAYORQUE\n");
+	if(strcmp(stack.getStackElement($1).getType(), "ent")==0 && strcmp(stack.getStackElement($3).getType(), "ent")==0){
+		if(stack.getEntValue($1)>stack.getEntValue($3)){
+			$$ = 1;
+		} else {
+			$$ = 0;
+		}
+	}
+	}
+	| identi MENORQUE identi 
+	{
+	printf("MENORQUE\n");
+	if(strcmp(stack.getStackElement($1).getType(), "ent")==0 && strcmp(stack.getStackElement($3).getType(), "ent")==0){
+		if(stack.getEntValue($1)<stack.getEntValue($3)){
+			$$ = 1;
+		} else {
+			$$ = 0;
+		}
+	}
+	}
+	| identi IGUAL identi 
+	{
+	printf("IGUAL\n");
+	if(strcmp(stack.getStackElement($1).getType(), "ent")==0 && strcmp(stack.getStackElement($3).getType(), "ent")==0){
+		if(stack.getEntValue($1)==stack.getEntValue($3)){
+			$$ = 1;
+		} else {
+			$$ = 0;
+		}
+	}
+	}
+	| identi DIFERENTE identi 
+	{
+	printf("DIFERENTE\n");
+	if(strcmp(stack.getStackElement($1).getType(), "ent")==0 && strcmp(stack.getStackElement($3).getType(), "ent")==0){
+		if(stack.getEntValue($1)!=stack.getEntValue($3)){
+			$$ = 1;
+		} else {
+			$$ = 0;
+		}
+	}
+	}
 	;
 
 //completar funciones escanear e imprimir
