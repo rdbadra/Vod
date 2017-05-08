@@ -1,3 +1,4 @@
+funcion x(){}
 declar ent a;
 a = 3;
 declar ent b;
@@ -6,3 +7,11 @@ declar ent c;
 c = a - b;
 declar ent d;
 d = 3 * 8;
+declar cad e;
+e = "hello";
+funcion j(){
+}
+declar ent f;
+f = (d);
+declar ent g;
+g = 8 + 3;

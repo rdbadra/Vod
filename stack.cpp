@@ -41,9 +41,10 @@ void Stack::printStack(void){
 		cout << " type: " << el.getType();
 		if(strcmp(el.getType(), "ent")==0){
 			cout << " value ent: " << getEntValue(el.getName()) << endl;
-		} else {
+		} else if(strcmp(el.getType(), "cad")==0){
 			cout << " value cad: " << getCadValue(el.getName()) << endl;
 		}
+		cout << endl;
 		
 		//cout << " value cad: " << el.getCadValue() << endl;
 	}

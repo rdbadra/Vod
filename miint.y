@@ -46,11 +46,6 @@ void yyerror(const char *s);
 // make a real one shortly:
 vod:
 	body      
-	| vod RISTRA { printf("ristra %s\n", $2);}
-	| NUMERO            { printf("numero %d\n", $1);}
-	| RISTRA         { printf("ristra %s\n", $1);}
-	| ABREPAR	{printf("par\n");}
-	| ABRECOR	{printf("cor\n");}
 	;
 
 body:
@@ -64,13 +59,11 @@ sentencias:
 	| sentencias declarefunc
 	| sentencias callfunc PYCOMA
 	| sentencias operacionent PYCOMA
-	| sentencias operacioncadosuma PYCOMA
 	| callfunc PYCOMA
 	| declarefunc
 	| declare PYCOMA
 	| inicializar PYCOMA
 	| operacionent PYCOMA
-	| operacioncadosuma PYCOMA
 	| sentencias escaneo PYCOMA
 	| sentencias imprime PYCOMA
 	| escaneo PYCOMA
@@ -110,20 +103,13 @@ callfunc:
 	IDENTIFICADOR ABREPAR CIERRAPAR {printf("llamada a funcion\n");}
 	;
 
-operacioncadosuma:
-	operacioncadosuma suma
-	| operacioncadosuma ABREPAR operacioncadosuma CIERRAPAR
-	| ABREPAR operacioncadosuma CIERRAPAR
-	| suma	
-	| operacioncadosuma SUMA suma
-	| identi SUMA suma
-	;
-
 operacionent:
 	operacionent resta
 	| operacionent multiplicacion
 	| operacionent division
+	| operacionent suma
 	| operacionent ABREPAR operacionent CIERRAPAR
+	| suma
 	| resta
 	| multiplicacion
 	| division
@@ -139,7 +125,7 @@ suma:
 	}
 	;
 	}
-	| NUMERO SUMA NUMERO {$$=$1+$3;printf("sumita\n");}
+	| NUMERO SUMA NUMERO {$$=$1+$3;printf("sumita de numeros\n");}
 	;
 
 identi:
@@ -202,12 +188,8 @@ declarefunc:
 	if(stack.exists($2)){
 		printf("ya existe\n");
 	} else {
-		printf("adding %s\n", $2);
 		stack.addStackElement($2, "func");	
 	}
-	
-	printf("funcion\n");
-	
 	}
 	;
 
@@ -244,7 +226,19 @@ inicializar:
 	;
 
 inicializarent:
-	IDENTIFICADOR ASIGNACION identi {printf("esta\n");}
+	IDENTIFICADOR ASIGNACION identi 
+	{
+	printf("esta\n");
+	if(!stack.exists($1)){
+		printf("la variable no existe\n");
+	} else {
+		if(!stack.exists($3)){
+			printf("la variable no existe\n");
+		} else {
+			stack.addEntValue(stack.getEntValue($3), $1);
+	}
+	}
+	}
 	|IDENTIFICADOR ASIGNACION NUMERO {
 	
 	if(!stack.exists($1)){
