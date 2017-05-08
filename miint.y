@@ -111,12 +111,11 @@ suma:
 	{
 	//hay que comprobar si la variable es ent o cad para ver si es suma o concatenacion
 	if(strcmp(stack.getStackElement($1).getType(), "ent")==0 && strcmp(stack.getStackElement($3).getType(), "ent")==0){
-		printf("suma de variables ent\n");
 		$$ = stack.getEntValue($1) + stack.getEntValue($3);
 	}
 	;
 	}
-	| NUMERO SUMA NUMERO {$$=$1+$3;printf("sumita de numeros\n");}
+	| NUMERO SUMA NUMERO {$$=$1+$3;}
 	;
 
 identi:
@@ -129,40 +128,34 @@ identi:
 resta:
 	identi RESTA identi 
 	{
-	printf("resta\n");
 	if(strcmp(stack.getStackElement($1).getType(), "ent")==0 && strcmp(stack.getStackElement($3).getType(), "ent")==0){
-		printf("resta de variables ent\n");
 		$$ = stack.getEntValue($1) - stack.getEntValue($3);
 	}
 	;
 	}
-	| NUMERO RESTA NUMERO {$$=$1-$3;printf("restita\n");}
+	| NUMERO RESTA NUMERO {$$=$1-$3;}
 	;
 
 multiplicacion:
 	identi MULTIPLICACION identi 
 	{
-	printf("MULTIPLICACION\n");
 	if(strcmp(stack.getStackElement($1).getType(), "ent")==0 && strcmp(stack.getStackElement($3).getType(), "ent")==0){
-		printf("multi de variables ent\n");
 		$$ = stack.getEntValue($1) * stack.getEntValue($3);
 	}
 	;
 	}
-	| NUMERO MULTIPLICACION NUMERO {$$=$1*$3;printf("MULTIPLICACIONITA\n");}
+	| NUMERO MULTIPLICACION NUMERO {$$=$1*$3;}
 	;
 
 division:
 	identi DIVISION identi 
 	{
-	printf("DIVISION\n");
 	if(strcmp(stack.getStackElement($1).getType(), "ent")==0 && strcmp(stack.getStackElement($3).getType(), "ent")==0){
-		printf("divi de variables ent\n");
 		$$ = stack.getEntValue($1) / stack.getEntValue($3);
 	}
 	;
 	}
-	| NUMERO DIVISION NUMERO {$$=$1-$3;printf("DIVISIONITA\n");}
+	| NUMERO DIVISION NUMERO {$$=$1-$3;}
 	;
 	
 
@@ -219,7 +212,6 @@ inicializar:
 inicializarent:
 	IDENTIFICADOR ASIGNACION identi 
 	{
-	printf("esta\n");
 	if(!stack.exists($1)){
 		printf("la variable no existe\n");
 	} else {
@@ -241,7 +233,6 @@ inicializarent:
 	}
 	| IDENTIFICADOR ASIGNACION operacionent 
 	{
-	printf("se inicializa con suma: %d\n", $3);
 	if(!stack.exists($1)){
 		printf("la variable no existe\n");
 	} else {
@@ -256,7 +247,6 @@ inicializarcad:
 	if(!stack.exists($1)){
 		printf("la variable no existe\n");
 	} else {
-		printf("var: %s, value: %s\n", $1, $3);
 		stack.addCadValue($3, $1);
 	}	
 	
