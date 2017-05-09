@@ -2,3 +2,4 @@ declar cad j;
 j = "hola";
 declar cad n;
 n = "ja" conc "je";
+
