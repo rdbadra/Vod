@@ -3,7 +3,11 @@
 #include <stdio.h>  
 #include <math.h>
 #include <string.h>
-#include "GestorDeMemoria.h"  
+#include <iostream>
+#include "GestorDeMemoria.h"
+#include <sstream>   
+
+using namespace std;
 
 /*map<yytokentype, char> letra = {
 	{INT, 'I'},
@@ -40,14 +44,43 @@ int contenidoRegistros[8] = {-1, -1, -1, -1, -1, -1, -1, -1};
 
 
 //vuelve el id de un registro libre
+const char* direccionDeMemoria = "12000";
+
+int hexToDec(const char* hex){
+	std::stringstream ss;
+	int decimal_value;
+	ss  << hex ; // std::string hex_value
+	ss >> std::hex >> decimal_value ; //int decimal_value
+	return decimal_value;
+}
+
+char* decToHex(int decimal_value){
+
+	std::stringstream ss;
+	ss<< std::hex << decimal_value; // int decimal_value
+	std::string res ( ss.str() );
+	char * writable = new char[res.size() + 1];
+	std::copy(res.begin(), res.end(), writable);
+	writable[res.size()] = '\0'; 
+	return writable;
+}
+
+char* GestorDeMemoria::cogerDireccionDeMemoria(){
+	int actual = hexToDec(direccionDeMemoria);
+	actual = actual - 1;
+	return decToHex(actual);
+
+}
+
 int GestorDeMemoria::devuelveRegistroLibre(){
 	for (int i = 0; i< 8;i++){
 		if (estaLibre(i)){
+			contenidoRegistros[i] = 1;
 			return i;
 		}
 	}
 
-	printf("ERROR: NO QUEDA NINGUN REGISTRO LIBRE");
+	printf("ERROR: NO QUEDA NINGUN REGISTRO LIBRE\n");
 }
 
 
@@ -65,15 +98,14 @@ void GestorDeMemoria::liberaRegistro(int id){
 	contenidoRegistros[id]=-1;
 }
 
-/*
-int convertEsadecimalADecimal(const char* hexa){
+/*int convertHexadecimalADecimal(const char* hexa){
 	
 	char numero[6];
 	int numeroDecimal=0;
 	int potencia = 0;
 	int i;
 	
-	for (i = 2; i<tamanoDireccion; i++){
+	for (i = 2; i<strlen(hexa); i++){
 		numero[i-2]=hexa[i];
 	}
 	numero[i-2]='\0';
@@ -89,14 +121,15 @@ int convertEsadecimalADecimal(const char* hexa){
     	}  
 	
 	return numeroDecimal;	
-}
+}*/
 
 
 
-char* convertDecimalToHexadecimal(int decimal){
-	char esadecimal[7];
+/*char* convertDecimalToHexadecimal(int decimal){
+	char esadecimal[8];
 	esadecimal[0]='0';
 	esadecimal[1]='x';
+	esadecimal[7] = '\0';
 
 	int cociente = decimal;
 	int temp;

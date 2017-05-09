@@ -4,6 +4,7 @@ class GestorDeMemoria {
 		int devuelveRegistroLibre();
 		void liberaRegistro(int id);
 		bool estaLibre(int id);
+		char* cogerDireccionDeMemoria();
 
 	private:
 

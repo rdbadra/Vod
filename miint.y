@@ -5,6 +5,7 @@
 #include <cstring>
 #include "stackElement.h"
 #include "stack.h"
+#include "GestorDeMemoria.h"
 #include <typeinfo>
 #include <cstdarg>
 
@@ -13,6 +14,7 @@
 extern int yylex();
 extern int yyparse();
 extern FILE *yyin;
+GestorDeMemoria mem;
 Stack stack;
 void yyerror(const char *s);
 FILE *qFile = fopen ( "fichero.q.c", "w+");
@@ -254,6 +256,7 @@ declareent:
 		printf("ya existe\n");
 	} else {
 		//printf("adding %s\n", $3);
+		gc("\tMEM(0x%s, %d);\n", mem.cogerDireccionDeMemoria(), 4);
 		stack.addStackElement($3, "ent");	
 	}
 	}
@@ -297,7 +300,7 @@ inicializarent:
 	if(!stack.exists($1)){
 		printf("la variable no existe\n");
 	} else {
-		gc("\tR%d=%d;\n", 1, $3);
+		gc("\tR%d=%d;\n", mem.devuelveRegistroLibre(), $3);
 		stack.addEntValue($3, $1);
 	}	
 	
@@ -308,7 +311,7 @@ inicializarent:
 		printf("la variable no existe\n");
 	} else {
 		printf("ha\n");
-		gc("\tR%d=%d;\n", 1, $3);
+		gc("\tR%d=%d;\n", mem.devuelveRegistroLibre(), $3);
 		stack.addEntValue($3, $1);
 	}
 	}
