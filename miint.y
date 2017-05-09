@@ -6,6 +6,7 @@
 #include "stackElement.h"
 #include "stack.h"
 #include <typeinfo>
+#include <cstdarg>
 
 
 // stuff from flex that bison needs to know about:
@@ -14,8 +15,8 @@ extern int yyparse();
 extern FILE *yyin;
 Stack stack;
 void yyerror(const char *s);
-FILE *qFile = fopen ( "fichero.q.c", "r+");
-void gc(const char* code);
+FILE *qFile = fopen ( "fichero.q.c", "w+");
+void gc(const char* code, ...);
 %}
 
 // Bison fundamentally works by asking flex to get the next token, which it
@@ -286,6 +287,7 @@ inicializarent:
 		if(!stack.exists($3)){
 			printf("la variable no existe\n");
 		} else {
+			gc("\tR%d=%d;\n", stack.getEntValue($3), $1);
 			stack.addEntValue(stack.getEntValue($3), $1);
 	}
 	}
@@ -295,6 +297,7 @@ inicializarent:
 	if(!stack.exists($1)){
 		printf("la variable no existe\n");
 	} else {
+		gc("\tR%d=%d;\n", 1, $3);
 		stack.addEntValue($3, $1);
 	}	
 	
@@ -304,6 +307,8 @@ inicializarent:
 	if(!stack.exists($1)){
 		printf("la variable no existe\n");
 	} else {
+		printf("ha\n");
+		gc("\tR%d=%d;\n", 1, $3);
 		stack.addEntValue($3, $1);
 	}
 	}
@@ -340,8 +345,12 @@ int main(int argc, char** argv) {
 	
 }
 
-void gc(const char* code){
-	fprintf(qFile, "%s", code);
+void gc(const char* code, ...){
+	printf("dentro\n");
+	va_list args;
+	va_start (args, code);
+	vfprintf(qFile, code, args);
+	va_end (args);
 }
 
 void yyerror(const char *s) {

@@ -1,2 +1,3 @@
 BEGIN
+	R1=7;
 END

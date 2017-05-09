@@ -71,6 +71,7 @@
 #include "stackElement.h"
 #include "stack.h"
 #include <typeinfo>
+#include <cstdarg>
 
 
 // stuff from flex that bison needs to know about:
@@ -79,10 +80,10 @@ extern int yyparse();
 extern FILE *yyin;
 Stack stack;
 void yyerror(const char *s);
-FILE *qFile = fopen ( "fichero.q.c", "r+");
-void gc(const char* code);
+FILE *qFile = fopen ( "fichero.q.c", "w+");
+void gc(const char* code, ...);
 
-#line 86 "miint.tab.c" /* yacc.c:339  */
+#line 87 "miint.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -151,12 +152,12 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 26 "miint.y" /* yacc.c:355  */
+#line 27 "miint.y" /* yacc.c:355  */
 
 	int ent;
 	char *cad;
 
-#line 160 "miint.tab.c" /* yacc.c:355  */
+#line 161 "miint.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -173,7 +174,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 177 "miint.tab.c" /* yacc.c:358  */
+#line 178 "miint.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -473,13 +474,13 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    50,    50,    50,    56,    57,    58,    59,    64,    65,
-      66,    67,    68,    69,    70,    71,    72,    73,    77,    81,
-      85,    96,   107,   118,   133,   137,   151,   155,   156,   157,
-     158,   159,   160,   161,   162,   163,   167,   175,   185,   192,
-     196,   197,   198,   199,   203,   210,   214,   221,   225,   232,
-     237,   238,   239,   240,   244,   256,   268,   280,   281,   282,
-     283,   284,   288,   300,   309,   320,   330
+       0,    51,    51,    51,    57,    58,    59,    60,    65,    66,
+      67,    68,    69,    70,    71,    72,    73,    74,    78,    82,
+      86,    96,   106,   116,   130,   134,   147,   151,   152,   153,
+     154,   155,   156,   157,   158,   159,   163,   170,   180,   187,
+     191,   192,   193,   194,   198,   205,   209,   216,   220,   227,
+     232,   233,   234,   235,   239,   251,   263,   274,   275,   276,
+     277,   278,   282,   295,   305,   318,   328
 };
 #endif
 
@@ -1348,33 +1349,32 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 50 "miint.y" /* yacc.c:1646  */
+#line 51 "miint.y" /* yacc.c:1646  */
     {gc("BEGIN\n");}
-#line 1354 "miint.tab.c" /* yacc.c:1646  */
+#line 1355 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 3:
-#line 52 "miint.y" /* yacc.c:1646  */
+#line 53 "miint.y" /* yacc.c:1646  */
     {gc("END\n");}
-#line 1360 "miint.tab.c" /* yacc.c:1646  */
+#line 1361 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 77 "miint.y" /* yacc.c:1646  */
+#line 78 "miint.y" /* yacc.c:1646  */
     {printf("%d\n", (yyvsp[-4].ent));}
-#line 1366 "miint.tab.c" /* yacc.c:1646  */
+#line 1367 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 81 "miint.y" /* yacc.c:1646  */
+#line 82 "miint.y" /* yacc.c:1646  */
     {printf("%d\n", (yyvsp[-4].ent));}
-#line 1372 "miint.tab.c" /* yacc.c:1646  */
+#line 1373 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 86 "miint.y" /* yacc.c:1646  */
+#line 87 "miint.y" /* yacc.c:1646  */
     {
-	printf("MAYORQUE\n");
 	if(strcmp(stack.getStackElement((yyvsp[-2].cad)).getType(), "ent")==0 && strcmp(stack.getStackElement((yyvsp[0].cad)).getType(), "ent")==0){
 		if(stack.getEntValue((yyvsp[-2].cad))>stack.getEntValue((yyvsp[0].cad))){
 			(yyval.ent) = 1;
@@ -1389,7 +1389,6 @@ yyreduce:
   case 21:
 #line 97 "miint.y" /* yacc.c:1646  */
     {
-	printf("MENORQUE\n");
 	if(strcmp(stack.getStackElement((yyvsp[-2].cad)).getType(), "ent")==0 && strcmp(stack.getStackElement((yyvsp[0].cad)).getType(), "ent")==0){
 		if(stack.getEntValue((yyvsp[-2].cad))<stack.getEntValue((yyvsp[0].cad))){
 			(yyval.ent) = 1;
@@ -1398,13 +1397,12 @@ yyreduce:
 		}
 	}
 	}
-#line 1402 "miint.tab.c" /* yacc.c:1646  */
+#line 1401 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 108 "miint.y" /* yacc.c:1646  */
+#line 107 "miint.y" /* yacc.c:1646  */
     {
-	printf("IGUAL\n");
 	if(strcmp(stack.getStackElement((yyvsp[-2].cad)).getType(), "ent")==0 && strcmp(stack.getStackElement((yyvsp[0].cad)).getType(), "ent")==0){
 		if(stack.getEntValue((yyvsp[-2].cad))==stack.getEntValue((yyvsp[0].cad))){
 			(yyval.ent) = 1;
@@ -1413,13 +1411,12 @@ yyreduce:
 		}
 	}
 	}
-#line 1417 "miint.tab.c" /* yacc.c:1646  */
+#line 1415 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 119 "miint.y" /* yacc.c:1646  */
+#line 117 "miint.y" /* yacc.c:1646  */
     {
-	printf("DIFERENTE\n");
 	if(strcmp(stack.getStackElement((yyvsp[-2].cad)).getType(), "ent")==0 && strcmp(stack.getStackElement((yyvsp[0].cad)).getType(), "ent")==0){
 		if(stack.getEntValue((yyvsp[-2].cad))!=stack.getEntValue((yyvsp[0].cad))){
 			(yyval.ent) = 1;
@@ -1428,19 +1425,18 @@ yyreduce:
 		}
 	}
 	}
-#line 1432 "miint.tab.c" /* yacc.c:1646  */
+#line 1429 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 133 "miint.y" /* yacc.c:1646  */
-    {printf("escanear\n");}
-#line 1438 "miint.tab.c" /* yacc.c:1646  */
+#line 130 "miint.y" /* yacc.c:1646  */
+    {}
+#line 1435 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 138 "miint.y" /* yacc.c:1646  */
+#line 135 "miint.y" /* yacc.c:1646  */
     {
-	printf("imprimir\n");
 	if(!stack.exists((yyvsp[-1].cad))){
 		printf("la variable no existe\n");
 	} else {
@@ -1449,130 +1445,129 @@ yyreduce:
 	}	
 	}
 	}
-#line 1453 "miint.tab.c" /* yacc.c:1646  */
+#line 1449 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 151 "miint.y" /* yacc.c:1646  */
-    {printf("llamada a funcion\n");}
-#line 1459 "miint.tab.c" /* yacc.c:1646  */
+#line 147 "miint.y" /* yacc.c:1646  */
+    {}
+#line 1455 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 168 "miint.y" /* yacc.c:1646  */
+#line 164 "miint.y" /* yacc.c:1646  */
     {
-	printf("hola\n");
 		char* j= strcat((yyvsp[-2].cad), (yyvsp[0].cad));
 		printf("%s\n", j);
 	}
-#line 1469 "miint.tab.c" /* yacc.c:1646  */
+#line 1464 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 176 "miint.y" /* yacc.c:1646  */
+#line 171 "miint.y" /* yacc.c:1646  */
     {
 	if(strcmp(stack.getStackElement((yyvsp[-2].cad)).getType(), "cad")==0 && strcmp(stack.getStackElement((yyvsp[0].cad)).getType(), "cad")==0){
 		(yyval.cad) = strcat(stack.getCadValue((yyvsp[-2].cad)), stack.getCadValue((yyvsp[0].cad)));
 	}
 	;
 	}
-#line 1480 "miint.tab.c" /* yacc.c:1646  */
+#line 1475 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 186 "miint.y" /* yacc.c:1646  */
+#line 181 "miint.y" /* yacc.c:1646  */
     {
 	if(strcmp(stack.getStackElement((yyvsp[-2].cad)).getType(), "ent")==0 && strcmp(stack.getStackElement((yyvsp[0].cad)).getType(), "ent")==0){
 		(yyval.ent) = stack.getEntValue((yyvsp[-2].cad)) + stack.getEntValue((yyvsp[0].cad));
 	}
 	;
 	}
-#line 1491 "miint.tab.c" /* yacc.c:1646  */
+#line 1486 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 192 "miint.y" /* yacc.c:1646  */
+#line 187 "miint.y" /* yacc.c:1646  */
     {(yyval.ent)=(yyvsp[-2].ent)+(yyvsp[0].ent);}
-#line 1497 "miint.tab.c" /* yacc.c:1646  */
+#line 1492 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 196 "miint.y" /* yacc.c:1646  */
+#line 191 "miint.y" /* yacc.c:1646  */
     {(yyval.cad)=(yyvsp[0].cad);}
-#line 1503 "miint.tab.c" /* yacc.c:1646  */
+#line 1498 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 197 "miint.y" /* yacc.c:1646  */
+#line 192 "miint.y" /* yacc.c:1646  */
     {(yyval.cad)=(yyvsp[0].cad);}
-#line 1509 "miint.tab.c" /* yacc.c:1646  */
+#line 1504 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 42:
-#line 198 "miint.y" /* yacc.c:1646  */
+#line 193 "miint.y" /* yacc.c:1646  */
     {(yyval.cad) = (yyvsp[-1].cad);}
-#line 1515 "miint.tab.c" /* yacc.c:1646  */
+#line 1510 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 43:
-#line 199 "miint.y" /* yacc.c:1646  */
+#line 194 "miint.y" /* yacc.c:1646  */
     {(yyval.cad) = (yyvsp[-1].cad);}
-#line 1521 "miint.tab.c" /* yacc.c:1646  */
+#line 1516 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 44:
-#line 204 "miint.y" /* yacc.c:1646  */
+#line 199 "miint.y" /* yacc.c:1646  */
     {
 	if(strcmp(stack.getStackElement((yyvsp[-2].cad)).getType(), "ent")==0 && strcmp(stack.getStackElement((yyvsp[0].cad)).getType(), "ent")==0){
 		(yyval.ent) = stack.getEntValue((yyvsp[-2].cad)) - stack.getEntValue((yyvsp[0].cad));
 	}
 	;
 	}
-#line 1532 "miint.tab.c" /* yacc.c:1646  */
+#line 1527 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 45:
-#line 210 "miint.y" /* yacc.c:1646  */
+#line 205 "miint.y" /* yacc.c:1646  */
     {(yyval.ent)=(yyvsp[-2].ent)-(yyvsp[0].ent);}
-#line 1538 "miint.tab.c" /* yacc.c:1646  */
+#line 1533 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 46:
-#line 215 "miint.y" /* yacc.c:1646  */
+#line 210 "miint.y" /* yacc.c:1646  */
     {
 	if(strcmp(stack.getStackElement((yyvsp[-2].cad)).getType(), "ent")==0 && strcmp(stack.getStackElement((yyvsp[0].cad)).getType(), "ent")==0){
 		(yyval.ent) = stack.getEntValue((yyvsp[-2].cad)) * stack.getEntValue((yyvsp[0].cad));
 	}
 	;
 	}
-#line 1549 "miint.tab.c" /* yacc.c:1646  */
+#line 1544 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 47:
-#line 221 "miint.y" /* yacc.c:1646  */
+#line 216 "miint.y" /* yacc.c:1646  */
     {(yyval.ent)=(yyvsp[-2].ent)*(yyvsp[0].ent);}
-#line 1555 "miint.tab.c" /* yacc.c:1646  */
+#line 1550 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 48:
-#line 226 "miint.y" /* yacc.c:1646  */
+#line 221 "miint.y" /* yacc.c:1646  */
     {
 	if(strcmp(stack.getStackElement((yyvsp[-2].cad)).getType(), "ent")==0 && strcmp(stack.getStackElement((yyvsp[0].cad)).getType(), "ent")==0){
 		(yyval.ent) = stack.getEntValue((yyvsp[-2].cad)) / stack.getEntValue((yyvsp[0].cad));
 	}
 	;
 	}
-#line 1566 "miint.tab.c" /* yacc.c:1646  */
+#line 1561 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 49:
-#line 232 "miint.y" /* yacc.c:1646  */
+#line 227 "miint.y" /* yacc.c:1646  */
     {(yyval.ent)=(yyvsp[-2].ent)-(yyvsp[0].ent);}
-#line 1572 "miint.tab.c" /* yacc.c:1646  */
+#line 1567 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 54:
-#line 245 "miint.y" /* yacc.c:1646  */
+#line 240 "miint.y" /* yacc.c:1646  */
     {
 	if(stack.exists((yyvsp[-5].cad))){
 		printf("ya existe\n");
@@ -1580,11 +1575,11 @@ yyreduce:
 		stack.addStackElement((yyvsp[-5].cad), "func");	
 	}
 	}
-#line 1584 "miint.tab.c" /* yacc.c:1646  */
+#line 1579 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 55:
-#line 257 "miint.y" /* yacc.c:1646  */
+#line 252 "miint.y" /* yacc.c:1646  */
     {
 	if(stack.exists((yyvsp[0].cad))){
 		printf("ya existe\n");
@@ -1593,30 +1588,29 @@ yyreduce:
 		stack.addStackElement((yyvsp[0].cad), "ent");	
 	}
 	}
-#line 1597 "miint.tab.c" /* yacc.c:1646  */
+#line 1592 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 56:
-#line 269 "miint.y" /* yacc.c:1646  */
+#line 264 "miint.y" /* yacc.c:1646  */
     {
 	if(stack.exists((yyvsp[0].cad))){
 		printf("ya existe\n");
 	} else {
-		printf("adding %s\n", (yyvsp[0].cad));
 		stack.addStackElement((yyvsp[0].cad), "cad");	
 	}
 	}
-#line 1610 "miint.tab.c" /* yacc.c:1646  */
+#line 1604 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 59:
-#line 282 "miint.y" /* yacc.c:1646  */
-    {printf("escaneando\n");}
-#line 1616 "miint.tab.c" /* yacc.c:1646  */
+#line 276 "miint.y" /* yacc.c:1646  */
+    {}
+#line 1610 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 62:
-#line 289 "miint.y" /* yacc.c:1646  */
+#line 283 "miint.y" /* yacc.c:1646  */
     {
 	if(!stack.exists((yyvsp[-2].cad))){
 		printf("la variable no existe\n");
@@ -1624,41 +1618,45 @@ yyreduce:
 		if(!stack.exists((yyvsp[0].cad))){
 			printf("la variable no existe\n");
 		} else {
+			gc("\tR%d=%d;\n", stack.getEntValue((yyvsp[0].cad)), (yyvsp[-2].cad));
 			stack.addEntValue(stack.getEntValue((yyvsp[0].cad)), (yyvsp[-2].cad));
 	}
 	}
 	}
-#line 1632 "miint.tab.c" /* yacc.c:1646  */
+#line 1627 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 63:
-#line 300 "miint.y" /* yacc.c:1646  */
+#line 295 "miint.y" /* yacc.c:1646  */
     {
 	
 	if(!stack.exists((yyvsp[-2].cad))){
 		printf("la variable no existe\n");
 	} else {
+		gc("\tR%d=%d;\n", 1, (yyvsp[0].ent));
 		stack.addEntValue((yyvsp[0].ent), (yyvsp[-2].cad));
 	}	
 	
 	}
-#line 1646 "miint.tab.c" /* yacc.c:1646  */
+#line 1642 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 64:
-#line 310 "miint.y" /* yacc.c:1646  */
+#line 306 "miint.y" /* yacc.c:1646  */
     {
 	if(!stack.exists((yyvsp[-2].cad))){
 		printf("la variable no existe\n");
 	} else {
+		printf("ha\n");
+		gc("\tR%d=%d;\n", 1, (yyvsp[0].ent));
 		stack.addEntValue((yyvsp[0].ent), (yyvsp[-2].cad));
 	}
 	}
-#line 1658 "miint.tab.c" /* yacc.c:1646  */
+#line 1656 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 65:
-#line 320 "miint.y" /* yacc.c:1646  */
+#line 318 "miint.y" /* yacc.c:1646  */
     {
 	
 	if(!stack.exists((yyvsp[-2].cad))){
@@ -1668,11 +1666,11 @@ yyreduce:
 	}	
 	
 	}
-#line 1672 "miint.tab.c" /* yacc.c:1646  */
+#line 1670 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 66:
-#line 331 "miint.y" /* yacc.c:1646  */
+#line 329 "miint.y" /* yacc.c:1646  */
     {
 	if(!stack.exists((yyvsp[-2].cad))){
 		printf("la variable no existe\n");
@@ -1680,11 +1678,11 @@ yyreduce:
 		stack.addCadValue((yyvsp[0].cad), (yyvsp[-2].cad));
 	}
 	}
-#line 1684 "miint.tab.c" /* yacc.c:1646  */
+#line 1682 "miint.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1688 "miint.tab.c" /* yacc.c:1646  */
+#line 1686 "miint.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1912,7 +1910,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 339 "miint.y" /* yacc.c:1906  */
+#line 337 "miint.y" /* yacc.c:1906  */
 
 
 int main(int argc, char** argv) {
@@ -1924,8 +1922,12 @@ int main(int argc, char** argv) {
 	
 }
 
-void gc(const char* code){
-	fprintf(qFile, "%s", code);
+void gc(const char* code, ...){
+	printf("dentro\n");
+	va_list args;
+	va_start (args, code);
+	vfprintf(qFile, code, args);
+	va_end (args);
 }
 
 void yyerror(const char *s) {
