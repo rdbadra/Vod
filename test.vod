@@ -1,3 +1,4 @@
 declar cad j;
 j = "hola";
-imprimir(j);
+declar cad n;
+n = "ja" conc "je";

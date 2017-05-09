@@ -65,11 +65,12 @@ extern int yydebug;
     RESTA = 275,
     MULTIPLICACION = 276,
     DIVISION = 277,
-    IDENTIFICADOR = 278,
-    CAD = 279,
-    ENT = 280,
-    NUMERO = 281,
-    RISTRA = 282
+    CONCATENACION = 278,
+    IDENTIFICADOR = 279,
+    CAD = 280,
+    ENT = 281,
+    NUMERO = 282,
+    RISTRA = 283
   };
 #endif
 
@@ -83,7 +84,7 @@ union YYSTYPE
 	int ent;
 	char *cad;
 
-#line 87 "miint.tab.h" /* yacc.c:1909  */
+#line 88 "miint.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

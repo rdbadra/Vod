@@ -11,6 +11,7 @@ extern int yylex();
 %%
 [ \t\n]         ;
 [0-9]+\.[0-9]+  { printf("%s : %s\n","found floating number", yytext); }
+"conc" 		{return CONCATENACION;}
 "+"		{return SUMA;}
 "-"		{return RESTA;}
 "*"		{return MULTIPLICACION;}

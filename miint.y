@@ -32,12 +32,12 @@ void yyerror(const char *s);
 %token MAYORQUE MENORQUE IGUAL DIFERENTE
 %token ESCANEAR IMPRIMIR
 %token DECLAR ASIGNACION PYCOMA FUNCION ABREPAR CIERRAPAR ABRECOR CIERRACOR
-%token SUMA RESTA MULTIPLICACION DIVISION
+%token SUMA RESTA MULTIPLICACION DIVISION CONCATENACION
 %token <cad> IDENTIFICADOR
 %token CAD ENT
 %token <ent> NUMERO
 %token <cad> RISTRA
-%type <cad> identi
+%type <cad> identi operacioncad
 %type <ent> suma resta division multiplicacion operacionent cond
 
 %%
@@ -45,20 +45,23 @@ void yyerror(const char *s);
 // something silly to echo to the screen what bison gets from flex.  We'll
 // make a real one shortly:
 vod:
-	body      
+	body   
 	;
 
 body:
-	sentencias
+	body declarefunc
+	| declarefunc
+	| sentencias
+	| body sentencias
 	;
 //los conflictos empezaron despues de añadir sentencias
 //la ultima regla genero muchos conflictos
 sentencias:
 	sentencias declare PYCOMA
 	| sentencias inicializar PYCOMA
-	| sentencias declarefunc
 	| sentencias callfunc PYCOMA
 	| sentencias operacionent PYCOMA
+	| sentencias operacioncad PYCOMA
 	| sentencias escaneo PYCOMA
 	| sentencias imprime PYCOMA
 	| sentencias si
@@ -156,6 +159,24 @@ operacionent:
 	| division
 	;
 
+operacioncad:
+	RISTRA CONCATENACION RISTRA
+	{
+	printf("hola\n");
+		char* j= strcat($1, $3);
+		printf("%s\n", j);
+	}
+	
+	
+	| identi CONCATENACION identi
+	{
+	if(strcmp(stack.getStackElement($1).getType(), "cad")==0 && strcmp(stack.getStackElement($3).getType(), "cad")==0){
+		$$ = strcat(stack.getCadValue($1), stack.getCadValue($3));
+	}
+	;
+	}
+	;
+
 suma:
 	identi SUMA identi 
 	{
@@ -224,6 +245,7 @@ declarefunc:
 		stack.addStackElement($2, "func");	
 	}
 	}
+
 	;
 
 declareent:
@@ -299,6 +321,15 @@ inicializarcad:
 		stack.addCadValue($3, $1);
 	}	
 	
+	}
+	|
+	IDENTIFICADOR ASIGNACION operacioncad
+	{
+	if(!stack.exists($1)){
+		printf("la variable no existe\n");
+	} else {
+		stack.addCadValue($3, $1);
+	}
 	}
 	;
 %%
