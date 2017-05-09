@@ -14,6 +14,8 @@ extern int yyparse();
 extern FILE *yyin;
 Stack stack;
 void yyerror(const char *s);
+FILE *qFile = fopen ( "fichero.q.c", "r+");
+void gc(const char* code);
 %}
 
 // Bison fundamentally works by asking flex to get the next token, which it
@@ -45,7 +47,9 @@ void yyerror(const char *s);
 // something silly to echo to the screen what bison gets from flex.  We'll
 // make a real one shortly:
 vod:
+	{gc("BEGIN\n");}
 	body   
+	{gc("END\n");}
 	;
 
 body:
@@ -80,7 +84,6 @@ mientras:
 cond:	
 	identi MAYORQUE identi 
 	{
-	printf("MAYORQUE\n");
 	if(strcmp(stack.getStackElement($1).getType(), "ent")==0 && strcmp(stack.getStackElement($3).getType(), "ent")==0){
 		if(stack.getEntValue($1)>stack.getEntValue($3)){
 			$$ = 1;
@@ -91,7 +94,6 @@ cond:
 	}
 	| identi MENORQUE identi 
 	{
-	printf("MENORQUE\n");
 	if(strcmp(stack.getStackElement($1).getType(), "ent")==0 && strcmp(stack.getStackElement($3).getType(), "ent")==0){
 		if(stack.getEntValue($1)<stack.getEntValue($3)){
 			$$ = 1;
@@ -102,7 +104,6 @@ cond:
 	}
 	| identi IGUAL identi 
 	{
-	printf("IGUAL\n");
 	if(strcmp(stack.getStackElement($1).getType(), "ent")==0 && strcmp(stack.getStackElement($3).getType(), "ent")==0){
 		if(stack.getEntValue($1)==stack.getEntValue($3)){
 			$$ = 1;
@@ -113,7 +114,6 @@ cond:
 	}
 	| identi DIFERENTE identi 
 	{
-	printf("DIFERENTE\n");
 	if(strcmp(stack.getStackElement($1).getType(), "ent")==0 && strcmp(stack.getStackElement($3).getType(), "ent")==0){
 		if(stack.getEntValue($1)!=stack.getEntValue($3)){
 			$$ = 1;
@@ -126,13 +126,12 @@ cond:
 
 //completar funciones escanear e imprimir
 escaneo:
-	ESCANEAR ABREPAR CIERRAPAR {printf("escanear\n");}
+	ESCANEAR ABREPAR CIERRAPAR {}
 	;
 
 imprime:
 	IMPRIMIR ABREPAR IDENTIFICADOR CIERRAPAR 
 	{
-	printf("imprimir\n");
 	if(!stack.exists($3)){
 		printf("la variable no existe\n");
 	} else {
@@ -144,7 +143,7 @@ imprime:
 	;
 
 callfunc:
-	IDENTIFICADOR ABREPAR CIERRAPAR {printf("llamada a funcion\n");}
+	IDENTIFICADOR ABREPAR CIERRAPAR {}
 	;
 
 operacionent:
@@ -162,7 +161,6 @@ operacionent:
 operacioncad:
 	RISTRA CONCATENACION RISTRA
 	{
-	printf("hola\n");
 		char* j= strcat($1, $3);
 		printf("%s\n", j);
 	}
@@ -266,7 +264,6 @@ declarecad:
 	if(stack.exists($3)){
 		printf("ya existe\n");
 	} else {
-		printf("adding %s\n", $3);
 		stack.addStackElement($3, "cad");	
 	}
 	}
@@ -275,7 +272,7 @@ declarecad:
 inicializar:
 	inicializar inicializarent
 	| inicializar inicializarcad
-	| IDENTIFICADOR ASIGNACION escaneo {printf("escaneando\n");}
+	| IDENTIFICADOR ASIGNACION escaneo {}
 	| inicializarent
 	| inicializarcad
 	;
@@ -341,6 +338,10 @@ int main(int argc, char** argv) {
 	stack.printStack();
 	
 	
+}
+
+void gc(const char* code){
+	fprintf(qFile, "%s", code);
 }
 
 void yyerror(const char *s) {
