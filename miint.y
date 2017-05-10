@@ -55,9 +55,11 @@ vod:
 	gc("#define FIN -2\n");
 	gc("BEGIN\n");
 	}
-	body   
+	body  
+	{gc("\tR0=0;\n");
 	{gc("\tGT(-2);\n");
 	gc("END\n");}
+	}
 	;
 
 body:
@@ -66,6 +68,7 @@ body:
 	| sentencias
 	| body sentencias
 	;
+
 //los conflictos empezaron despues de añadir sentencias
 //la ultima regla genero muchos conflictos
 sentencias:
@@ -262,9 +265,11 @@ declareent:
 	} else {
 		//printf("adding %s\n", $3);
 		int dir = mem.cogerDireccionDeMemoriaEnt();
-		gc("STAT(%d)\n", mem.getStat());
+		if (mem.getStat()==mem.getCode()){
+			gc("STAT(%d)\n", mem.getStat());
+			mem.incrementStat();
+		}
 		gc("\tMEM(0x%x, %d);\n", dir, 4);
-		gc("CODE(%d)\n", mem.getCode());
 		stack.addStackElement($3, "ent", dir);	
 	}
 	}
@@ -277,9 +282,11 @@ declarecad:
 		printf("ya existe\n");
 	} else {
 		int dir = mem.cogerDireccionDeMemoriaCad();
-		gc("STAT(%d)\n", mem.getStat());
+		if (mem.getStat()==mem.getCode()){
+			gc("STAT(%d)\n", mem.getStat());
+			mem.incrementStat();
+		}
 		gc("\tMEM(0x%x, %d);\n", dir, 20);
-		gc("CODE(%d)\n", mem.getCode());
 		stack.addStackElement($3, "cad", dir);	
 	}
 	}
@@ -312,6 +319,12 @@ inicializarent:
 	if(!stack.exists($1)){
 		printf("la variable no existe\n");
 	} else {
+		if (mem.getStat()==mem.getCode()+1){
+			gc("CODE(%d)\n", mem.getCode());
+			mem.incrementCode();
+		}
+		
+
 		int id=mem.devuelveRegistroLibre();
 		gc("\tR%d=0x%x;\n", id, stack.getStackElement($1).getAddress(), $3);
 		int val = mem.devuelveRegistroLibre();

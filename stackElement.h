@@ -1,37 +1,29 @@
-class EntValue {
+class Variable {
 	public:
-		int getValue();
 		char* getName();
-		EntValue(int val, const char* n);
+		char* getTipo();
+		char* getContext();
+		int getDireccion();
+		Variable(const char* n, const char* t, const char* c, int d);
+
 	private:
-		int value;
 		char name[20];
+		char tipo[10];
+		char context[20];
+		int direccion;
 };
 
-class CadValue {
-	public:
-		char* getValue();
-		char* getName();
-		CadValue(const char* a, const char* n);
-	private:
-		char value[20];
-		char name[20];
-};
-
-class StackElement {
+class Funcion {
   	public:
 		char* getName(void);
-		char* getType(void);
-		StackElement(const char*, const char*, int direc);
-		int getAddress(void);
+		int getEtiqueta();
+		int getEspacioParaLasVariables();
+		void setEspacioParaLasVariables(int espacio);
+		Funcion(const char* n, int etiqueta);
 
 	private:
 		char name[20];
-		//func cad ent bool
-		char type[20];
-		char ambito[20];
-		int direccion;
-
-
+		int etiqueta;
+		int espacioParaLasVariables;
 };
 

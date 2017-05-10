@@ -3,20 +3,19 @@
 class Stack {
 
 	public:
-		void addStackElement(const char *name, const char *type, int direc);
-		StackElement getStackElement(const char *name);
+		void addVariable(const char *name, const char *type, const char* c, int direc);
+		Variable getVariable(const char *name);
+		void addFuncion(const char *name, int etiqueta);
+		Funcion getFuncion(const char *name);
+
 		int size(void);
 		void printStack(void);
-		bool exists(const char *name);
-		void addEntValue(int x, const char *name);
-		int getEntValue(const char *name);
-		void addCadValue(const char *name, const char *value);
-		char* getCadValue(const char *name);
+		bool existsVariable(const char *name);
+		bool existsFuncion(const char *name);
 
 	private:
-		std::vector<StackElement> stack;
-		std::vector<EntValue> entStack;
-		std::vector<CadValue> cadStack;
+		std::vector<Variable> variableStack;
+		std::vector<Funcion> funcionStack;
 
 };
 

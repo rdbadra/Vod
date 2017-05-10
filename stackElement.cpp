@@ -5,23 +5,49 @@
 #include <sstream>
 
 using namespace std;
-
-StackElement::StackElement(const char nombre[], const char tipo[], int direc){
-	direccion = direc;
-	strcpy(name, nombre);
-	strcpy(type, tipo); 
+//variable
+Variable::Variable(const char* n, const char* t, const char* c, int d){
+	strcpy(name, n);
+	strcpy(tipo, t);
+	strcpy(context, c);
+	direccion = d;
 }
 
-char* StackElement::getName(){
-	//addEntValue(8);
+char* Variable::getName(){
 	return name;
 }
 
-char* StackElement::getType(void){
-	return type;
+char* Variable::getTipo(){
+	return tipo;
 }
 
-int StackElement::getAddress(void){
+char* Variable::getContext(){
+	return context;
+}
+
+int Variable::getDireccion(){
 	return direccion;
 }
 
+//funcion
+Funcion::Funcion(const char* n, int etiqueta){
+	strcpy(name, n);
+	this.etiqueta=etiqueta;
+	espacioParaLasVariables=0;
+}
+
+char* Funcion::getName(){
+	return name;
+}
+
+int Funcion::getEtiqueta(){
+	return etiqueta;
+}
+
+int Funcion::getEspacioParaLasVariables(){
+	return espacioParaLasVariables;
+}
+
+void Funcion::setEspacioParaLasVariables(int espacio){
+	espacioParaLasVariables=espacio;
+}

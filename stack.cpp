@@ -6,102 +6,72 @@
  
 using namespace std;
 
-EntValue::EntValue(int val, const char* n){
-	value = val;
-	strcpy(name, n);
-}
-
-int EntValue::getValue(){
-	return value;
-}
-
-char* EntValue::getName(){
-	return name;
-}
-
-CadValue::CadValue(const char* val, const char* n){
-	strcpy(value, val);
-	strcpy(name, n);
-}
-
-char* CadValue::getValue(){
-	return value;
-}
-
-char* CadValue::getName(){
-	return name;
-}
-
 void Stack::printStack(void){
-	//cout << "printing stack" << endl;
-	int size = stack.size();
+	cout << "printing stack" << endl;
+	cout << "BEGIN" << endl;
+
+	int size = variableStack.size();
 	for(int i = 0; i < size; i++){
-		StackElement el = stack.at(i);
+		Variable el = variableStack.at(i);
 		cout << "name: " << el.getName();
-		cout << " type: " << el.getType();
-		cout << " address: " << el.getAddress();
+		cout << " type: " << el.getTipo();
+		cout << " context: " << el.getContext();
+		cout << " address: " << el.getDireccion();
 		cout << endl;
-		
-		//cout << " value cad: " << el.getCadValue() << endl;
 	}
-	/*int size1 = entStack.size();
-	for(int i = 0; i < size1; i++){
-		cout << "name: " << entStack.at(i).getName();
-		cout << " value ent: " << entStack.at(i).getValue() << endl;
-		//cout << " value cad: " << el.getCadValue() << endl;
-	}*/
+
+	int size = funcionStack.size();
+	for(int i = 0; i < size; i++){
+		Funcion el = funcionStack.at(i);
+		cout << "name: " << el.getName();
+		cout << " label: " << el.getEtiqueta();
+		cout << " used space: " << el.getEspacioParaLasVariables();
+		cout << endl;
+	}
+	cout << "END" << endl;
 }
 
 
 int Stack::size(void){
-	return stack.size();
+	return (variableStack.size() + funcionStack.size());
 }
 
-void Stack::addStackElement(const char *name, const char *type, int direc){
+void Stack::addVariable(const char *name, const char *type, const char* c, int direc){
 	//hay que comprobar si ya esta en la tabla
-	stack.push_back(StackElement(name, type, direc));
+	variableStack.push_back(Variable(name, type, c, direc));
 }
 
-bool Stack::exists(const char *name){
-	int size = stack.size();
+void Stack::addFuncion(const char *name, int etiqueta){
+	//hay que comprobar si ya esta en la tabla
+	funcionStack.push_back(Funcion(name, etiqueta));
+}
+
+bool Stack::existsVariable(const char *name){
+	int size = variableStack.size();
 	for(int i = 0; i < size; i++){
-		if(strcmp(stack.at(i).getName(), name)==0) return true;
+		if(strcmp(variableStack.at(i).getName(), name)==0) return true;
 	}
 	return false;
 }
 
-StackElement Stack::getStackElement(const char *name){
-	int size = stack.size();
+bool Stack::existsFuncion(const char *name){
+	int size = funcionStack.size();
 	for(int i = 0; i < size; i++){
-		if(strcmp(stack.at(i).getName(), name)==0) return stack.at(i);
+		if(strcmp(funcionStack.at(i).getName(), name)==0) return true;
+	}
+	return false;
+}
+
+Variable Stack::getVariable(const char *name){
+	int size = variableStack.size();
+	for(int i = 0; i < size; i++){
+		if(strcmp(variableStack.at(i).getName(), name)==0) return variableStack.at(i);
 	}
 }
 
-void Stack::addCadValue(const char *name, const char *value){
-	cadStack.push_back(CadValue(name, value));
-}
-
-char* Stack::getCadValue(const char *name){
-	int size = cadStack.size();
-	//cout << "size: " << size << endl;
+Funcion Stack::getFuncion(const char *name){
+	int size = funcionStack.size();
 	for(int i = 0; i < size; i++){
-		//cout << "nombre: " << entStack.at(i).getName() << endl;
-		if(strcmp(cadStack.at(i).getName(), name)==0) return cadStack.at(i).getValue();
+		if(strcmp(funcionStack.at(i).getName(), name)==0) return funcionStack.at(i);
 	}
 }
-
-
-int Stack::getEntValue(const char *name){
-	int size = entStack.size();
-	//cout << "size: " << size << endl;
-	for(int i = 0; i < size; i++){
-		//cout << "nombre: " << entStack.at(i).getName() << endl;
-		if(strcmp(entStack.at(i).getName(), name)==0) return entStack.at(i).getValue();
-	}
-}
-
-void Stack::addEntValue(int x, const char *name){
-	cout << x << " add " << name << endl;
-	entStack.push_back(EntValue(x, name));
-}
-

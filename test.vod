@@ -1,5 +1,4 @@
 declar ent a;
 declar ent b;
-a = 6;
-b = 5;
-
+a=7;
+b=8;

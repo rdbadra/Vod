@@ -38,15 +38,19 @@ char* decToHex(int decimal_value){
 }
 
 int GestorDeMemoria::getStat(){
-	int res = stat;
-	stat++;
-	return res;
+	return stat;
 }
 
 int GestorDeMemoria::getCode(){
-	int res = code;
+	return code;
+}
+
+void GestorDeMemoria::incrementStat(){
+	stat++;
+}
+
+void GestorDeMemoria::incrementCode(){
 	code++;
-	return res;
 }
 
 int GestorDeMemoria::cogerDireccionDeMemoriaEnt(){
