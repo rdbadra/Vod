@@ -6,9 +6,8 @@
 
 using namespace std;
 
-int y = 0;
-
-StackElement::StackElement(const char nombre[], const char tipo[]){
+StackElement::StackElement(const char nombre[], const char tipo[], int direc){
+	direccion = direc;
 	strcpy(name, nombre);
 	strcpy(type, tipo); 
 }
@@ -22,19 +21,7 @@ char* StackElement::getType(void){
 	return type;
 }
 
-char* StackElement::getCadValue(){
-	return cadValue;
+int StackElement::getAddress(void){
+	return direccion;
 }
 
-int StackElement::getEntValue(){
-	return entValue;
-}
-
-void StackElement::addEntValue(int x){
-	y = x;
-	entValue = y;
-}
-
-void StackElement::addCadValue(const char *val){
-	strcpy(cadValue, val);
-}

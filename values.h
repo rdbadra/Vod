@@ -17,21 +17,3 @@ class CadValue {
 		char value[20];
 		char name[20];
 };
-
-class StackElement {
-  	public:
-		char* getName(void);
-		char* getType(void);
-		StackElement(const char*, const char*, int direc);
-		int getAddress(void);
-
-	private:
-		char name[20];
-		//func cad ent bool
-		char type[20];
-		char ambito[20];
-		int direccion;
-
-
-};
-

@@ -4,10 +4,10 @@ class GestorDeMemoria {
 		int devuelveRegistroLibre();
 		void liberaRegistro(int id);
 		bool estaLibre(int id);
-		char* cogerDireccionDeMemoria();
-
-	private:
-
+		int cogerDireccionDeMemoriaEnt();
+		int cogerDireccionDeMemoriaCad();
+		int getStat();
+		int getCode();
 };
 
 

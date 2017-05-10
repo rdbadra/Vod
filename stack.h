@@ -3,7 +3,7 @@
 class Stack {
 
 	public:
-		void addStackElement(const char *name, const char *type);
+		void addStackElement(const char *name, const char *type, int direc);
 		StackElement getStackElement(const char *name);
 		int size(void);
 		void printStack(void);

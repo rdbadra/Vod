@@ -39,11 +39,7 @@ void Stack::printStack(void){
 		StackElement el = stack.at(i);
 		cout << "name: " << el.getName();
 		cout << " type: " << el.getType();
-		if(strcmp(el.getType(), "ent")==0){
-			cout << " value ent: " << getEntValue(el.getName()) << endl;
-		} else if(strcmp(el.getType(), "cad")==0){
-			cout << " value cad: " << getCadValue(el.getName()) << endl;
-		}
+		cout << " address: " << el.getAddress();
 		cout << endl;
 		
 		//cout << " value cad: " << el.getCadValue() << endl;
@@ -61,9 +57,9 @@ int Stack::size(void){
 	return stack.size();
 }
 
-void Stack::addStackElement(const char *name, const char *type){
+void Stack::addStackElement(const char *name, const char *type, int direc){
 	//hay que comprobar si ya esta en la tabla
-	stack.push_back(StackElement(name, type));
+	stack.push_back(StackElement(name, type, direc));
 }
 
 bool Stack::exists(const char *name){

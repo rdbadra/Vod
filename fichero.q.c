@@ -1,4 +1,0 @@
-BEGIN
-	MEM(0x11fff, 4);
-	R0=6;
-END

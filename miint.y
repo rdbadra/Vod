@@ -50,9 +50,14 @@ void gc(const char* code, ...);
 // something silly to echo to the screen what bison gets from flex.  We'll
 // make a real one shortly:
 vod:
-	{gc("BEGIN\n");}
+	{gc("#include \"Q.h\"\n");
+	gc("#define INI 0\n");
+	gc("#define FIN -2\n");
+	gc("BEGIN\n");
+	}
 	body   
-	{gc("END\n");}
+	{gc("\tGT(-2);\n");
+	gc("END\n");}
 	;
 
 body:
@@ -243,7 +248,7 @@ declarefunc:
 	if(stack.exists($2)){
 		printf("ya existe\n");
 	} else {
-		stack.addStackElement($2, "func");	
+		//stack.addStackElement($2, "func");	
 	}
 	}
 
@@ -256,8 +261,11 @@ declareent:
 		printf("ya existe\n");
 	} else {
 		//printf("adding %s\n", $3);
-		gc("\tMEM(0x%s, %d);\n", mem.cogerDireccionDeMemoria(), 4);
-		stack.addStackElement($3, "ent");	
+		int dir = mem.cogerDireccionDeMemoriaEnt();
+		gc("STAT(%d)\n", mem.getStat());
+		gc("\tMEM(0x%x, %d);\n", dir, 4);
+		gc("CODE(%d)\n", mem.getCode());
+		stack.addStackElement($3, "ent", dir);	
 	}
 	}
 	;
@@ -268,7 +276,11 @@ declarecad:
 	if(stack.exists($3)){
 		printf("ya existe\n");
 	} else {
-		stack.addStackElement($3, "cad");	
+		int dir = mem.cogerDireccionDeMemoriaCad();
+		gc("STAT(%d)\n", mem.getStat());
+		gc("\tMEM(0x%x, %d);\n", dir, 20);
+		gc("CODE(%d)\n", mem.getCode());
+		stack.addStackElement($3, "cad", dir);	
 	}
 	}
 	;
@@ -300,7 +312,13 @@ inicializarent:
 	if(!stack.exists($1)){
 		printf("la variable no existe\n");
 	} else {
-		gc("\tR%d=%d;\n", mem.devuelveRegistroLibre(), $3);
+		int id=mem.devuelveRegistroLibre();
+		gc("\tR%d=0x%x;\n", id, stack.getStackElement($1).getAddress(), $3);
+		int val = mem.devuelveRegistroLibre();
+		gc("\tR%d=%d;\n", val, $3);
+		gc("\tI(R%d)=R%d;\n", id, val);
+		mem.liberaRegistro(id);
+		mem.liberaRegistro(val);
 		stack.addEntValue($3, $1);
 	}	
 	

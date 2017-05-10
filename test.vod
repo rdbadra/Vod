@@ -1,2 +1,5 @@
 declar ent a;
+declar ent b;
 a = 6;
+b = 5;
+
