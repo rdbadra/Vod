@@ -88,7 +88,20 @@ sentencias:
 	;
 
 si:
-	SI ABREPAR cond CIERRAPAR ABRECOR sentencias CIERRACOR {printf("%d\n", $3);}
+	SI
+	{
+	
+	}
+	ABREPAR cond CIERRAPAR
+	{
+	$3=etiqueta;
+	gc("\tIF(!R%d) GT(%d);\n", $4, $3);
+	etiqueta++;
+	}
+	ABRECOR sentencias CIERRACOR 
+	{
+	gc("L %d:\n",$3);
+	}
 	;
 
 mientras:

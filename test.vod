@@ -2,7 +2,10 @@ declar ent a;
 declar ent b;
 a=7;
 b=8;
-mientras(a<b){
+si(a<b){
 	declar ent c;
 	c = 5;
+	si(c<b){
+		c = a + b;
+	}
 }
