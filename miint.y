@@ -209,7 +209,38 @@ imprime:
 	if(!stack.existsVariable($3)){
 		printf("la variable no existe\n");
 	} else {
+		if (mem.getStat()==mem.getCode()+1){
+				gc("CODE(%d)\n", mem.getCode());
+				mem.incrementCode();
+		}		
+
 		if(strcmp(stack.getVariable($3).getTipo(), "cad")==0){
+			//imprimir cadena
+			
+			int ret, ristra;
+			ret = mem.devuelveRegistroLibre();
+			ristra = mem.devuelveRegistroLibre();
+			
+			gc("\tR%d=%d;\n", ret, etiqueta);
+			gc("\tR%d=I(0x%x);\n", ristra, stack.getVariable($3).getDireccion());
+			gc("\tGT(-12);\n\tL %d:\n", etiqueta);
+			etiqueta++;
+			mem.liberaRegistro(ret);
+			mem.liberaRegistro(ristra);
+		}
+		else{
+			//imprimir numero
+
+			int ret, numero;
+			ret = mem.devuelveRegistroLibre();
+			numero = mem.devuelveRegistroLibre();
+			
+			gc("\tR%d=%d;\n", ret, etiqueta);
+			gc("\tR%d=I(0x%x);\n", numero, stack.getVariable($3).getDireccion());
+			gc("\tGT(-13);\n\tL %d:\n", etiqueta);
+			etiqueta++;
+			mem.liberaRegistro(ret);
+			mem.liberaRegistro(numero);
 		}	
 	}
 	}
