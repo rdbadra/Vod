@@ -2,3 +2,7 @@ declar ent a;
 declar ent b;
 a=7;
 b=8;
+declar cad c;
+c = "ja";
+b = 2 + 2;
+a = a + b;

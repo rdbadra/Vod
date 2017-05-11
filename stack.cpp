@@ -20,8 +20,8 @@ void Stack::printStack(void){
 		cout << endl;
 	}
 
-	int size = funcionStack.size();
-	for(int i = 0; i < size; i++){
+	int size1 = funcionStack.size();
+	for(int i = 0; i < size1; i++){
 		Funcion el = funcionStack.at(i);
 		cout << "name: " << el.getName();
 		cout << " label: " << el.getEtiqueta();
@@ -49,7 +49,9 @@ void Stack::addFuncion(const char *name, int etiqueta){
 bool Stack::existsVariable(const char *name){
 	int size = variableStack.size();
 	for(int i = 0; i < size; i++){
-		if(strcmp(variableStack.at(i).getName(), name)==0) return true;
+		if(strcmp(variableStack.at(i).getName(), name)==0){
+			return true;
+		}
 	}
 	return false;
 }

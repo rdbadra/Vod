@@ -36,13 +36,12 @@ void gc(const char* code, ...);
 %token SI MIENTRAS
 %token MAYORQUE MENORQUE IGUAL DIFERENTE
 %token ESCANEAR IMPRIMIR
-%token DECLAR ASIGNACION PYCOMA FUNCION ABREPAR CIERRAPAR ABRECOR CIERRACOR
+%token DECLAR ASIGNACION PYCOMA FUNCION ABREPAR CIERRAPAR ABRECOR CIERRACOR COMILLAS
 %token SUMA RESTA MULTIPLICACION DIVISION CONCATENACION
-%token <cad> IDENTIFICADOR
+%token <cad> IDENTIFICADOR RISTRA
 %token CAD ENT
 %token <ent> NUMERO
-%token <cad> RISTRA
-%type <cad> identi operacioncad
+%type <cad> identi operacioncad ristra
 %type <ent> suma resta division multiplicacion operacionent cond
 
 %%
@@ -95,43 +94,30 @@ mientras:
 cond:	
 	identi MAYORQUE identi 
 	{
-	if(strcmp(stack.getStackElement($1).getType(), "ent")==0 && strcmp(stack.getStackElement($3).getType(), "ent")==0){
-		if(stack.getEntValue($1)>stack.getEntValue($3)){
-			$$ = 1;
-		} else {
-			$$ = 0;
-		}
+	if(strcmp(stack.getVariable($1).getTipo(), "ent")==0 && strcmp(stack.getVariable($3).getTipo(), "ent")==0){
+
 	}
 	}
 	| identi MENORQUE identi 
 	{
-	if(strcmp(stack.getStackElement($1).getType(), "ent")==0 && strcmp(stack.getStackElement($3).getType(), "ent")==0){
-		if(stack.getEntValue($1)<stack.getEntValue($3)){
-			$$ = 1;
-		} else {
-			$$ = 0;
+		if(strcmp(stack.getVariable($1).getTipo(), "ent")==0 && strcmp(stack.getVariable($3).getTipo(), "ent")==0){
+
 		}
-	}
+	
 	}
 	| identi IGUAL identi 
 	{
-	if(strcmp(stack.getStackElement($1).getType(), "ent")==0 && strcmp(stack.getStackElement($3).getType(), "ent")==0){
-		if(stack.getEntValue($1)==stack.getEntValue($3)){
-			$$ = 1;
-		} else {
-			$$ = 0;
-		}
+	if(strcmp(stack.getVariable($1).getTipo(), "ent")==0 && strcmp(stack.getVariable($3).getTipo(), "ent")==0){
+
 	}
+	
 	}
 	| identi DIFERENTE identi 
 	{
-	if(strcmp(stack.getStackElement($1).getType(), "ent")==0 && strcmp(stack.getStackElement($3).getType(), "ent")==0){
-		if(stack.getEntValue($1)!=stack.getEntValue($3)){
-			$$ = 1;
-		} else {
-			$$ = 0;
-		}
+	if(strcmp(stack.getVariable($1).getTipo(), "ent")==0 && strcmp(stack.getVariable($3).getTipo(), "ent")==0){
+
 	}
+	
 	}
 	;
 
@@ -143,12 +129,11 @@ escaneo:
 imprime:
 	IMPRIMIR ABREPAR IDENTIFICADOR CIERRAPAR 
 	{
-	if(!stack.exists($3)){
+	if(!stack.existsVariable($3)){
 		printf("la variable no existe\n");
 	} else {
-	if(strcmp(stack.getStackElement($3).getType(), "cad")==0){
-		printf("%s\n",stack.getCadValue($3));
-	}	
+		if(strcmp(stack.getVariable($3).getTipo(), "cad")==0){
+		}	
 	}
 	}
 	;
@@ -170,7 +155,7 @@ operacionent:
 	;
 
 operacioncad:
-	RISTRA CONCATENACION RISTRA
+	ristra CONCATENACION ristra
 	{
 		char* j= strcat($1, $3);
 		printf("%s\n", j);
@@ -179,8 +164,7 @@ operacioncad:
 	
 	| identi CONCATENACION identi
 	{
-	if(strcmp(stack.getStackElement($1).getType(), "cad")==0 && strcmp(stack.getStackElement($3).getType(), "cad")==0){
-		$$ = strcat(stack.getCadValue($1), stack.getCadValue($3));
+	if(strcmp(stack.getVariable($1).getTipo(), "cad")==0 && strcmp(stack.getVariable($3).getTipo(), "cad")==0){
 	}
 	;
 	}
@@ -189,12 +173,38 @@ operacioncad:
 suma:
 	identi SUMA identi 
 	{
-	if(strcmp(stack.getStackElement($1).getType(), "ent")==0 && strcmp(stack.getStackElement($3).getType(), "ent")==0){
-		$$ = stack.getEntValue($1) + stack.getEntValue($3);
+	if(strcmp(stack.getVariable($1).getTipo(), "ent")==0 && strcmp(stack.getVariable($3).getTipo(), "ent")==0){
+		if (mem.getStat()==mem.getCode()+1){
+			gc("CODE(%d)\n", mem.getCode());
+			mem.incrementCode();
+		}
+		int res, add;
+		res = mem.devuelveRegistroLibre();
+		add = mem.devuelveRegistroLibre();
+		gc("\tR%d=I(0x%x);\n", res, stack.getVariable($1).getDireccion());
+		gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
+		gc("\tR%d=R%d+R%d;\n", res, res, add);
+		$$ = res;
+		mem.liberaRegistro(add);
+		
 	}
 	;
 	}
-	| NUMERO SUMA NUMERO {$$=$1+$3;}
+	| NUMERO SUMA NUMERO 
+	{
+		if (mem.getStat()==mem.getCode()+1){
+			gc("CODE(%d)\n", mem.getCode());
+			mem.incrementCode();
+		}
+		int res, add;
+		res = mem.devuelveRegistroLibre();
+		add = mem.devuelveRegistroLibre();
+		gc("\tR%d=%d;\n", res, $1);
+		gc("\tR%d=%d;\n", add, $3);
+		gc("\tR%d=R%d+R%d;\n", res, res, add);
+		$$ = res;
+		mem.liberaRegistro(add);
+	}
 	;
 
 identi:
@@ -207,34 +217,111 @@ identi:
 resta:
 	identi RESTA identi 
 	{
-	if(strcmp(stack.getStackElement($1).getType(), "ent")==0 && strcmp(stack.getStackElement($3).getType(), "ent")==0){
-		$$ = stack.getEntValue($1) - stack.getEntValue($3);
+	if(strcmp(stack.getVariable($1).getTipo(), "ent")==0 && strcmp(stack.getVariable($3).getTipo(), "ent")==0){
+		if (mem.getStat()==mem.getCode()+1){
+			gc("CODE(%d)\n", mem.getCode());
+			mem.incrementCode();
+		}
+		int res, add;
+		res = mem.devuelveRegistroLibre();
+		add = mem.devuelveRegistroLibre();
+		gc("\tR%d=I(0x%x);\n", res, stack.getVariable($1).getDireccion());
+		gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
+		gc("\tR%d=R%d-R%d;\n", res, res, add);
+		$$ = res;
+		mem.liberaRegistro(add);
 	}
 	;
 	}
-	| NUMERO RESTA NUMERO {$$=$1-$3;}
+	| NUMERO RESTA NUMERO 
+	{
+		if (mem.getStat()==mem.getCode()+1){
+			gc("CODE(%d)\n", mem.getCode());
+			mem.incrementCode();
+		}
+		int res, add;
+		res = mem.devuelveRegistroLibre();
+		add = mem.devuelveRegistroLibre();
+		gc("\tR%d=%d;\n", res, $1);
+		gc("\tR%d=%d;\n", add, $3);
+		gc("\tR%d=R%d-R%d;\n", res, res, add);
+		$$ = res;
+		mem.liberaRegistro(add);	
+	}
 	;
 
 multiplicacion:
 	identi MULTIPLICACION identi 
 	{
-	if(strcmp(stack.getStackElement($1).getType(), "ent")==0 && strcmp(stack.getStackElement($3).getType(), "ent")==0){
-		$$ = stack.getEntValue($1) * stack.getEntValue($3);
+	if(strcmp(stack.getVariable($1).getTipo(), "ent")==0 && strcmp(stack.getVariable($3).getTipo(), "ent")==0){
+		if (mem.getStat()==mem.getCode()+1){
+			gc("CODE(%d)\n", mem.getCode());
+			mem.incrementCode();
+		}
+		int res, add;
+		res = mem.devuelveRegistroLibre();
+		add = mem.devuelveRegistroLibre();
+		gc("\tR%d=I(0x%x);\n", res, stack.getVariable($1).getDireccion());
+		gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
+		gc("\tR%d=R%d*R%d;\n", res, res, add);
+		$$ = res;
+		mem.liberaRegistro(add);
 	}
 	;
 	}
-	| NUMERO MULTIPLICACION NUMERO {$$=$1*$3;}
+	| NUMERO MULTIPLICACION NUMERO 
+	{
+		if (mem.getStat()==mem.getCode()+1){
+			gc("CODE(%d)\n", mem.getCode());
+			mem.incrementCode();
+		}
+		int res, add;
+		res = mem.devuelveRegistroLibre();
+		add = mem.devuelveRegistroLibre();
+		gc("\tR%d=%d;\n", res, $1);
+		gc("\tR%d=%d;\n", add, $3);
+		gc("\tR%d=R%d*R%d;\n", res, res, add);
+		$$ = res;
+		mem.liberaRegistro(add);
+
+	}
 	;
 
 division:
 	identi DIVISION identi 
 	{
-	if(strcmp(stack.getStackElement($1).getType(), "ent")==0 && strcmp(stack.getStackElement($3).getType(), "ent")==0){
-		$$ = stack.getEntValue($1) / stack.getEntValue($3);
+	if(strcmp(stack.getVariable($1).getTipo(), "ent")==0 && strcmp(stack.getVariable($3).getTipo(), "ent")==0){
+		if (mem.getStat()==mem.getCode()+1){
+			gc("CODE(%d)\n", mem.getCode());
+			mem.incrementCode();
+		}
+		int res, add;
+		res = mem.devuelveRegistroLibre();
+		add = mem.devuelveRegistroLibre();
+		gc("\tR%d=I(0x%x);\n", res, stack.getVariable($1).getDireccion());
+		gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
+		gc("\tR%d=R%d/R%d;\n", res, res, add);
+		$$ = res;
+		mem.liberaRegistro(add);
 	}
 	;
 	}
-	| NUMERO DIVISION NUMERO {$$=$1-$3;}
+	| NUMERO DIVISION NUMERO 
+	{
+		if (mem.getStat()==mem.getCode()+1){
+			gc("CODE(%d)\n", mem.getCode());
+			mem.incrementCode();
+		}
+		int res, add;
+		res = mem.devuelveRegistroLibre();
+		add = mem.devuelveRegistroLibre();
+		gc("\tR%d=%d;\n", res, $1);
+		gc("\tR%d=%d;\n", add, $3);
+		gc("\tR%d=R%d/R%d;\n", res, res, add);
+		$$ = res;
+		mem.liberaRegistro(add);
+
+	}
 	;
 	
 
@@ -248,7 +335,7 @@ declare:
 declarefunc:
 	FUNCION IDENTIFICADOR ABREPAR CIERRAPAR ABRECOR sentencias CIERRACOR 
 	{
-	if(stack.exists($2)){
+	if(stack.existsFuncion($2)){
 		printf("ya existe\n");
 	} else {
 		//stack.addStackElement($2, "func");	
@@ -260,7 +347,7 @@ declarefunc:
 declareent:
 	DECLAR ENT IDENTIFICADOR	
 	{
-	if(stack.exists($3)){
+	if(stack.existsVariable($3)){
 		printf("ya existe\n");
 	} else {
 		//printf("adding %s\n", $3);
@@ -270,7 +357,7 @@ declareent:
 			mem.incrementStat();
 		}
 		gc("\tMEM(0x%x, %d);\n", dir, 4);
-		stack.addStackElement($3, "ent", dir);	
+		stack.addVariable($3, "ent", "global", dir);	
 	}
 	}
 	;
@@ -278,7 +365,7 @@ declareent:
 declarecad:
 	DECLAR CAD IDENTIFICADOR	
 	{
-	if(stack.exists($3)){
+	if(stack.existsVariable($3)){
 		printf("ya existe\n");
 	} else {
 		int dir = mem.cogerDireccionDeMemoriaCad();
@@ -287,7 +374,7 @@ declarecad:
 			mem.incrementStat();
 		}
 		gc("\tMEM(0x%x, %d);\n", dir, 20);
-		stack.addStackElement($3, "cad", dir);	
+		stack.addVariable($3, "cad", "global", dir);	
 	}
 	}
 	;
@@ -303,20 +390,19 @@ inicializar:
 inicializarent:
 	IDENTIFICADOR ASIGNACION identi 
 	{
-	if(!stack.exists($1)){
+	if(!stack.existsVariable($1)){
 		printf("la variable no existe\n");
 	} else {
-		if(!stack.exists($3)){
+		if(!stack.existsVariable($3)){
 			printf("la variable no existe\n");
 		} else {
-			gc("\tR%d=%d;\n", stack.getEntValue($3), $1);
-			stack.addEntValue(stack.getEntValue($3), $1);
+			
 	}
 	}
 	}
 	|IDENTIFICADOR ASIGNACION NUMERO {
 	
-	if(!stack.exists($1)){
+	if(!stack.existsVariable($1)){
 		printf("la variable no existe\n");
 	} else {
 		if (mem.getStat()==mem.getCode()+1){
@@ -326,45 +412,51 @@ inicializarent:
 		
 
 		int id=mem.devuelveRegistroLibre();
-		gc("\tR%d=0x%x;\n", id, stack.getStackElement($1).getAddress(), $3);
+		gc("\tR%d=0x%x;\n", id, stack.getVariable($1).getDireccion(), $3);
 		int val = mem.devuelveRegistroLibre();
 		gc("\tR%d=%d;\n", val, $3);
 		gc("\tI(R%d)=R%d;\n", id, val);
 		mem.liberaRegistro(id);
 		mem.liberaRegistro(val);
-		stack.addEntValue($3, $1);
 	}	
 	
 	}
 	| IDENTIFICADOR ASIGNACION operacionent 
 	{
-	if(!stack.exists($1)){
+	if(!stack.existsVariable($1)){
 		printf("la variable no existe\n");
 	} else {
-		printf("ha\n");
-		gc("\tR%d=%d;\n", mem.devuelveRegistroLibre(), $3);
-		stack.addEntValue($3, $1);
+		int reg = mem.devuelveRegistroLibre();
+		gc("\tR%d=0x%x;\n", reg, stack.getVariable($1).getDireccion() );
+		gc("\tI(R%d)=R%d;\n", reg, $3);
+		mem.liberaRegistro(reg);
+		mem.liberaRegistro($3);
 	}
 	}
 	;
 
+ristra:
+	COMILLAS IDENTIFICADOR COMILLAS
+	{$$ = $2;}
+	;
+
 inicializarcad:
-	IDENTIFICADOR ASIGNACION RISTRA {
+	IDENTIFICADOR ASIGNACION ristra {
 	
-	if(!stack.exists($1)){
+	if(!stack.existsVariable($1)){
 		printf("la variable no existe\n");
 	} else {
-		stack.addCadValue($3, $1);
+		
 	}	
 	
 	}
 	|
 	IDENTIFICADOR ASIGNACION operacioncad
 	{
-	if(!stack.exists($1)){
+	if(!stack.existsVariable($1)){
 		printf("la variable no existe\n");
 	} else {
-		stack.addCadValue($3, $1);
+		printf("3\n");
 	}
 	}
 	;
@@ -380,7 +472,7 @@ int main(int argc, char** argv) {
 }
 
 void gc(const char* code, ...){
-	printf("dentro\n");
+	//printf("dentro\n");
 	va_list args;
 	va_start (args, code);
 	vfprintf(qFile, code, args);

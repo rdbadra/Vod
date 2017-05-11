@@ -30,9 +30,9 @@ int Variable::getDireccion(){
 }
 
 //funcion
-Funcion::Funcion(const char* n, int etiqueta){
+Funcion::Funcion(const char* n, int etiq){
 	strcpy(name, n);
-	this.etiqueta=etiqueta;
+	etiqueta=etiq;
 	espacioParaLasVariables=0;
 }
 

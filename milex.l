@@ -34,8 +34,8 @@ funcion		{return FUNCION;}
 declar		{return DECLAR;}
 cad		{return CAD;}
 ent		{return ENT;}
+"\""		{return COMILLAS;}
 [0-9]+          { yylval.ent = atoi(yytext);return NUMERO; }
-\"[a-zA-Z0-9]+\"    { yylval.cad = strdup(yytext);return RISTRA;}
 [a-zA-Z0-9]+	{yylval.cad = strdup(yytext);return IDENTIFICADOR;}
 
 %%
