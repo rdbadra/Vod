@@ -45,8 +45,8 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    SI = 258,
-    MIENTRAS = 259,
+    MIENTRAS = 258,
+    SI = 259,
     MAYORQUE = 260,
     MENORQUE = 261,
     IGUAL = 262,
@@ -80,7 +80,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 29 "miint.y" /* yacc.c:1909  */
+#line 30 "miint.y" /* yacc.c:1909  */
 
 	int ent;
 	char *cad;

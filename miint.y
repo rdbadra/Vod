@@ -16,6 +16,7 @@ extern int yyparse();
 extern FILE *yyin;
 GestorDeMemoria mem;
 Stack stack;
+int etiqueta = 0;
 void yyerror(const char *s);
 FILE *qFile = fopen ( "fichero.q.c", "w+");
 void gc(const char* code, ...);
@@ -33,16 +34,17 @@ void gc(const char* code, ...);
 
 // define the "terminal symbol" token types I'm going to use (in CAPS
 // by convention), and associate each with a field of the union:
-%token SI MIENTRAS
+%token <ent> MIENTRAS SI
 %token MAYORQUE MENORQUE IGUAL DIFERENTE
 %token ESCANEAR IMPRIMIR
-%token DECLAR ASIGNACION PYCOMA FUNCION ABREPAR CIERRAPAR ABRECOR CIERRACOR COMILLAS
+%token <ent> DECLAR ASIGNACION PYCOMA FUNCION ABREPAR CIERRAPAR ABRECOR CIERRACOR COMILLAS
 %token SUMA RESTA MULTIPLICACION DIVISION CONCATENACION
 %token <cad> IDENTIFICADOR RISTRA
 %token CAD ENT
 %token <ent> NUMERO
 %type <cad> identi operacioncad ristra
 %type <ent> suma resta division multiplicacion operacionent cond
+%type <ent> mientras
 
 %%
 // this is the actual grammar that bison will parse, but for right now it's just
@@ -53,6 +55,8 @@ vod:
 	gc("#define INI 0\n");
 	gc("#define FIN -2\n");
 	gc("BEGIN\n");
+	gc("L %d:\t", etiqueta);
+	etiqueta++;
 	}
 	body  
 	{gc("\tR0=0;\n");
@@ -88,34 +92,94 @@ si:
 	;
 
 mientras:
-	MIENTRAS ABREPAR cond CIERRAPAR ABRECOR sentencias CIERRACOR {printf("%d\n", $3);}
+	MIENTRAS 
+	{
+	$1 = etiqueta;
+	gc("L %d:\n", $1);
+	etiqueta++;
+	}
+	ABREPAR cond CIERRAPAR
+	{
+	$3=etiqueta;
+	gc("\tIF(!R%d) GT(%d);\n", $4, $3);
+	etiqueta++;
+	}
+	ABRECOR sentencias CIERRACOR 
+	{
+	gc("\tGT(%d);\nL %d:\n", $1, $3);
+	}
 	;
 
 cond:	
 	identi MAYORQUE identi 
 	{
 	if(strcmp(stack.getVariable($1).getTipo(), "ent")==0 && strcmp(stack.getVariable($3).getTipo(), "ent")==0){
-
+		if (mem.getStat()==mem.getCode()+1){
+			gc("CODE(%d)\n", mem.getCode());
+			mem.incrementCode();
+		}
+		int res, add;
+		res = mem.devuelveRegistroLibre();
+		add = mem.devuelveRegistroLibre();
+		gc("\tR%d=I(0x%x);\n", res, stack.getVariable($1).getDireccion());
+		gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
+		gc("\tR%d=R%d>R%d;\n", res, res, add);
+		$$ = res;
+		mem.liberaRegistro(add);
 	}
 	}
 	| identi MENORQUE identi 
 	{
-		if(strcmp(stack.getVariable($1).getTipo(), "ent")==0 && strcmp(stack.getVariable($3).getTipo(), "ent")==0){
-
+	if(strcmp(stack.getVariable($1).getTipo(), "ent")==0 && strcmp(stack.getVariable($3).getTipo(), "ent")==0){
+		if (mem.getStat()==mem.getCode()+1){
+			gc("CODE(%d)\n", mem.getCode());
+			mem.incrementCode();
 		}
+		int res, add;
+		res = mem.devuelveRegistroLibre();
+		add = mem.devuelveRegistroLibre();
+		gc("\tR%d=I(0x%x);\n", res, stack.getVariable($1).getDireccion());
+		gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
+		gc("\tR%d=R%d<R%d;\n", res, res, add);
+		$$ = res;
+		mem.liberaRegistro(add);
+
+	}
 	
 	}
 	| identi IGUAL identi 
 	{
 	if(strcmp(stack.getVariable($1).getTipo(), "ent")==0 && strcmp(stack.getVariable($3).getTipo(), "ent")==0){
-
+		if (mem.getStat()==mem.getCode()+1){
+			gc("CODE(%d)\n", mem.getCode());
+			mem.incrementCode();
+		}
+		int res, add;
+		res = mem.devuelveRegistroLibre();
+		add = mem.devuelveRegistroLibre();
+		gc("\tR%d=I(0x%x);\n", res, stack.getVariable($1).getDireccion());
+		gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
+		gc("\tR%d=R%d==R%d;\n", res, res, add);
+		$$ = res;
+		mem.liberaRegistro(add);
 	}
 	
 	}
 	| identi DIFERENTE identi 
 	{
 	if(strcmp(stack.getVariable($1).getTipo(), "ent")==0 && strcmp(stack.getVariable($3).getTipo(), "ent")==0){
-
+		if (mem.getStat()==mem.getCode()+1){
+			gc("CODE(%d)\n", mem.getCode());
+			mem.incrementCode();
+		}
+		int res, add;
+		res = mem.devuelveRegistroLibre();
+		add = mem.devuelveRegistroLibre();
+		gc("\tR%d=I(0x%x);\n", res, stack.getVariable($1).getDireccion());
+		gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
+		gc("\tR%d=R%d!=R%d;\n", res, res, add);
+		$$ = res;
+		mem.liberaRegistro(add);
 	}
 	
 	}
