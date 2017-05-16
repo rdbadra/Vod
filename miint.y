@@ -55,7 +55,7 @@ vod:
 	gc("#define INI 0\n");
 	gc("#define FIN -2\n");
 	gc("BEGIN\n");
-	gc("L %d:\t", etiqueta);
+	gc("L %d:\n", etiqueta);
 	etiqueta++;
 	}
 	body  
@@ -78,8 +78,6 @@ sentencias:
 	sentencias declare PYCOMA
 	| sentencias inicializar PYCOMA
 	| sentencias callfunc PYCOMA
-	| sentencias operacionent PYCOMA
-	| sentencias operacioncad PYCOMA
 	| sentencias escaneo PYCOMA
 	| sentencias imprime PYCOMA
 	| sentencias si
@@ -220,9 +218,15 @@ imprime:
 			int ret, ristra;
 			ret = mem.devuelveRegistroLibre();
 			ristra = mem.devuelveRegistroLibre();
-			
+			int size = stack.getVariable($3).getSize();
+			for(int i = 0; i < size; i++){
+				gc("\tR%d=%d;\n", ret, etiqueta);
+				gc("\tR%d=U(0x%x+%d);\n", ristra, stack.getVariable($3).getDireccion(), i);
+				gc("\tGT(-12);\nL %d:\n", etiqueta);
+				etiqueta++;	
+			}
 			gc("\tR%d=%d;\n", ret, etiqueta);
-			gc("\tR%d=I(0x%x);\n", ristra, stack.getVariable($3).getDireccion());
+			gc("\tR%d=%d;\n", ristra, 35);
 			gc("\tGT(-12);\n\tL %d:\n", etiqueta);
 			etiqueta++;
 			mem.liberaRegistro(ret);
@@ -237,7 +241,7 @@ imprime:
 			
 			gc("\tR%d=%d;\n", ret, etiqueta);
 			gc("\tR%d=I(0x%x);\n", numero, stack.getVariable($3).getDireccion());
-			gc("\tGT(-13);\n\tL %d:\n", etiqueta);
+			gc("\tGT(-13);\nL %d:\n", etiqueta);
 			etiqueta++;
 			mem.liberaRegistro(ret);
 			mem.liberaRegistro(numero);
@@ -260,22 +264,6 @@ operacionent:
 	| resta
 	| multiplicacion
 	| division
-	;
-
-operacioncad:
-	ristra CONCATENACION ristra
-	{
-		char* j= strcat($1, $3);
-		printf("%s\n", j);
-	}
-	
-	
-	| identi CONCATENACION identi
-	{
-	if(strcmp(stack.getVariable($1).getTipo(), "cad")==0 && strcmp(stack.getVariable($3).getTipo(), "cad")==0){
-	}
-	;
-	}
 	;
 
 suma:
@@ -465,34 +453,103 @@ declareent:
 			mem.incrementStat();
 		}
 		gc("\tMEM(0x%x, %d);\n", dir, 4);
-		stack.addVariable($3, "ent", "global", dir);	
+		stack.addVariable($3, "ent", "global", dir, 1);		
 	}
 	}
 	;
 
+operacioncad:
+	ristra CONCATENACION ristra
+	{
+		$$ = strcat($1, $3);
+	}
+	;
+
 declarecad:
-	DECLAR CAD IDENTIFICADOR	
+	DECLAR CAD IDENTIFICADOR ASIGNACION ristra	
 	{
 	if(stack.existsVariable($3)){
 		printf("ya existe\n");
 	} else {
-		int dir = mem.cogerDireccionDeMemoriaCad();
+		int size = strlen($5);
+		printf("%d\n", size);
+		int dir = mem.cogerDireccionDeMemoriaCad(size);
 		if (mem.getStat()==mem.getCode()){
 			gc("STAT(%d)\n", mem.getStat());
 			mem.incrementStat();
 		}
-		gc("\tMEM(0x%x, %d);\n", dir, 20);
-		stack.addVariable($3, "cad", "global", dir);	
+		gc("\tMEM(0x%x, %d);\n", dir, size);
+		stack.addVariable($3, "cad", "global", dir, size);
+				if (mem.getStat()==mem.getCode()+1){
+			gc("CODE(%d)\n", mem.getCode());
+			mem.incrementCode();
+		}
+		
+
+		int id=mem.devuelveRegistroLibre();
+		gc("\tR%d=0x%x;\n", id, stack.getVariable($3).getDireccion());
+		int val = mem.devuelveRegistroLibre();
+		char* palabra = $5;
+		for(int i = 0; i < strlen(palabra); i++){
+			gc("\tR%d=%d;\n", val, palabra[i]);
+			gc("\tU(R%d+%d)=R%d;\n", id,i, val);
+		}
+		mem.liberaRegistro(id);
+		mem.liberaRegistro(val);
 	}
 	}
+	|
+	DECLAR CAD IDENTIFICADOR ASIGNACION identi CONCATENACION identi
+	{
+	
+		int size = strlen($5);
+		int dir = mem.cogerDireccionDeMemoriaCad(size);
+		if (mem.getStat()==mem.getCode()){
+			gc("STAT(%d)\n", mem.getStat());
+			mem.incrementStat();
+		}
+		gc("\tSTR(0x%x, \"%s\");\n", dir, $5);
+		stack.addVariable($3, "cad", "global", dir, size);
+				if (mem.getStat()==mem.getCode()+1){
+			gc("CODE(%d)\n", mem.getCode());
+			mem.incrementCode();
+		}
+	}
+	| DECLAR CAD IDENTIFICADOR ASIGNACION operacioncad
+	{
+		int size = strlen($5);
+		int dir = mem.cogerDireccionDeMemoriaCad(size);
+		if (mem.getStat()==mem.getCode()){
+			gc("STAT(%d)\n", mem.getStat());
+			mem.incrementStat();
+		}
+		gc("\tSTR(0x%x, \"%s\");\n", dir, $5);
+		stack.addVariable($3, "cad", "global", dir, size);
+				if (mem.getStat()==mem.getCode()+1){
+			gc("CODE(%d)\n", mem.getCode());
+			mem.incrementCode();
+		}
+		
+
+		int id=mem.devuelveRegistroLibre();
+		gc("\tR%d=0x%x;\n", id, stack.getVariable($3).getDireccion());
+		int val = mem.devuelveRegistroLibre();
+		char* palabra = $5;
+		for(int i = 0; i < strlen(palabra); i++){
+			gc("\tR%d=%d;\n", val, palabra[i]);
+			gc("\tU(R%d+%d)=R%d;\n", id,i, val);
+		}
+		mem.liberaRegistro(id);
+		mem.liberaRegistro(val);
+	}
+	
+	
 	;
-//hay que saber si se escanea cadena o enteros
+
 inicializar:
 	inicializar inicializarent
-	| inicializar inicializarcad
 	| IDENTIFICADOR ASIGNACION escaneo {}
 	| inicializarent
-	| inicializarcad
 	;
 
 inicializarent:
@@ -517,10 +574,9 @@ inicializarent:
 			gc("CODE(%d)\n", mem.getCode());
 			mem.incrementCode();
 		}
-		
-
+		int a = 1;
 		int id=mem.devuelveRegistroLibre();
-		gc("\tR%d=0x%x;\n", id, stack.getVariable($1).getDireccion(), $3);
+		gc("\tR%d=0x%x;\n", id, stack.getVariable($1).getDireccion());
 		int val = mem.devuelveRegistroLibre();
 		gc("\tR%d=%d;\n", val, $3);
 		gc("\tI(R%d)=R%d;\n", id, val);
@@ -546,27 +602,6 @@ inicializarent:
 ristra:
 	COMILLAS IDENTIFICADOR COMILLAS
 	{$$ = $2;}
-	;
-
-inicializarcad:
-	IDENTIFICADOR ASIGNACION ristra {
-	
-	if(!stack.existsVariable($1)){
-		printf("la variable no existe\n");
-	} else {
-		
-	}	
-	
-	}
-	|
-	IDENTIFICADOR ASIGNACION operacioncad
-	{
-	if(!stack.existsVariable($1)){
-		printf("la variable no existe\n");
-	} else {
-		printf("3\n");
-	}
-	}
 	;
 %%
 

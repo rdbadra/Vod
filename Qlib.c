@@ -70,8 +70,12 @@ L new_: {//entre llaves por usar variable local
 //          R1=la stringa
 // No modifica ningún registro ni la ristra de formato
 L putf_: {
-	  printf("%s",R1);             	// traslada                 
-	  GT(R0);                       // retorna
+	if(R1 == '#'){
+		printf("\n");
+	} else {
+		printf("%c",R1);             	// traslada   
+	}              
+	GT(R0);                       // retorna
 	} 
 
 // void putf(const unsigned char*, int)
@@ -79,8 +83,8 @@ L putf_: {
 //          R1=valor entero a visualizar
 // No modifica ningún registro ni la ristra de formato
 L putfdos_: {
-	  printf("%d",R1);             	// traslada                 
+	  printf("%d\n",R1);             	// traslada                 
 	  GT(R0);                       // retorna
 	}                                                          
-
+ 
 ENDLIB

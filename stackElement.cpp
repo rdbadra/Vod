@@ -6,11 +6,12 @@
 
 using namespace std;
 //variable
-Variable::Variable(const char* n, const char* t, const char* c, int d){
+Variable::Variable(const char* n, const char* t, const char* c, int d, int s){
 	strcpy(name, n);
 	strcpy(tipo, t);
 	strcpy(context, c);
 	direccion = d;
+	size = s;
 }
 
 char* Variable::getName(){
@@ -27,6 +28,10 @@ char* Variable::getContext(){
 
 int Variable::getDireccion(){
 	return direccion;
+}
+
+int Variable::getSize(){
+	return size;
 }
 
 //funcion

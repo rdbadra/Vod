@@ -1,11 +1,4 @@
-declar ent a;
-declar ent b;
-a=7;
-b=8;
-si(a<b){
-	declar ent c;
-	c = 5;
-	si(c<b){
-		c = a + b;
-	}
-}
+declar cad a = "hola";
+imprimir(a);
+declar cad b = "no" conc "se";
+imprimir(b);

@@ -5,7 +5,7 @@ class GestorDeMemoria {
 		void liberaRegistro(int id);
 		bool estaLibre(int id);
 		int cogerDireccionDeMemoriaEnt();
-		int cogerDireccionDeMemoriaCad();
+		int cogerDireccionDeMemoriaCad(int num);
 		int getStat();
 		int getCode();
 		void incrementStat();

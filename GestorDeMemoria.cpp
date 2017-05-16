@@ -59,8 +59,8 @@ int GestorDeMemoria::cogerDireccionDeMemoriaEnt(){
 
 }
 
-int GestorDeMemoria::cogerDireccionDeMemoriaCad(){
-	memory = memory - 20;
+int GestorDeMemoria::cogerDireccionDeMemoriaCad(int num){
+	memory = memory - num;
 	return memory;
 
 }

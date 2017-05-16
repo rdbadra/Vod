@@ -4,13 +4,15 @@ class Variable {
 		char* getTipo();
 		char* getContext();
 		int getDireccion();
-		Variable(const char* n, const char* t, const char* c, int d);
+		int getSize();
+		Variable(const char* n, const char* t, const char* c, int d, int s);
 
 	private:
 		char name[20];
 		char tipo[10];
 		char context[20];
 		int direccion;
+		int size;
 };
 
 class Funcion {
