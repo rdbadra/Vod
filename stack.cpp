@@ -36,6 +36,16 @@ int Stack::size(void){
 	return (variableStack.size() + funcionStack.size());
 }
 
+void Stack::cleanDinamicStack(const char * name){
+	int size = variableStack.size();
+	for(int i = 0; i < size; i++){
+		if(strcmp(variableStack.at(i).getContext(), name)==0){
+			variableStack.erase(variableStack.begin()+i);
+		}
+	}
+
+}
+
 void Stack::addVariable(const char *name, const char *type, const char* c, int direc, int s){
 	//hay que comprobar si ya esta en la tabla
 	variableStack.push_back(Variable(name, type, c, direc, s));

@@ -13,6 +13,7 @@ class Stack {
 		void setDirection(const char *name, const char *type, const char* c, int direc, int s);
 		bool existsVariable(const char *name);
 		bool existsFuncion(const char *name);
+		void cleanDinamicStack(const char * name);
 
 	private:
 		std::vector<Variable> variableStack;

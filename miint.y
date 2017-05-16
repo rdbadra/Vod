@@ -44,7 +44,7 @@ void gc(const char* code, ...);
 %token CAD ENT
 %token <ent> NUMERO
 %type <cad> identi operacioncad ristra
-%type <ent> suma resta division multiplicacion operacionent cond
+%type <ent> suma resta division multiplicacion operacionent cond sentencias declare declareent declarecad
 %type <ent> mientras
 
 %%
@@ -77,6 +77,10 @@ body:
 //la ultima regla genero muchos conflictos
 sentencias:
 	sentencias declare PYCOMA
+	{
+	$$ = $$ + $2;
+	printf("%d\n", $$);
+	}
 	| sentencias inicializar PYCOMA
 	| sentencias callfunc PYCOMA
 	| sentencias escaneo PYCOMA
@@ -84,6 +88,9 @@ sentencias:
 	| sentencias si
 	| sentencias mientras 
 	|
+	{
+	$$ = 0;
+	}
 	;
 
 si:
@@ -254,7 +261,20 @@ imprime:
 	;
 
 callfunc:
-	IDENTIFICADOR ABREPAR CIERRAPAR {}
+	IDENTIFICADOR ABREPAR CIERRAPAR 
+	{
+
+	/*gc("\tR6=R7;\n\tR7=R7-8;\n\tI(R6-4)=R6;\n\tI(R6-8)=%d;\n", etiqueta);*/
+	gc("\tR7=R7-4;\n");
+	gc("\tP(R7+4)=R6;\n");	
+	gc("\tP(R7)=%d;\n", etiqueta);
+	gc("\tGT(%d);\n", stack.getFuncion($1).getEtiqueta());
+	gc("L %d:\n", etiqueta);
+	etiqueta++;
+	/*gc("\tR4=R6;\n\tR6=I(R4-4);\n\tR5=I(R4-8);\n\tR7=R4;\n\tGT(R5);\n");
+	stack.cleanDinamicStack($1);
+	mem.setAmbito(global);*/
+	}
 	;
 
 operacionent:
@@ -426,13 +446,29 @@ division:
 
 declare:
 	declare declareent
+	{
+	printf("declareent: %d\n", $2);
+	$$ += $2;
+	}
 	| declare declarecad
+	{
+	printf("declarecad: %d\n", $2);
+	$$ += $2;
+	}
 	| declarecad
+	{
+	printf("declarecad: %d\n", $1);
+	$$ = $1;
+	}
 	| declareent
+	{
+	printf("declareent: %d\n", $1);
+	$$ = $1;
+	}
 	;
 
 declarefunc:
-	FUNCION IDENTIFICADOR 
+	FUNCION IDENTIFICADOR ABREPAR CIERRAPAR
 	{
 	if(stack.existsFuncion($2)){
 		printf("ya existe\n");
@@ -441,29 +477,32 @@ declarefunc:
 			gc("CODE(%d)\n", mem.getCode());
 			mem.incrementCode();
 		}
+
 		mem.setAmbito($2);
 		int etiq = etiqueta;
 		etiqueta++;
 		stack.addFuncion($2, etiq);
+		gc("\tGT(%d);\n", etiqueta+1);
 		gc("L %d:\n", etiq);
-		gc("\tR6=R7;\n\tR7=R7;\n");;
-		
-			
+		gc("\tR6=R7;\n");	
 	}
 	}
-	ABREPAR CIERRAPAR ABRECOR sentencias 
+	ABRECOR sentencias CIERRACOR
 	{
 	gc("\tR7=R6;\n");
-	mem.setAmbito(global);
-	}
-	CIERRACOR 
-	
+	gc("\tR6=P(R7+%d);\n", $7);
+	gc("\tR5=P(R7);\n");
+	gc("\tGT(R5);\n");
+	gc("L %d: \n", etiqueta);
+	etiqueta++;
+	}	
 
 	;
 
 declareent:
 	DECLAR ENT IDENTIFICADOR	
 	{
+	$$ = 4;
 	if(stack.existsVariable($3)){
 		printf("ya existe\n");
 	} else {
@@ -491,8 +530,9 @@ declarecad:
 	if(stack.existsVariable($3)){
 		printf("ya existe\n");
 	} else {
+		
 		int size = strlen($5);
-		printf("%d\n", size);
+		$$ = size;
 		int dir = mem.cogerDireccionDeMemoriaCad(size);
 		if (mem.getStat()==mem.getCode()){
 			gc("STAT(%d)\n", mem.getStat());
@@ -521,8 +561,9 @@ declarecad:
 	|
 	DECLAR CAD IDENTIFICADOR ASIGNACION identi CONCATENACION identi
 	{
-	
+		
 		int size = stack.getVariable($5).getSize() + stack.getVariable($7).getSize();
+		$$ = size;
 		int dir = mem.cogerDireccionDeMemoriaCad(size);
 		if (mem.getStat()==mem.getCode()){
 			gc("STAT(%d)\n", mem.getStat());
@@ -557,6 +598,7 @@ declarecad:
 	| DECLAR CAD IDENTIFICADOR ASIGNACION operacioncad
 	{
 		int size = strlen($5);
+		$$ = size;
 		int dir = mem.cogerDireccionDeMemoriaCad(size);
 		if (mem.getStat()==mem.getCode()){
 			gc("STAT(%d)\n", mem.getStat());

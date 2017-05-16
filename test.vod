@@ -1,8 +1,7 @@
 declar ent a;
-a = 2;
-declar ent c;
-c = 6;
-mientras(a<c){
-imprimir(c);
-	c = 1;
+declar ent b;
+funcion fibo(){
+	a = 2;
+	imprimir(a);
 }
+fibo();
