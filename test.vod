@@ -2,3 +2,5 @@ declar cad a = "hola";
 imprimir(a);
 declar cad b = "no" conc "se";
 imprimir(b);
+declar cad c = a conc b;
+imprimir(c);

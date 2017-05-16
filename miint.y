@@ -502,18 +502,37 @@ declarecad:
 	DECLAR CAD IDENTIFICADOR ASIGNACION identi CONCATENACION identi
 	{
 	
-		int size = strlen($5);
+		int size = stack.getVariable($5).getSize() + stack.getVariable($7).getSize();
 		int dir = mem.cogerDireccionDeMemoriaCad(size);
 		if (mem.getStat()==mem.getCode()){
 			gc("STAT(%d)\n", mem.getStat());
 			mem.incrementStat();
 		}
-		gc("\tSTR(0x%x, \"%s\");\n", dir, $5);
+		gc("\tMEM(0x%x, %d);\n", dir, size);
 		stack.addVariable($3, "cad", "global", dir, size);
 				if (mem.getStat()==mem.getCode()+1){
 			gc("CODE(%d)\n", mem.getCode());
 			mem.incrementCode();
 		}
+		int reg0 = mem.devuelveRegistroLibre();
+		int reg1 = mem.devuelveRegistroLibre();
+		int reg2 = mem.devuelveRegistroLibre();
+		gc("\tR%d=0x%x;\n", reg0, stack.getVariable($3).getDireccion());
+		gc("\tR%d=0x%x;\n", reg1, stack.getVariable($5).getDireccion());
+		int i;
+		for(i = 0; i < stack.getVariable($5).getSize(); i++){
+			gc("\tR%d=U(R%d+%d);\n", reg2, reg1, i );
+			gc("\tU(R%d+%d)=R%d;\n", reg0, i, reg2 );
+		}
+		gc("\tR%d=0x%x;\n", reg1, stack.getVariable($7).getDireccion());
+		for(i = 0; i < stack.getVariable($7).getSize(); i++){
+			gc("\tR%d=U(R%d+%d);\n", reg2, reg1, i );
+			gc("\tU(R%d+%d)=R%d;\n", reg0, i+stack.getVariable($5).getSize(), reg2 );
+		}
+		mem.liberaRegistro(reg0);
+		mem.liberaRegistro(reg1);
+		mem.liberaRegistro(reg2);
+		
 	}
 	| DECLAR CAD IDENTIFICADOR ASIGNACION operacioncad
 	{
