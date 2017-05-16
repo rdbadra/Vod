@@ -14,6 +14,7 @@
 extern int yylex();
 extern int yyparse();
 extern FILE *yyin;
+char global[7] = "global";
 GestorDeMemoria mem;
 Stack stack;
 int etiqueta = 0;
@@ -95,6 +96,7 @@ si:
 	$3=etiqueta;
 	gc("\tIF(!R%d) GT(%d);\n", $4, $3);
 	etiqueta++;
+	mem.liberaRegistro($4);
 	}
 	ABRECOR sentencias CIERRACOR 
 	{
@@ -114,6 +116,7 @@ mientras:
 	$3=etiqueta;
 	gc("\tIF(!R%d) GT(%d);\n", $4, $3);
 	etiqueta++;
+	mem.liberaRegistro($4);
 	}
 	ABRECOR sentencias CIERRACOR 
 	{
@@ -429,14 +432,32 @@ declare:
 	;
 
 declarefunc:
-	FUNCION IDENTIFICADOR ABREPAR CIERRAPAR ABRECOR sentencias CIERRACOR 
+	FUNCION IDENTIFICADOR 
 	{
 	if(stack.existsFuncion($2)){
 		printf("ya existe\n");
 	} else {
-		//stack.addStackElement($2, "func");	
+		if (mem.getStat()==mem.getCode()+1){
+			gc("CODE(%d)\n", mem.getCode());
+			mem.incrementCode();
+		}
+		mem.setAmbito($2);
+		int etiq = etiqueta;
+		etiqueta++;
+		stack.addFuncion($2, etiq);
+		gc("L %d:\n", etiq);
+		gc("\tR6=R7;\n\tR7=R7;\n");;
+		
+			
 	}
 	}
+	ABREPAR CIERRAPAR ABRECOR sentencias 
+	{
+	gc("\tR7=R6;\n");
+	mem.setAmbito(global);
+	}
+	CIERRACOR 
+	
 
 	;
 
@@ -446,14 +467,13 @@ declareent:
 	if(stack.existsVariable($3)){
 		printf("ya existe\n");
 	} else {
-		//printf("adding %s\n", $3);
 		int dir = mem.cogerDireccionDeMemoriaEnt();
 		if (mem.getStat()==mem.getCode()){
 			gc("STAT(%d)\n", mem.getStat());
 			mem.incrementStat();
 		}
 		gc("\tMEM(0x%x, %d);\n", dir, 4);
-		stack.addVariable($3, "ent", "global", dir, 1);		
+		stack.addVariable($3, "ent", mem.getAmbito(), dir, 1);		
 	}
 	}
 	;
@@ -479,7 +499,7 @@ declarecad:
 			mem.incrementStat();
 		}
 		gc("\tMEM(0x%x, %d);\n", dir, size);
-		stack.addVariable($3, "cad", "global", dir, size);
+		stack.addVariable($3, "cad", mem.getAmbito(), dir, size);
 				if (mem.getStat()==mem.getCode()+1){
 			gc("CODE(%d)\n", mem.getCode());
 			mem.incrementCode();
@@ -509,7 +529,7 @@ declarecad:
 			mem.incrementStat();
 		}
 		gc("\tMEM(0x%x, %d);\n", dir, size);
-		stack.addVariable($3, "cad", "global", dir, size);
+		stack.addVariable($3, "cad", mem.getAmbito(), dir, size);
 				if (mem.getStat()==mem.getCode()+1){
 			gc("CODE(%d)\n", mem.getCode());
 			mem.incrementCode();
@@ -543,7 +563,7 @@ declarecad:
 			mem.incrementStat();
 		}
 		gc("\tSTR(0x%x, \"%s\");\n", dir, $5);
-		stack.addVariable($3, "cad", "global", dir, size);
+		stack.addVariable($3, "cad", mem.getAmbito(), dir, size);
 				if (mem.getStat()==mem.getCode()+1){
 			gc("CODE(%d)\n", mem.getCode());
 			mem.incrementCode();

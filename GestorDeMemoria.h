@@ -8,6 +8,8 @@ class GestorDeMemoria {
 		int cogerDireccionDeMemoriaCad(int num);
 		int getStat();
 		int getCode();
+		char* getAmbito();
+		void setAmbito(char* a);
 		void incrementStat();
 		void incrementCode();
 };

@@ -1,6 +1,8 @@
-declar cad a = "hola";
-imprimir(a);
-declar cad b = "no" conc "se";
-imprimir(b);
-declar cad c = a conc b;
+declar ent a;
+a = 2;
+declar ent c;
+c = 6;
+mientras(a<c){
 imprimir(c);
+	c = 1;
+}

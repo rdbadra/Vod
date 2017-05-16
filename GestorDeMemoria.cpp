@@ -17,6 +17,7 @@ int contenidoRegistros[8] = {-1, -1, -1, -1, -1, -1, -1, -1};
 int memory = 0x12000;
 int stat = 0;
 int code = 0;
+char ambito[20] = "global";
 
 int hexToDec(const char* hex){
 	std::stringstream ss;
@@ -91,3 +92,12 @@ void GestorDeMemoria::liberaRegistro(int id){
 	contenidoRegistros[id]=-1;
 }
 
+
+char* GestorDeMemoria::getAmbito(){
+	return ambito;
+}
+
+
+void GestorDeMemoria::setAmbito(char* a){
+	strcpy(ambito, a);
+}
