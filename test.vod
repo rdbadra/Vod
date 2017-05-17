@@ -1,7 +1,11 @@
-declar ent a;
-declar ent b;
-funcion fibo(){
-	a = 2;
-	imprimir(a);
+declar ent c;
+c = 1;
+declar ent d;
+d = 0;
+funcion expo(){
+	si(c > d){
+		d = d + c;
+		expo();
+	}
 }
-fibo();
+expo();

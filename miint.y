@@ -18,6 +18,7 @@ char global[7] = "global";
 GestorDeMemoria mem;
 Stack stack;
 int etiqueta = 0;
+int etiqFunc = 0;
 void yyerror(const char *s);
 FILE *qFile = fopen ( "fichero.q.c", "w+");
 void gc(const char* code, ...);
@@ -45,7 +46,7 @@ void gc(const char* code, ...);
 %token <ent> NUMERO
 %type <cad> identi operacioncad ristra
 %type <ent> suma resta division multiplicacion operacionent cond sentencias declare declareent declarecad
-%type <ent> mientras
+%type <ent> mientras declarefunc
 
 %%
 // this is the actual grammar that bison will parse, but for right now it's just
@@ -265,6 +266,10 @@ callfunc:
 	{
 
 	/*gc("\tR6=R7;\n\tR7=R7-8;\n\tI(R6-4)=R6;\n\tI(R6-8)=%d;\n", etiqueta);*/
+	if (mem.getStat()==mem.getCode()+1){
+				gc("CODE(%d)\n", mem.getCode());
+				mem.incrementCode();
+	}
 	gc("\tR7=R7-4;\n");
 	gc("\tP(R7+4)=R6;\n");	
 	gc("\tP(R7)=%d;\n", etiqueta);
@@ -482,19 +487,26 @@ declarefunc:
 		int etiq = etiqueta;
 		etiqueta++;
 		stack.addFuncion($2, etiq);
-		gc("\tGT(%d);\n", etiqueta+1);
+		etiqFunc = etiqueta;
+		gc("\tGT(%d);\n", etiqueta);
 		gc("L %d:\n", etiq);
 		gc("\tR6=R7;\n");	
+		etiqueta++;
 	}
 	}
 	ABRECOR sentencias CIERRACOR
 	{
+	if (mem.getStat()==mem.getCode()+1){
+				gc("CODE(%d)\n", mem.getCode());
+				mem.incrementCode();
+	}
 	gc("\tR7=R6;\n");
 	gc("\tR6=P(R7+%d);\n", $7);
 	gc("\tR5=P(R7);\n");
 	gc("\tGT(R5);\n");
-	gc("L %d: \n", etiqueta);
-	etiqueta++;
+	gc("L %d: \n", etiqFunc);
+	stack.cleanDinamicStack($2);
+	mem.setAmbito(global);
 	}	
 
 	;
