@@ -1595,7 +1595,7 @@ yyreduce:
 				gc("CODE(%d)\n", mem.getCode());
 				mem.incrementCode();
 	}
-	gc("\tR7=R7-4;\n");
+	gc("\tR7=R7-8;\n");
 	gc("\tP(R7+4)=R6;\n");	
 	gc("\tP(R7)=%d;\n", etiqueta);
 	gc("\tGT(%d);\n", stack.getFuncion((yyvsp[-2].cad)).getEtiqueta());
@@ -1868,7 +1868,7 @@ yyreduce:
 				mem.incrementCode();
 	}
 	gc("\tR7=R6;\n");
-	gc("\tR6=P(R7+%d);\n", (yyvsp[-1].ent));
+	gc("\tR6=P(R7+4);\n");
 	gc("\tR5=P(R7);\n");
 	gc("\tGT(R5);\n");
 	gc("L %d: \n", etiqFunc);

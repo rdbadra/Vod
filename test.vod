@@ -1,11 +1,17 @@
 declar ent c;
-c = 1;
+c = 3;
 declar ent d;
-d = 0;
+d = 1;
+declar ent a;
+a = 3;
+declar ent b;
+b = 3;
 funcion expo(){
 	si(c > d){
-		d = d + c;
+		c = c - d;
+		a= a * b;
 		expo();
 	}
 }
 expo();
+imprimir(a);
