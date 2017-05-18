@@ -1,0 +1,22 @@
+declar ent a;
+declar ent b;
+declar ent c;
+declar ent d;
+declar ent e;
+a = 1;
+b = 1;
+c = 1;
+d = 4;
+e = 5;
+funcion fibo(){
+	si(c < d){
+		e = b;
+		imprimir(e);
+		b = a + b;
+		a = e;
+		d = d - c;
+		fibo();
+	}
+}
+fibo();
+imprimir(b);

@@ -3,7 +3,6 @@ Terminales no usados en la gramática
    ESPACIO
    PUNTO
    COMA
-   RISTRA
    EXTRA
 
 
@@ -11,11 +10,6 @@ Estado 2 conflictos: 1 desplazamiento/reducción
 Estado 5 conflictos: 1 desplazamiento/reducción, 1 reducción/reducción
 Estado 6 conflictos: 6 desplazamiento/reducción
 Estado 9 conflictos: 6 desplazamiento/reducción
-Estado 58 conflictos: 1 desplazamiento/reducción
-Estado 103 conflictos: 1 desplazamiento/reducción
-Estado 104 conflictos: 1 desplazamiento/reducción
-Estado 105 conflictos: 1 desplazamiento/reducción
-Estado 106 conflictos: 1 desplazamiento/reducción
 
 
 Gramática
@@ -99,19 +93,18 @@ Gramática
 
    52 operacioncad: ristra CONCATENACION ristra
 
-   53 declarecad: DECLAR CAD IDENTIFICADOR ASIGNACION ristra
+   53 declarecad: DECLAR CAD IDENTIFICADOR ASIGNACION RISTRA
    54           | DECLAR CAD IDENTIFICADOR ASIGNACION identi CONCATENACION identi
    55           | DECLAR CAD IDENTIFICADOR ASIGNACION operacioncad
 
-   56 inicializar: inicializar inicializarent
-   57            | IDENTIFICADOR ASIGNACION escaneo
-   58            | inicializarent
+   56 inicializar: IDENTIFICADOR ASIGNACION escaneo
+   57            | inicializarent
 
-   59 inicializarent: IDENTIFICADOR ASIGNACION identi
-   60               | IDENTIFICADOR ASIGNACION NUMERO
-   61               | IDENTIFICADOR ASIGNACION operacionent
+   58 inicializarent: IDENTIFICADOR ASIGNACION identi
+   59               | IDENTIFICADOR ASIGNACION NUMERO
+   60               | IDENTIFICADOR ASIGNACION operacionent
 
-   62 ristra: COMILLAS IDENTIFICADOR COMILLAS
+   61 ristra: COMILLAS IDENTIFICADOR COMILLAS
 
 
 Terminales con las reglas donde aparecen
@@ -127,14 +120,14 @@ DIFERENTE (263) 24
 ESCANEAR (264) 25
 IMPRIMIR (265) 26
 DECLAR (266) 51 53 54 55
-ASIGNACION (267) 53 54 55 57 59 60 61
+ASIGNACION (267) 53 54 55 56 58 59 60
 PYCOMA (268) 7 8 9 10 11
 FUNCION (269) 50
 ABREPAR (270) 17 20 25 26 27 28 37 38 50
 CIERRAPAR (271) 17 20 25 26 27 28 37 38 50
 ABRECOR (272) 17 20 50
 CIERRACOR (273) 17 20 50
-COMILLAS (274) 62
+COMILLAS (274) 61
 SUMA (275) 33 34
 RESTA (276) 39 40
 MULTIPLICACION (277) 41 42
@@ -143,12 +136,12 @@ CONCATENACION (279) 52 54
 ESPACIO (280)
 PUNTO (281)
 COMA (282)
-IDENTIFICADOR (283) 26 27 35 36 50 51 53 54 55 57 59 60 61 62
-RISTRA (284)
+IDENTIFICADOR (283) 26 27 35 36 50 51 53 54 55 56 58 59 60 61
+RISTRA (284) 53
 EXTRA (285)
 CAD (286) 53 54 55
 ENT (287) 51
-NUMERO (288) 34 40 42 44 60
+NUMERO (288) 34 40 42 44 59
 
 
 No terminales con las reglas donde aparecen
@@ -179,18 +172,18 @@ $@5 (44)
 cond (45)
     en la izquierda: 21 22 23 24, en la derecha: 17 20
 escaneo (46)
-    en la izquierda: 25, en la derecha: 10 57
+    en la izquierda: 25, en la derecha: 10 56
 imprime (47)
     en la izquierda: 26, en la derecha: 11
 callfunc (48)
     en la izquierda: 27, en la derecha: 9
 operacionent (49)
-    en la izquierda: 28 29 30 31 32, en la derecha: 28 61
+    en la izquierda: 28 29 30 31 32, en la derecha: 28 60
 suma (50)
     en la izquierda: 33 34, en la derecha: 29
 identi (51)
     en la izquierda: 35 36 37 38, en la derecha: 21 22 23 24 33 35
-    37 38 39 41 43 54 59
+    37 38 39 41 43 54 58
 resta (52)
     en la izquierda: 39 40, en la derecha: 30
 multiplicacion (53)
@@ -210,11 +203,11 @@ operacioncad (59)
 declarecad (60)
     en la izquierda: 53 54 55, en la derecha: 46 47
 inicializar (61)
-    en la izquierda: 56 57 58, en la derecha: 8 56
+    en la izquierda: 56 57, en la derecha: 8
 inicializarent (62)
-    en la izquierda: 59 60 61, en la derecha: 56 58
+    en la izquierda: 58 59 60, en la derecha: 57
 ristra (63)
-    en la izquierda: 62, en la derecha: 52 53
+    en la izquierda: 61, en la derecha: 52
 
 
 Estado 0
@@ -411,7 +404,7 @@ Estado 14
 Estado 15
 
    51 declareent: DECLAR . ENT IDENTIFICADOR
-   53 declarecad: DECLAR . CAD IDENTIFICADOR ASIGNACION ristra
+   53 declarecad: DECLAR . CAD IDENTIFICADOR ASIGNACION RISTRA
    54           | DECLAR . CAD IDENTIFICADOR ASIGNACION identi CONCATENACION identi
    55           | DECLAR . CAD IDENTIFICADOR ASIGNACION operacioncad
 
@@ -422,10 +415,10 @@ Estado 15
 Estado 16
 
    27 callfunc: IDENTIFICADOR . ABREPAR CIERRAPAR
-   57 inicializar: IDENTIFICADOR . ASIGNACION escaneo
-   59 inicializarent: IDENTIFICADOR . ASIGNACION identi
-   60               | IDENTIFICADOR . ASIGNACION NUMERO
-   61               | IDENTIFICADOR . ASIGNACION operacionent
+   56 inicializar: IDENTIFICADOR . ASIGNACION escaneo
+   58 inicializarent: IDENTIFICADOR . ASIGNACION identi
+   59               | IDENTIFICADOR . ASIGNACION NUMERO
+   60               | IDENTIFICADOR . ASIGNACION operacionent
 
     ASIGNACION  desplazar e ir al estado 34
     ABREPAR     desplazar e ir al estado 35
@@ -496,98 +489,94 @@ Estado 24
 Estado 25
 
     8 sentencias: sentencias inicializar . PYCOMA
-   56 inicializar: inicializar . inicializarent
 
-    PYCOMA         desplazar e ir al estado 42
-    IDENTIFICADOR  desplazar e ir al estado 43
-
-    inicializarent  ir al estado 44
+    PYCOMA  desplazar e ir al estado 42
 
 
 Estado 26
 
-   58 inicializar: inicializarent .
+   57 inicializar: inicializarent .
 
-    $default  reduce usando la regla 58 (inicializar)
+    $default  reduce usando la regla 57 (inicializar)
 
 
 Estado 27
 
    50 declarefunc: FUNCION IDENTIFICADOR ABREPAR . CIERRAPAR $@6 ABRECOR sentencias CIERRACOR
 
-    CIERRAPAR  desplazar e ir al estado 45
+    CIERRAPAR  desplazar e ir al estado 43
 
 
 Estado 28
 
    20 mientras: MIENTRAS $@4 . ABREPAR cond CIERRAPAR $@5 ABRECOR sentencias CIERRACOR
 
-    ABREPAR  desplazar e ir al estado 46
+    ABREPAR  desplazar e ir al estado 44
 
 
 Estado 29
 
    17 si: SI $@2 . ABREPAR cond CIERRAPAR $@3 ABRECOR sentencias CIERRACOR
 
-    ABREPAR  desplazar e ir al estado 47
+    ABREPAR  desplazar e ir al estado 45
 
 
 Estado 30
 
    25 escaneo: ESCANEAR ABREPAR . CIERRAPAR
 
-    CIERRAPAR  desplazar e ir al estado 48
+    CIERRAPAR  desplazar e ir al estado 46
 
 
 Estado 31
 
    26 imprime: IMPRIMIR ABREPAR . IDENTIFICADOR CIERRAPAR
 
-    IDENTIFICADOR  desplazar e ir al estado 49
+    IDENTIFICADOR  desplazar e ir al estado 47
 
 
 Estado 32
 
-   53 declarecad: DECLAR CAD . IDENTIFICADOR ASIGNACION ristra
+   53 declarecad: DECLAR CAD . IDENTIFICADOR ASIGNACION RISTRA
    54           | DECLAR CAD . IDENTIFICADOR ASIGNACION identi CONCATENACION identi
    55           | DECLAR CAD . IDENTIFICADOR ASIGNACION operacioncad
 
-    IDENTIFICADOR  desplazar e ir al estado 50
+    IDENTIFICADOR  desplazar e ir al estado 48
 
 
 Estado 33
 
    51 declareent: DECLAR ENT . IDENTIFICADOR
 
-    IDENTIFICADOR  desplazar e ir al estado 51
+    IDENTIFICADOR  desplazar e ir al estado 49
 
 
 Estado 34
 
-   57 inicializar: IDENTIFICADOR ASIGNACION . escaneo
-   59 inicializarent: IDENTIFICADOR ASIGNACION . identi
-   60               | IDENTIFICADOR ASIGNACION . NUMERO
-   61               | IDENTIFICADOR ASIGNACION . operacionent
+   56 inicializar: IDENTIFICADOR ASIGNACION . escaneo
+   58 inicializarent: IDENTIFICADOR ASIGNACION . identi
+   59               | IDENTIFICADOR ASIGNACION . NUMERO
+   60               | IDENTIFICADOR ASIGNACION . operacionent
 
     ESCANEAR       desplazar e ir al estado 13
-    ABREPAR        desplazar e ir al estado 52
-    IDENTIFICADOR  desplazar e ir al estado 53
-    NUMERO         desplazar e ir al estado 54
+    ABREPAR        desplazar e ir al estado 50
+    IDENTIFICADOR  desplazar e ir al estado 51
+    NUMERO         desplazar e ir al estado 52
 
-    escaneo         ir al estado 55
-    operacionent    ir al estado 56
-    suma            ir al estado 57
-    identi          ir al estado 58
-    resta           ir al estado 59
-    multiplicacion  ir al estado 60
-    division        ir al estado 61
+    escaneo         ir al estado 53
+    operacionent    ir al estado 54
+    suma            ir al estado 55
+    identi          ir al estado 56
+    resta           ir al estado 57
+    multiplicacion  ir al estado 58
+    division        ir al estado 59
 
 
 Estado 35
 
    27 callfunc: IDENTIFICADOR ABREPAR . CIERRAPAR
 
-    CIERRAPAR  desplazar e ir al estado 62
+    CIERRAPAR  desplazar e ir al estado 60
 
 
 Estado 36
@@ -641,143 +630,127 @@ Estado 42
 
 Estado 43
 
-   59 inicializarent: IDENTIFICADOR . ASIGNACION identi
-   60               | IDENTIFICADOR . ASIGNACION NUMERO
-   61               | IDENTIFICADOR . ASIGNACION operacionent
-
-    ASIGNACION  desplazar e ir al estado 63
-
-
-Estado 44
-
-   56 inicializar: inicializar inicializarent .
-
-    $default  reduce usando la regla 56 (inicializar)
-
-
-Estado 45
-
    50 declarefunc: FUNCION IDENTIFICADOR ABREPAR CIERRAPAR . $@6 ABRECOR sentencias CIERRACOR
 
     $default  reduce usando la regla 49 ($@6)
 
-    $@6  ir al estado 64
+    $@6  ir al estado 61
 
 
-Estado 46
+Estado 44
 
    20 mientras: MIENTRAS $@4 ABREPAR . cond CIERRAPAR $@5 ABRECOR sentencias CIERRACOR
 
-    ABREPAR        desplazar e ir al estado 65
-    IDENTIFICADOR  desplazar e ir al estado 53
+    ABREPAR        desplazar e ir al estado 62
+    IDENTIFICADOR  desplazar e ir al estado 51
 
-    cond    ir al estado 66
-    identi  ir al estado 67
+    cond    ir al estado 63
+    identi  ir al estado 64
 
 
-Estado 47
+Estado 45
 
    17 si: SI $@2 ABREPAR . cond CIERRAPAR $@3 ABRECOR sentencias CIERRACOR
 
-    ABREPAR        desplazar e ir al estado 65
-    IDENTIFICADOR  desplazar e ir al estado 53
+    ABREPAR        desplazar e ir al estado 62
+    IDENTIFICADOR  desplazar e ir al estado 51
 
-    cond    ir al estado 68
-    identi  ir al estado 67
+    cond    ir al estado 65
+    identi  ir al estado 64
 
 
-Estado 48
+Estado 46
 
    25 escaneo: ESCANEAR ABREPAR CIERRAPAR .
 
     $default  reduce usando la regla 25 (escaneo)
 
 
-Estado 49
+Estado 47
 
    26 imprime: IMPRIMIR ABREPAR IDENTIFICADOR . CIERRAPAR
 
-    CIERRAPAR  desplazar e ir al estado 69
+    CIERRAPAR  desplazar e ir al estado 66
 
 
-Estado 50
+Estado 48
 
-   53 declarecad: DECLAR CAD IDENTIFICADOR . ASIGNACION ristra
+   53 declarecad: DECLAR CAD IDENTIFICADOR . ASIGNACION RISTRA
    54           | DECLAR CAD IDENTIFICADOR . ASIGNACION identi CONCATENACION identi
    55           | DECLAR CAD IDENTIFICADOR . ASIGNACION operacioncad
 
-    ASIGNACION  desplazar e ir al estado 70
+    ASIGNACION  desplazar e ir al estado 67
 
 
-Estado 51
+Estado 49
 
    51 declareent: DECLAR ENT IDENTIFICADOR .
 
     $default  reduce usando la regla 51 (declareent)
 
 
-Estado 52
+Estado 50
 
    28 operacionent: ABREPAR . operacionent CIERRAPAR
    38 identi: ABREPAR . identi CIERRAPAR
 
-    ABREPAR        desplazar e ir al estado 52
-    IDENTIFICADOR  desplazar e ir al estado 53
-    NUMERO         desplazar e ir al estado 71
+    ABREPAR        desplazar e ir al estado 50
+    IDENTIFICADOR  desplazar e ir al estado 51
+    NUMERO         desplazar e ir al estado 68
 
-    operacionent    ir al estado 72
-    suma            ir al estado 57
-    identi          ir al estado 73
-    resta           ir al estado 59
-    multiplicacion  ir al estado 60
-    division        ir al estado 61
+    operacionent    ir al estado 69
+    suma            ir al estado 55
+    identi          ir al estado 70
+    resta           ir al estado 57
+    multiplicacion  ir al estado 58
+    division        ir al estado 59
 
 
-Estado 53
+Estado 51
 
    36 identi: IDENTIFICADOR .
 
     $default  reduce usando la regla 36 (identi)
 
 
-Estado 54
+Estado 52
 
    34 suma: NUMERO . SUMA NUMERO
    40 resta: NUMERO . RESTA NUMERO
    42 multiplicacion: NUMERO . MULTIPLICACION NUMERO
    44 division: NUMERO . DIVISION NUMERO
-   60 inicializarent: IDENTIFICADOR ASIGNACION NUMERO .
+   59 inicializarent: IDENTIFICADOR ASIGNACION NUMERO .
 
-    SUMA            desplazar e ir al estado 74
-    RESTA           desplazar e ir al estado 75
-    MULTIPLICACION  desplazar e ir al estado 76
-    DIVISION        desplazar e ir al estado 77
+    SUMA            desplazar e ir al estado 71
+    RESTA           desplazar e ir al estado 72
+    MULTIPLICACION  desplazar e ir al estado 73
+    DIVISION        desplazar e ir al estado 74
+
+    $default  reduce usando la regla 59 (inicializarent)
+
+
+Estado 53
+
+   56 inicializar: IDENTIFICADOR ASIGNACION escaneo .
+
+    $default  reduce usando la regla 56 (inicializar)
+
+
+Estado 54
+
+   60 inicializarent: IDENTIFICADOR ASIGNACION operacionent .
 
     $default  reduce usando la regla 60 (inicializarent)
 
 
 Estado 55
 
-   57 inicializar: IDENTIFICADOR ASIGNACION escaneo .
-
-    $default  reduce usando la regla 57 (inicializar)
-
-
-Estado 56
-
-   61 inicializarent: IDENTIFICADOR ASIGNACION operacionent .
-
-    $default  reduce usando la regla 61 (inicializarent)
-
-
-Estado 57
-
    29 operacionent: suma .
 
     $default  reduce usando la regla 29 (operacionent)
 
 
-Estado 58
+Estado 56
 
    33 suma: identi . SUMA identi
    35 identi: identi . IDENTIFICADOR
@@ -785,90 +758,71 @@ Estado 58
    39 resta: identi . RESTA identi
    41 multiplicacion: identi . MULTIPLICACION identi
    43 division: identi . DIVISION identi
-   59 inicializarent: IDENTIFICADOR ASIGNACION identi .
+   58 inicializarent: IDENTIFICADOR ASIGNACION identi .
 
-    ABREPAR         desplazar e ir al estado 78
-    SUMA            desplazar e ir al estado 79
-    RESTA           desplazar e ir al estado 80
-    MULTIPLICACION  desplazar e ir al estado 81
-    DIVISION        desplazar e ir al estado 82
-    IDENTIFICADOR   desplazar e ir al estado 83
+    ABREPAR         desplazar e ir al estado 75
+    SUMA            desplazar e ir al estado 76
+    RESTA           desplazar e ir al estado 77
+    MULTIPLICACION  desplazar e ir al estado 78
+    DIVISION        desplazar e ir al estado 79
+    IDENTIFICADOR   desplazar e ir al estado 80
 
-    IDENTIFICADOR  [reduce usando la regla 59 (inicializarent)]
-    $default       reduce usando la regla 59 (inicializarent)
+    $default  reduce usando la regla 58 (inicializarent)
 
 
-Estado 59
+Estado 57
 
    30 operacionent: resta .
 
     $default  reduce usando la regla 30 (operacionent)
 
 
-Estado 60
+Estado 58
 
    31 operacionent: multiplicacion .
 
     $default  reduce usando la regla 31 (operacionent)
 
 
-Estado 61
+Estado 59
 
    32 operacionent: division .
 
     $default  reduce usando la regla 32 (operacionent)
 
 
-Estado 62
+Estado 60
 
    27 callfunc: IDENTIFICADOR ABREPAR CIERRAPAR .
 
     $default  reduce usando la regla 27 (callfunc)
 
 
-Estado 63
-
-   59 inicializarent: IDENTIFICADOR ASIGNACION . identi
-   60               | IDENTIFICADOR ASIGNACION . NUMERO
-   61               | IDENTIFICADOR ASIGNACION . operacionent
-
-    ABREPAR        desplazar e ir al estado 52
-    IDENTIFICADOR  desplazar e ir al estado 53
-    NUMERO         desplazar e ir al estado 54
-
-    operacionent    ir al estado 56
-    suma            ir al estado 57
-    identi          ir al estado 58
-    resta           ir al estado 59
-    multiplicacion  ir al estado 60
-    division        ir al estado 61
-
-
-Estado 64
+Estado 61
 
    50 declarefunc: FUNCION IDENTIFICADOR ABREPAR CIERRAPAR $@6 . ABRECOR sentencias CIERRACOR
 
-    ABRECOR  desplazar e ir al estado 84
+    ABRECOR  desplazar e ir al estado 81
 
 
-Estado 65
+Estado 62
 
    38 identi: ABREPAR . identi CIERRAPAR
 
-    ABREPAR        desplazar e ir al estado 65
-    IDENTIFICADOR  desplazar e ir al estado 53
+    ABREPAR        desplazar e ir al estado 62
+    IDENTIFICADOR  desplazar e ir al estado 51
 
-    identi  ir al estado 85
+    identi  ir al estado 82
 
 
-Estado 66
+Estado 63
 
    20 mientras: MIENTRAS $@4 ABREPAR cond . CIERRAPAR $@5 ABRECOR sentencias CIERRACOR
 
-    CIERRAPAR  desplazar e ir al estado 86
+    CIERRAPAR  desplazar e ir al estado 83
 
 
-Estado 67
+Estado 64
 
    21 cond: identi . MAYORQUE identi
    22     | identi . MENORQUE identi
@@ -877,64 +831,65 @@ Estado 67
    35 identi: identi . IDENTIFICADOR
    37       | identi . ABREPAR identi CIERRAPAR
 
-    MAYORQUE       desplazar e ir al estado 87
-    MENORQUE       desplazar e ir al estado 88
-    IGUAL          desplazar e ir al estado 89
-    DIFERENTE      desplazar e ir al estado 90
-    ABREPAR        desplazar e ir al estado 78
-    IDENTIFICADOR  desplazar e ir al estado 83
+    MAYORQUE       desplazar e ir al estado 84
+    MENORQUE       desplazar e ir al estado 85
+    IGUAL          desplazar e ir al estado 86
+    DIFERENTE      desplazar e ir al estado 87
+    ABREPAR        desplazar e ir al estado 75
+    IDENTIFICADOR  desplazar e ir al estado 80
 
 
-Estado 68
+Estado 65
 
    17 si: SI $@2 ABREPAR cond . CIERRAPAR $@3 ABRECOR sentencias CIERRACOR
 
-    CIERRAPAR  desplazar e ir al estado 91
+    CIERRAPAR  desplazar e ir al estado 88
 
 
-Estado 69
+Estado 66
 
    26 imprime: IMPRIMIR ABREPAR IDENTIFICADOR CIERRAPAR .
 
     $default  reduce usando la regla 26 (imprime)
 
 
-Estado 70
+Estado 67
 
-   53 declarecad: DECLAR CAD IDENTIFICADOR ASIGNACION . ristra
+   53 declarecad: DECLAR CAD IDENTIFICADOR ASIGNACION . RISTRA
    54           | DECLAR CAD IDENTIFICADOR ASIGNACION . identi CONCATENACION identi
    55           | DECLAR CAD IDENTIFICADOR ASIGNACION . operacioncad
 
-    ABREPAR        desplazar e ir al estado 65
-    COMILLAS       desplazar e ir al estado 92
-    IDENTIFICADOR  desplazar e ir al estado 53
+    ABREPAR        desplazar e ir al estado 62
+    COMILLAS       desplazar e ir al estado 89
+    IDENTIFICADOR  desplazar e ir al estado 51
+    RISTRA         desplazar e ir al estado 90
 
-    identi        ir al estado 93
-    operacioncad  ir al estado 94
-    ristra        ir al estado 95
+    identi        ir al estado 91
+    operacioncad  ir al estado 92
+    ristra        ir al estado 93
 
 
-Estado 71
+Estado 68
 
    34 suma: NUMERO . SUMA NUMERO
    40 resta: NUMERO . RESTA NUMERO
    42 multiplicacion: NUMERO . MULTIPLICACION NUMERO
    44 division: NUMERO . DIVISION NUMERO
 
-    SUMA            desplazar e ir al estado 74
-    RESTA           desplazar e ir al estado 75
-    MULTIPLICACION  desplazar e ir al estado 76
-    DIVISION        desplazar e ir al estado 77
+    SUMA            desplazar e ir al estado 71
+    RESTA           desplazar e ir al estado 72
+    MULTIPLICACION  desplazar e ir al estado 73
+    DIVISION        desplazar e ir al estado 74
 
 
-Estado 72
+Estado 69
 
    28 operacionent: ABREPAR operacionent . CIERRAPAR
 
-    CIERRAPAR  desplazar e ir al estado 96
+    CIERRAPAR  desplazar e ir al estado 94
 
 
-Estado 73
+Estado 70
 
    33 suma: identi . SUMA identi
    35 identi: identi . IDENTIFICADOR
@@ -944,319 +899,319 @@ Estado 73
    41 multiplicacion: identi . MULTIPLICACION identi
    43 division: identi . DIVISION identi
 
-    ABREPAR         desplazar e ir al estado 78
-    CIERRAPAR       desplazar e ir al estado 97
-    SUMA            desplazar e ir al estado 79
-    RESTA           desplazar e ir al estado 80
-    MULTIPLICACION  desplazar e ir al estado 81
-    DIVISION        desplazar e ir al estado 82
-    IDENTIFICADOR   desplazar e ir al estado 83
+    ABREPAR         desplazar e ir al estado 75
+    CIERRAPAR       desplazar e ir al estado 95
+    SUMA            desplazar e ir al estado 76
+    RESTA           desplazar e ir al estado 77
+    MULTIPLICACION  desplazar e ir al estado 78
+    DIVISION        desplazar e ir al estado 79
+    IDENTIFICADOR   desplazar e ir al estado 80
 
 
-Estado 74
+Estado 71
 
    34 suma: NUMERO SUMA . NUMERO
+
+    NUMERO  desplazar e ir al estado 96
+
+
+Estado 72
+
+   40 resta: NUMERO RESTA . NUMERO
+
+    NUMERO  desplazar e ir al estado 97
+
+
+Estado 73
+
+   42 multiplicacion: NUMERO MULTIPLICACION . NUMERO
 
     NUMERO  desplazar e ir al estado 98
 
 
-Estado 75
+Estado 74
 
-   40 resta: NUMERO RESTA . NUMERO
+   44 division: NUMERO DIVISION . NUMERO
 
     NUMERO  desplazar e ir al estado 99
 
 
+Estado 75
+
+   37 identi: identi ABREPAR . identi CIERRAPAR
+
+    ABREPAR        desplazar e ir al estado 62
+    IDENTIFICADOR  desplazar e ir al estado 51
+
+    identi  ir al estado 100
+
+
 Estado 76
 
-   42 multiplicacion: NUMERO MULTIPLICACION . NUMERO
+   33 suma: identi SUMA . identi
 
-    NUMERO  desplazar e ir al estado 100
+    ABREPAR        desplazar e ir al estado 62
+    IDENTIFICADOR  desplazar e ir al estado 51
+
+    identi  ir al estado 101
 
 
 Estado 77
 
-   44 division: NUMERO DIVISION . NUMERO
+   39 resta: identi RESTA . identi
 
-    NUMERO  desplazar e ir al estado 101
-
-
-Estado 78
-
-   37 identi: identi ABREPAR . identi CIERRAPAR
-
-    ABREPAR        desplazar e ir al estado 65
-    IDENTIFICADOR  desplazar e ir al estado 53
+    ABREPAR        desplazar e ir al estado 62
+    IDENTIFICADOR  desplazar e ir al estado 51
 
     identi  ir al estado 102
 
 
-Estado 79
+Estado 78
 
-   33 suma: identi SUMA . identi
+   41 multiplicacion: identi MULTIPLICACION . identi
 
-    ABREPAR        desplazar e ir al estado 65
-    IDENTIFICADOR  desplazar e ir al estado 53
+    ABREPAR        desplazar e ir al estado 62
+    IDENTIFICADOR  desplazar e ir al estado 51
 
     identi  ir al estado 103
 
 
-Estado 80
+Estado 79
 
-   39 resta: identi RESTA . identi
+   43 division: identi DIVISION . identi
 
-    ABREPAR        desplazar e ir al estado 65
-    IDENTIFICADOR  desplazar e ir al estado 53
+    ABREPAR        desplazar e ir al estado 62
+    IDENTIFICADOR  desplazar e ir al estado 51
 
     identi  ir al estado 104
 
 
-Estado 81
-
-   41 multiplicacion: identi MULTIPLICACION . identi
-
-    ABREPAR        desplazar e ir al estado 65
-    IDENTIFICADOR  desplazar e ir al estado 53
-
-    identi  ir al estado 105
-
-
-Estado 82
-
-   43 division: identi DIVISION . identi
-
-    ABREPAR        desplazar e ir al estado 65
-    IDENTIFICADOR  desplazar e ir al estado 53
-
-    identi  ir al estado 106
-
-
-Estado 83
+Estado 80
 
    35 identi: identi IDENTIFICADOR .
 
     $default  reduce usando la regla 35 (identi)
 
 
-Estado 84
+Estado 81
 
    50 declarefunc: FUNCION IDENTIFICADOR ABREPAR CIERRAPAR $@6 ABRECOR . sentencias CIERRACOR
 
     $default  reduce usando la regla 14 (sentencias)
 
-    sentencias  ir al estado 107
+    sentencias  ir al estado 105
 
 
-Estado 85
+Estado 82
 
    35 identi: identi . IDENTIFICADOR
    37       | identi . ABREPAR identi CIERRAPAR
    38       | ABREPAR identi . CIERRAPAR
 
-    ABREPAR        desplazar e ir al estado 78
-    CIERRAPAR      desplazar e ir al estado 97
-    IDENTIFICADOR  desplazar e ir al estado 83
+    ABREPAR        desplazar e ir al estado 75
+    CIERRAPAR      desplazar e ir al estado 95
+    IDENTIFICADOR  desplazar e ir al estado 80
 
 
-Estado 86
+Estado 83
 
    20 mientras: MIENTRAS $@4 ABREPAR cond CIERRAPAR . $@5 ABRECOR sentencias CIERRACOR
 
     $default  reduce usando la regla 19 ($@5)
 
-    $@5  ir al estado 108
+    $@5  ir al estado 106
 
 
-Estado 87
+Estado 84
 
    21 cond: identi MAYORQUE . identi
 
-    ABREPAR        desplazar e ir al estado 65
-    IDENTIFICADOR  desplazar e ir al estado 53
+    ABREPAR        desplazar e ir al estado 62
+    IDENTIFICADOR  desplazar e ir al estado 51
+
+    identi  ir al estado 107
+
+
+Estado 85
+
+   22 cond: identi MENORQUE . identi
+
+    ABREPAR        desplazar e ir al estado 62
+    IDENTIFICADOR  desplazar e ir al estado 51
+
+    identi  ir al estado 108
+
+
+Estado 86
+
+   23 cond: identi IGUAL . identi
+
+    ABREPAR        desplazar e ir al estado 62
+    IDENTIFICADOR  desplazar e ir al estado 51
 
     identi  ir al estado 109
 
 
-Estado 88
+Estado 87
 
-   22 cond: identi MENORQUE . identi
+   24 cond: identi DIFERENTE . identi
 
-    ABREPAR        desplazar e ir al estado 65
-    IDENTIFICADOR  desplazar e ir al estado 53
+    ABREPAR        desplazar e ir al estado 62
+    IDENTIFICADOR  desplazar e ir al estado 51
 
     identi  ir al estado 110
 
 
-Estado 89
-
-   23 cond: identi IGUAL . identi
-
-    ABREPAR        desplazar e ir al estado 65
-    IDENTIFICADOR  desplazar e ir al estado 53
-
-    identi  ir al estado 111
-
-
-Estado 90
-
-   24 cond: identi DIFERENTE . identi
-
-    ABREPAR        desplazar e ir al estado 65
-    IDENTIFICADOR  desplazar e ir al estado 53
-
-    identi  ir al estado 112
-
-
-Estado 91
+Estado 88
 
    17 si: SI $@2 ABREPAR cond CIERRAPAR . $@3 ABRECOR sentencias CIERRACOR
 
     $default  reduce usando la regla 16 ($@3)
 
-    $@3  ir al estado 113
+    $@3  ir al estado 111
 
 
-Estado 92
+Estado 89
 
-   62 ristra: COMILLAS . IDENTIFICADOR COMILLAS
+   61 ristra: COMILLAS . IDENTIFICADOR COMILLAS
 
-    IDENTIFICADOR  desplazar e ir al estado 114
+    IDENTIFICADOR  desplazar e ir al estado 112
 
 
-Estado 93
+Estado 90
+
+   53 declarecad: DECLAR CAD IDENTIFICADOR ASIGNACION RISTRA .
+
+    $default  reduce usando la regla 53 (declarecad)
+
+
+Estado 91
 
    35 identi: identi . IDENTIFICADOR
    37       | identi . ABREPAR identi CIERRAPAR
    54 declarecad: DECLAR CAD IDENTIFICADOR ASIGNACION identi . CONCATENACION identi
 
-    ABREPAR        desplazar e ir al estado 78
-    CONCATENACION  desplazar e ir al estado 115
-    IDENTIFICADOR  desplazar e ir al estado 83
+    ABREPAR        desplazar e ir al estado 75
+    CONCATENACION  desplazar e ir al estado 113
+    IDENTIFICADOR  desplazar e ir al estado 80
 
 
-Estado 94
+Estado 92
 
    55 declarecad: DECLAR CAD IDENTIFICADOR ASIGNACION operacioncad .
 
     $default  reduce usando la regla 55 (declarecad)
 
 
-Estado 95
+Estado 93
 
    52 operacioncad: ristra . CONCATENACION ristra
-   53 declarecad: DECLAR CAD IDENTIFICADOR ASIGNACION ristra .
 
-    CONCATENACION  desplazar e ir al estado 116
-
-    $default  reduce usando la regla 53 (declarecad)
+    CONCATENACION  desplazar e ir al estado 114
 
 
-Estado 96
+Estado 94
 
    28 operacionent: ABREPAR operacionent CIERRAPAR .
 
     $default  reduce usando la regla 28 (operacionent)
 
 
-Estado 97
+Estado 95
 
    38 identi: ABREPAR identi CIERRAPAR .
 
     $default  reduce usando la regla 38 (identi)
 
 
-Estado 98
+Estado 96
 
    34 suma: NUMERO SUMA NUMERO .
 
     $default  reduce usando la regla 34 (suma)
 
 
-Estado 99
+Estado 97
 
    40 resta: NUMERO RESTA NUMERO .
 
     $default  reduce usando la regla 40 (resta)
 
 
-Estado 100
+Estado 98
 
    42 multiplicacion: NUMERO MULTIPLICACION NUMERO .
 
     $default  reduce usando la regla 42 (multiplicacion)
 
 
-Estado 101
+Estado 99
 
    44 division: NUMERO DIVISION NUMERO .
 
     $default  reduce usando la regla 44 (division)
 
 
-Estado 102
+Estado 100
 
    35 identi: identi . IDENTIFICADOR
    37       | identi . ABREPAR identi CIERRAPAR
    37       | identi ABREPAR identi . CIERRAPAR
 
-    ABREPAR        desplazar e ir al estado 78
-    CIERRAPAR      desplazar e ir al estado 117
-    IDENTIFICADOR  desplazar e ir al estado 83
+    ABREPAR        desplazar e ir al estado 75
+    CIERRAPAR      desplazar e ir al estado 115
+    IDENTIFICADOR  desplazar e ir al estado 80
 
 
-Estado 103
+Estado 101
 
    33 suma: identi SUMA identi .
    35 identi: identi . IDENTIFICADOR
    37       | identi . ABREPAR identi CIERRAPAR
 
-    ABREPAR        desplazar e ir al estado 78
-    IDENTIFICADOR  desplazar e ir al estado 83
+    ABREPAR        desplazar e ir al estado 75
+    IDENTIFICADOR  desplazar e ir al estado 80
 
-    IDENTIFICADOR  [reduce usando la regla 33 (suma)]
-    $default       reduce usando la regla 33 (suma)
+    $default  reduce usando la regla 33 (suma)
+
+
+Estado 102
+
+   35 identi: identi . IDENTIFICADOR
+   37       | identi . ABREPAR identi CIERRAPAR
+   39 resta: identi RESTA identi .
+
+    ABREPAR        desplazar e ir al estado 75
+    IDENTIFICADOR  desplazar e ir al estado 80
+
+    $default  reduce usando la regla 39 (resta)
+
+
+Estado 103
+
+   35 identi: identi . IDENTIFICADOR
+   37       | identi . ABREPAR identi CIERRAPAR
+   41 multiplicacion: identi MULTIPLICACION identi .
+
+    ABREPAR        desplazar e ir al estado 75
+    IDENTIFICADOR  desplazar e ir al estado 80
+
+    $default  reduce usando la regla 41 (multiplicacion)
 
 
 Estado 104
 
    35 identi: identi . IDENTIFICADOR
    37       | identi . ABREPAR identi CIERRAPAR
-   39 resta: identi RESTA identi .
+   43 division: identi DIVISION identi .
 
-    ABREPAR        desplazar e ir al estado 78
-    IDENTIFICADOR  desplazar e ir al estado 83
+    ABREPAR        desplazar e ir al estado 75
+    IDENTIFICADOR  desplazar e ir al estado 80
 
-    IDENTIFICADOR  [reduce usando la regla 39 (resta)]
-    $default       reduce usando la regla 39 (resta)
+    $default  reduce usando la regla 43 (division)
 
 
 Estado 105
-
-   35 identi: identi . IDENTIFICADOR
-   37       | identi . ABREPAR identi CIERRAPAR
-   41 multiplicacion: identi MULTIPLICACION identi .
-
-    ABREPAR        desplazar e ir al estado 78
-    IDENTIFICADOR  desplazar e ir al estado 83
-
-    IDENTIFICADOR  [reduce usando la regla 41 (multiplicacion)]
-    $default       reduce usando la regla 41 (multiplicacion)
-
-
-Estado 106
-
-   35 identi: identi . IDENTIFICADOR
-   37       | identi . ABREPAR identi CIERRAPAR
-   43 division: identi DIVISION identi .
-
-    ABREPAR        desplazar e ir al estado 78
-    IDENTIFICADOR  desplazar e ir al estado 83
-
-    IDENTIFICADOR  [reduce usando la regla 43 (division)]
-    $default       reduce usando la regla 43 (division)
-
-
-Estado 107
 
     7 sentencias: sentencias . declare PYCOMA
     8           | sentencias . inicializar PYCOMA
@@ -1272,7 +1227,7 @@ Estado 107
     ESCANEAR       desplazar e ir al estado 13
     IMPRIMIR       desplazar e ir al estado 14
     DECLAR         desplazar e ir al estado 15
-    CIERRACOR      desplazar e ir al estado 118
+    CIERRACOR      desplazar e ir al estado 116
     IDENTIFICADOR  desplazar e ir al estado 16
 
     si              ir al estado 17
@@ -1287,153 +1242,153 @@ Estado 107
     inicializarent  ir al estado 26
 
 
-Estado 108
+Estado 106
 
    20 mientras: MIENTRAS $@4 ABREPAR cond CIERRAPAR $@5 . ABRECOR sentencias CIERRACOR
 
-    ABRECOR  desplazar e ir al estado 119
+    ABRECOR  desplazar e ir al estado 117
 
 
-Estado 109
+Estado 107
 
    21 cond: identi MAYORQUE identi .
    35 identi: identi . IDENTIFICADOR
    37       | identi . ABREPAR identi CIERRAPAR
 
-    ABREPAR        desplazar e ir al estado 78
-    IDENTIFICADOR  desplazar e ir al estado 83
+    ABREPAR        desplazar e ir al estado 75
+    IDENTIFICADOR  desplazar e ir al estado 80
 
     $default  reduce usando la regla 21 (cond)
 
 
-Estado 110
+Estado 108
 
    22 cond: identi MENORQUE identi .
    35 identi: identi . IDENTIFICADOR
    37       | identi . ABREPAR identi CIERRAPAR
 
-    ABREPAR        desplazar e ir al estado 78
-    IDENTIFICADOR  desplazar e ir al estado 83
+    ABREPAR        desplazar e ir al estado 75
+    IDENTIFICADOR  desplazar e ir al estado 80
 
     $default  reduce usando la regla 22 (cond)
 
 
-Estado 111
+Estado 109
 
    23 cond: identi IGUAL identi .
    35 identi: identi . IDENTIFICADOR
    37       | identi . ABREPAR identi CIERRAPAR
 
-    ABREPAR        desplazar e ir al estado 78
-    IDENTIFICADOR  desplazar e ir al estado 83
+    ABREPAR        desplazar e ir al estado 75
+    IDENTIFICADOR  desplazar e ir al estado 80
 
     $default  reduce usando la regla 23 (cond)
 
 
-Estado 112
+Estado 110
 
    24 cond: identi DIFERENTE identi .
    35 identi: identi . IDENTIFICADOR
    37       | identi . ABREPAR identi CIERRAPAR
 
-    ABREPAR        desplazar e ir al estado 78
-    IDENTIFICADOR  desplazar e ir al estado 83
+    ABREPAR        desplazar e ir al estado 75
+    IDENTIFICADOR  desplazar e ir al estado 80
 
     $default  reduce usando la regla 24 (cond)
 
 
-Estado 113
+Estado 111
 
    17 si: SI $@2 ABREPAR cond CIERRAPAR $@3 . ABRECOR sentencias CIERRACOR
 
-    ABRECOR  desplazar e ir al estado 120
+    ABRECOR  desplazar e ir al estado 118
+
+
+Estado 112
+
+   61 ristra: COMILLAS IDENTIFICADOR . COMILLAS
+
+    COMILLAS  desplazar e ir al estado 119
+
+
+Estado 113
+
+   54 declarecad: DECLAR CAD IDENTIFICADOR ASIGNACION identi CONCATENACION . identi
+
+    ABREPAR        desplazar e ir al estado 62
+    IDENTIFICADOR  desplazar e ir al estado 51
+
+    identi  ir al estado 120
 
 
 Estado 114
 
-   62 ristra: COMILLAS IDENTIFICADOR . COMILLAS
+   52 operacioncad: ristra CONCATENACION . ristra
 
-    COMILLAS  desplazar e ir al estado 121
+    COMILLAS  desplazar e ir al estado 89
+
+    ristra  ir al estado 121
 
 
 Estado 115
-
-   54 declarecad: DECLAR CAD IDENTIFICADOR ASIGNACION identi CONCATENACION . identi
-
-    ABREPAR        desplazar e ir al estado 65
-    IDENTIFICADOR  desplazar e ir al estado 53
-
-    identi  ir al estado 122
-
-
-Estado 116
-
-   52 operacioncad: ristra CONCATENACION . ristra
-
-    COMILLAS  desplazar e ir al estado 92
-
-    ristra  ir al estado 123
-
-
-Estado 117
 
    37 identi: identi ABREPAR identi CIERRAPAR .
 
     $default  reduce usando la regla 37 (identi)
 
 
-Estado 118
+Estado 116
 
    50 declarefunc: FUNCION IDENTIFICADOR ABREPAR CIERRAPAR $@6 ABRECOR sentencias CIERRACOR .
 
     $default  reduce usando la regla 50 (declarefunc)
 
 
-Estado 119
+Estado 117
 
    20 mientras: MIENTRAS $@4 ABREPAR cond CIERRAPAR $@5 ABRECOR . sentencias CIERRACOR
 
     $default  reduce usando la regla 14 (sentencias)
 
-    sentencias  ir al estado 124
+    sentencias  ir al estado 122
 
 
-Estado 120
+Estado 118
 
    17 si: SI $@2 ABREPAR cond CIERRAPAR $@3 ABRECOR . sentencias CIERRACOR
 
     $default  reduce usando la regla 14 (sentencias)
 
-    sentencias  ir al estado 125
+    sentencias  ir al estado 123
 
 
-Estado 121
+Estado 119
 
-   62 ristra: COMILLAS IDENTIFICADOR COMILLAS .
+   61 ristra: COMILLAS IDENTIFICADOR COMILLAS .
 
-    $default  reduce usando la regla 62 (ristra)
+    $default  reduce usando la regla 61 (ristra)
 
 
-Estado 122
+Estado 120
 
    35 identi: identi . IDENTIFICADOR
    37       | identi . ABREPAR identi CIERRAPAR
    54 declarecad: DECLAR CAD IDENTIFICADOR ASIGNACION identi CONCATENACION identi .
 
-    ABREPAR        desplazar e ir al estado 78
-    IDENTIFICADOR  desplazar e ir al estado 83
+    ABREPAR        desplazar e ir al estado 75
+    IDENTIFICADOR  desplazar e ir al estado 80
 
     $default  reduce usando la regla 54 (declarecad)
 
 
-Estado 123
+Estado 121
 
    52 operacioncad: ristra CONCATENACION ristra .
 
     $default  reduce usando la regla 52 (operacioncad)
 
 
-Estado 124
+Estado 122
 
     7 sentencias: sentencias . declare PYCOMA
     8           | sentencias . inicializar PYCOMA
@@ -1449,7 +1404,7 @@ Estado 124
     ESCANEAR       desplazar e ir al estado 13
     IMPRIMIR       desplazar e ir al estado 14
     DECLAR         desplazar e ir al estado 15
-    CIERRACOR      desplazar e ir al estado 126
+    CIERRACOR      desplazar e ir al estado 124
     IDENTIFICADOR  desplazar e ir al estado 16
 
     si              ir al estado 17
@@ -1464,7 +1419,7 @@ Estado 124
     inicializarent  ir al estado 26
 
 
-Estado 125
+Estado 123
 
     7 sentencias: sentencias . declare PYCOMA
     8           | sentencias . inicializar PYCOMA
@@ -1480,7 +1435,7 @@ Estado 125
     ESCANEAR       desplazar e ir al estado 13
     IMPRIMIR       desplazar e ir al estado 14
     DECLAR         desplazar e ir al estado 15
-    CIERRACOR      desplazar e ir al estado 127
+    CIERRACOR      desplazar e ir al estado 125
     IDENTIFICADOR  desplazar e ir al estado 16
 
     si              ir al estado 17
@@ -1495,14 +1450,14 @@ Estado 125
     inicializarent  ir al estado 26
 
 
-Estado 126
+Estado 124
 
    20 mientras: MIENTRAS $@4 ABREPAR cond CIERRAPAR $@5 ABRECOR sentencias CIERRACOR .
 
     $default  reduce usando la regla 20 (mientras)
 
 
-Estado 127
+Estado 125
 
    17 si: SI $@2 ABREPAR cond CIERRAPAR $@3 ABRECOR sentencias CIERRACOR .
 

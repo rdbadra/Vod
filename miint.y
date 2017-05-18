@@ -499,7 +499,6 @@ declarefunc:
 	stack.cleanDinamicStack($2);
 	mem.setAmbito(global);
 	}	
-
 	;
 
 declareent:
@@ -528,21 +527,26 @@ operacioncad:
 	;
 
 declarecad:
-	DECLAR CAD IDENTIFICADOR ASIGNACION ristra	
+	DECLAR CAD IDENTIFICADOR ASIGNACION RISTRA	
 	{
 	if(stack.existsVariable($3)){
 		printf("ya existe\n");
 	} else {
-		
+		printf("%s\n", $5);
 		int size = strlen($5);
-		$$ = size;
-		int dir = mem.cogerDireccionDeMemoriaCad(size);
+		char h[size-2];
+		for(int i = 0; i < size-2; i++){
+			h[i] = $5[i+1];
+		}
+		//h[size-2] = '\0';
+		$$ = strlen(h);
+		int dir = mem.cogerDireccionDeMemoriaCad(strlen(h));
 		if (mem.getStat()==mem.getCode()){
 			gc("STAT(%d)\n", mem.getStat());
 			mem.incrementStat();
 		}
-		gc("\tMEM(0x%x, %d);\n", dir, size);
-		stack.addVariable($3, "cad", mem.getAmbito(), dir, size);
+		gc("\tMEM(0x%x, %d);\n", dir, strlen(h));
+		stack.addVariable($3, "cad", mem.getAmbito(), dir, strlen(h));
 				if (mem.getStat()==mem.getCode()+1){
 			gc("CODE(%d)\n", mem.getCode());
 			mem.incrementCode();
@@ -552,9 +556,8 @@ declarecad:
 		int id=mem.devuelveRegistroLibre();
 		gc("\tR%d=0x%x;\n", id, stack.getVariable($3).getDireccion());
 		int val = mem.devuelveRegistroLibre();
-		char* palabra = $5;
-		for(int i = 0; i < strlen(palabra); i++){
-			gc("\tR%d=%d;\n", val, palabra[i]);
+		for(int i = 0; i < strlen(h); i++){
+			gc("\tR%d=%d;\n", val, h[i]);
 			gc("\tU(R%d+%d)=R%d;\n", id,i, val);
 		}
 		mem.liberaRegistro(id);
@@ -631,8 +634,7 @@ declarecad:
 	;
 
 inicializar:
-	inicializar inicializarent
-	| IDENTIFICADOR ASIGNACION escaneo {}
+	IDENTIFICADOR ASIGNACION escaneo {}
 	| inicializarent
 	;
 
@@ -645,6 +647,19 @@ inicializarent:
 		if(!stack.existsVariable($3)){
 			printf("la variable no existe\n");
 		} else {
+		printf("si\n");
+		if (mem.getStat()==mem.getCode()+1){
+			gc("CODE(%d)\n", mem.getCode());
+			mem.incrementCode();
+		}
+		int res, add;
+		res = mem.devuelveRegistroLibre();
+		add = mem.devuelveRegistroLibre();
+		gc("\tR%d=0x%x;\n", res, stack.getVariable($1).getDireccion());
+		gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
+		gc("\tI(R%d)=R%d;\n", res, add);
+		mem.liberaRegistro(add);
+		mem.liberaRegistro(res);
 			
 	}
 	}
@@ -658,7 +673,6 @@ inicializarent:
 			gc("CODE(%d)\n", mem.getCode());
 			mem.incrementCode();
 		}
-		int a = 1;
 		int id=mem.devuelveRegistroLibre();
 		gc("\tR%d=0x%x;\n", id, stack.getVariable($1).getDireccion());
 		int val = mem.devuelveRegistroLibre();
@@ -692,7 +706,7 @@ ristra:
 int main(int argc, char** argv) {
 	// open a file handle to a particular file:
 	if(argc>1) yyin=fopen(argv[1], "r");
-		
+	//yydebug = 1;
 	yyparse();
 	stack.printStack();
 	
