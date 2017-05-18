@@ -83,7 +83,7 @@ L putf_: {
 //          R1=valor entero a visualizar
 // No modifica ningún registro ni la ristra de formato
 L putfdos_: {
-	  printf("%d\n",R1);             	// traslada                 
+	  printf("%d",R1);             	// traslada                 
 	  GT(R0);                       // retorna
 	}                                                          
  

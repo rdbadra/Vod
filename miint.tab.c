@@ -489,7 +489,7 @@ static const yytype_uint16 yyrline[] =
      123,   116,   136,   153,   172,   190,   212,   216,   265,   281,
      282,   283,   284,   285,   289,   308,   326,   327,   328,   329,
      333,   351,   369,   387,   406,   424,   444,   449,   454,   459,
-     468,   467,   505,   523,   530,   567,   603,   636,   637,   641,
+     468,   467,   505,   523,   530,   567,   605,   636,   637,   641,
      666,   685
 };
 #endif
@@ -1557,10 +1557,10 @@ yyreduce:
 				gc("\tGT(-12);\nL %d:\n", etiqueta);
 				etiqueta++;	
 			}
-			gc("\tR%d=%d;\n", ret, etiqueta);
-			gc("\tR%d=%d;\n", ristra, 35);
-			gc("\tGT(-12);\n\tL %d:\n", etiqueta);
-			etiqueta++;
+			//gc("\tR%d=%d;\n", ret, etiqueta);
+			//gc("\tR%d=%d;\n", ristra, 35);
+			//gc("\tGT(-12);\n\tL %d:\n", etiqueta);
+			//etiqueta++;
 			mem.liberaRegistro(ret);
 			mem.liberaRegistro(ristra);
 		}
@@ -1883,7 +1883,7 @@ yyreduce:
 			mem.incrementStat();
 		}
 		gc("\tMEM(0x%x, %d);\n", dir, 4);
-		stack.addVariable((yyvsp[0].cad), "ent", mem.getAmbito(), dir, 1);		
+		stack.addVariable((yyvsp[0].cad), "ent", mem.getAmbito(), dir, 4);		
 	}
 	}
 #line 1890 "miint.tab.c" /* yacc.c:1646  */
@@ -1903,12 +1903,12 @@ yyreduce:
 	if(stack.existsVariable((yyvsp[-2].cad))){
 		printf("ya existe\n");
 	} else {
-		printf("%s\n", (yyvsp[0].cad));
 		int size = strlen((yyvsp[0].cad));
 		char h[size-2];
 		for(int i = 0; i < size-2; i++){
 			h[i] = (yyvsp[0].cad)[i+1];
 		}
+		h[size-2] = '\0';
 		(yyval.ent) = strlen(h);
 		int dir = mem.cogerDireccionDeMemoriaCad(strlen(h));
 		if (mem.getStat()==mem.getCode()){
@@ -1940,45 +1940,47 @@ yyreduce:
   case 55:
 #line 568 "miint.y" /* yacc.c:1646  */
     {
+		if(strcmp(stack.getVariable((yyvsp[-2].cad)).getTipo(), "cad")==0 && strcmp(stack.getVariable((yyvsp[0].cad)).getTipo(), "cad")==0){
 		
-		int size = stack.getVariable((yyvsp[-2].cad)).getSize() + stack.getVariable((yyvsp[0].cad)).getSize();
-		(yyval.ent) = size;
-		int dir = mem.cogerDireccionDeMemoriaCad(size);
-		if (mem.getStat()==mem.getCode()){
-			gc("STAT(%d)\n", mem.getStat());
-			mem.incrementStat();
+			int size = stack.getVariable((yyvsp[-2].cad)).getSize() + stack.getVariable((yyvsp[0].cad)).getSize();
+			(yyval.ent) = size;
+			int dir = mem.cogerDireccionDeMemoriaCad(size);
+			if (mem.getStat()==mem.getCode()){
+				gc("STAT(%d)\n", mem.getStat());
+				mem.incrementStat();
+			}
+			gc("\tMEM(0x%x, %d);\n", dir, size);
+			stack.addVariable((yyvsp[-4].cad), "cad", mem.getAmbito(), dir, size);
+					if (mem.getStat()==mem.getCode()+1){
+				gc("CODE(%d)\n", mem.getCode());
+				mem.incrementCode();
+			}
+			int reg0 = mem.devuelveRegistroLibre();
+			int reg1 = mem.devuelveRegistroLibre();
+			int reg2 = mem.devuelveRegistroLibre();
+			gc("\tR%d=0x%x;\n", reg0, stack.getVariable((yyvsp[-4].cad)).getDireccion());
+			gc("\tR%d=0x%x;\n", reg1, stack.getVariable((yyvsp[-2].cad)).getDireccion());
+			int i;
+			for(i = 0; i < stack.getVariable((yyvsp[-2].cad)).getSize(); i++){
+				gc("\tR%d=U(R%d+%d);\n", reg2, reg1, i );
+				gc("\tU(R%d+%d)=R%d;\n", reg0, i, reg2 );
+			}
+			gc("\tR%d=0x%x;\n", reg1, stack.getVariable((yyvsp[0].cad)).getDireccion());
+			for(i = 0; i < stack.getVariable((yyvsp[0].cad)).getSize(); i++){
+				gc("\tR%d=U(R%d+%d);\n", reg2, reg1, i );
+				gc("\tU(R%d+%d)=R%d;\n", reg0, i+stack.getVariable((yyvsp[-2].cad)).getSize(), reg2 );
+			}
+			mem.liberaRegistro(reg0);
+			mem.liberaRegistro(reg1);
+			mem.liberaRegistro(reg2);
 		}
-		gc("\tMEM(0x%x, %d);\n", dir, size);
-		stack.addVariable((yyvsp[-4].cad), "cad", mem.getAmbito(), dir, size);
-				if (mem.getStat()==mem.getCode()+1){
-			gc("CODE(%d)\n", mem.getCode());
-			mem.incrementCode();
-		}
-		int reg0 = mem.devuelveRegistroLibre();
-		int reg1 = mem.devuelveRegistroLibre();
-		int reg2 = mem.devuelveRegistroLibre();
-		gc("\tR%d=0x%x;\n", reg0, stack.getVariable((yyvsp[-4].cad)).getDireccion());
-		gc("\tR%d=0x%x;\n", reg1, stack.getVariable((yyvsp[-2].cad)).getDireccion());
-		int i;
-		for(i = 0; i < stack.getVariable((yyvsp[-2].cad)).getSize(); i++){
-			gc("\tR%d=U(R%d+%d);\n", reg2, reg1, i );
-			gc("\tU(R%d+%d)=R%d;\n", reg0, i, reg2 );
-		}
-		gc("\tR%d=0x%x;\n", reg1, stack.getVariable((yyvsp[0].cad)).getDireccion());
-		for(i = 0; i < stack.getVariable((yyvsp[0].cad)).getSize(); i++){
-			gc("\tR%d=U(R%d+%d);\n", reg2, reg1, i );
-			gc("\tU(R%d+%d)=R%d;\n", reg0, i+stack.getVariable((yyvsp[-2].cad)).getSize(), reg2 );
-		}
-		mem.liberaRegistro(reg0);
-		mem.liberaRegistro(reg1);
-		mem.liberaRegistro(reg2);
 		
 	}
-#line 1978 "miint.tab.c" /* yacc.c:1646  */
+#line 1980 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 56:
-#line 604 "miint.y" /* yacc.c:1646  */
+#line 606 "miint.y" /* yacc.c:1646  */
     {
 		int size = strlen((yyvsp[0].cad));
 		(yyval.ent) = size;
@@ -2006,13 +2008,13 @@ yyreduce:
 		mem.liberaRegistro(id);
 		mem.liberaRegistro(val);
 	}
-#line 2010 "miint.tab.c" /* yacc.c:1646  */
+#line 2012 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 57:
 #line 636 "miint.y" /* yacc.c:1646  */
     {}
-#line 2016 "miint.tab.c" /* yacc.c:1646  */
+#line 2018 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 59:
@@ -2041,7 +2043,7 @@ yyreduce:
 	}
 	}
 	}
-#line 2045 "miint.tab.c" /* yacc.c:1646  */
+#line 2047 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 60:
@@ -2065,7 +2067,7 @@ yyreduce:
 	}	
 	
 	}
-#line 2069 "miint.tab.c" /* yacc.c:1646  */
+#line 2071 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 61:
@@ -2081,11 +2083,11 @@ yyreduce:
 		mem.liberaRegistro((yyvsp[0].ent));
 	}
 	}
-#line 2085 "miint.tab.c" /* yacc.c:1646  */
+#line 2087 "miint.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 2089 "miint.tab.c" /* yacc.c:1646  */
+#line 2091 "miint.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires

@@ -236,10 +236,10 @@ imprime:
 				gc("\tGT(-12);\nL %d:\n", etiqueta);
 				etiqueta++;	
 			}
-			gc("\tR%d=%d;\n", ret, etiqueta);
-			gc("\tR%d=%d;\n", ristra, 35);
-			gc("\tGT(-12);\n\tL %d:\n", etiqueta);
-			etiqueta++;
+			//gc("\tR%d=%d;\n", ret, etiqueta);
+			//gc("\tR%d=%d;\n", ristra, 35);
+			//gc("\tGT(-12);\n\tL %d:\n", etiqueta);
+			//etiqueta++;
 			mem.liberaRegistro(ret);
 			mem.liberaRegistro(ristra);
 		}
@@ -514,7 +514,7 @@ declareent:
 			mem.incrementStat();
 		}
 		gc("\tMEM(0x%x, %d);\n", dir, 4);
-		stack.addVariable($3, "ent", mem.getAmbito(), dir, 1);		
+		stack.addVariable($3, "ent", mem.getAmbito(), dir, 4);		
 	}
 	}
 	;
@@ -532,12 +532,12 @@ declarecad:
 	if(stack.existsVariable($3)){
 		printf("ya existe\n");
 	} else {
-		printf("%s\n", $5);
 		int size = strlen($5);
 		char h[size-2];
 		for(int i = 0; i < size-2; i++){
 			h[i] = $5[i+1];
 		}
+		h[size-2] = '\0';
 		$$ = strlen(h);
 		int dir = mem.cogerDireccionDeMemoriaCad(strlen(h));
 		if (mem.getStat()==mem.getCode()){
@@ -566,38 +566,40 @@ declarecad:
 	|
 	DECLAR CAD IDENTIFICADOR ASIGNACION identi CONCATENACION identi
 	{
+		if(strcmp(stack.getVariable($5).getTipo(), "cad")==0 && strcmp(stack.getVariable($7).getTipo(), "cad")==0){
 		
-		int size = stack.getVariable($5).getSize() + stack.getVariable($7).getSize();
-		$$ = size;
-		int dir = mem.cogerDireccionDeMemoriaCad(size);
-		if (mem.getStat()==mem.getCode()){
-			gc("STAT(%d)\n", mem.getStat());
-			mem.incrementStat();
+			int size = stack.getVariable($5).getSize() + stack.getVariable($7).getSize();
+			$$ = size;
+			int dir = mem.cogerDireccionDeMemoriaCad(size);
+			if (mem.getStat()==mem.getCode()){
+				gc("STAT(%d)\n", mem.getStat());
+				mem.incrementStat();
+			}
+			gc("\tMEM(0x%x, %d);\n", dir, size);
+			stack.addVariable($3, "cad", mem.getAmbito(), dir, size);
+					if (mem.getStat()==mem.getCode()+1){
+				gc("CODE(%d)\n", mem.getCode());
+				mem.incrementCode();
+			}
+			int reg0 = mem.devuelveRegistroLibre();
+			int reg1 = mem.devuelveRegistroLibre();
+			int reg2 = mem.devuelveRegistroLibre();
+			gc("\tR%d=0x%x;\n", reg0, stack.getVariable($3).getDireccion());
+			gc("\tR%d=0x%x;\n", reg1, stack.getVariable($5).getDireccion());
+			int i;
+			for(i = 0; i < stack.getVariable($5).getSize(); i++){
+				gc("\tR%d=U(R%d+%d);\n", reg2, reg1, i );
+				gc("\tU(R%d+%d)=R%d;\n", reg0, i, reg2 );
+			}
+			gc("\tR%d=0x%x;\n", reg1, stack.getVariable($7).getDireccion());
+			for(i = 0; i < stack.getVariable($7).getSize(); i++){
+				gc("\tR%d=U(R%d+%d);\n", reg2, reg1, i );
+				gc("\tU(R%d+%d)=R%d;\n", reg0, i+stack.getVariable($5).getSize(), reg2 );
+			}
+			mem.liberaRegistro(reg0);
+			mem.liberaRegistro(reg1);
+			mem.liberaRegistro(reg2);
 		}
-		gc("\tMEM(0x%x, %d);\n", dir, size);
-		stack.addVariable($3, "cad", mem.getAmbito(), dir, size);
-				if (mem.getStat()==mem.getCode()+1){
-			gc("CODE(%d)\n", mem.getCode());
-			mem.incrementCode();
-		}
-		int reg0 = mem.devuelveRegistroLibre();
-		int reg1 = mem.devuelveRegistroLibre();
-		int reg2 = mem.devuelveRegistroLibre();
-		gc("\tR%d=0x%x;\n", reg0, stack.getVariable($3).getDireccion());
-		gc("\tR%d=0x%x;\n", reg1, stack.getVariable($5).getDireccion());
-		int i;
-		for(i = 0; i < stack.getVariable($5).getSize(); i++){
-			gc("\tR%d=U(R%d+%d);\n", reg2, reg1, i );
-			gc("\tU(R%d+%d)=R%d;\n", reg0, i, reg2 );
-		}
-		gc("\tR%d=0x%x;\n", reg1, stack.getVariable($7).getDireccion());
-		for(i = 0; i < stack.getVariable($7).getSize(); i++){
-			gc("\tR%d=U(R%d+%d);\n", reg2, reg1, i );
-			gc("\tU(R%d+%d)=R%d;\n", reg0, i+stack.getVariable($5).getSize(), reg2 );
-		}
-		mem.liberaRegistro(reg0);
-		mem.liberaRegistro(reg1);
-		mem.liberaRegistro(reg2);
 		
 	}
 	| DECLAR CAD IDENTIFICADOR ASIGNACION operacioncad
@@ -628,8 +630,6 @@ declarecad:
 		mem.liberaRegistro(id);
 		mem.liberaRegistro(val);
 	}
-	
-	
 	;
 
 inicializar:
