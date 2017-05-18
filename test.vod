@@ -1,27 +1,95 @@
-declar ent factorial;
-declar ent numero;
-declar ent k;
-declar ent f;
-declar ent cero;
+declar ent i
+declar ent min;
+declar ent max;
+
 declar ent uno;
-declar cad esp = "#";
-uno = 1;
-cero = 0;
+declar ent dos;
+declar ent tres;
+declar ent cuatro;
+declar ent cinco;
+declar ent seis;
+declar ent siete;
+declar ent ocho;
+declar ent nueve;
+declar ent diez;
 
-numero=5;  
-factorial=1;
-k=0;
-f = numero - k;
+uno=3;
+dos=5;
+tres=229;
+cuatro=9;
+cinco=0;
+seis=-1;
+siete=88;
+ocho=46;
+nueve=90;
+diez=55;
 
-mientras((f)>cero){
-    factorial=factorial*f;
-        k=k+uno;
-    f = (numero) - k;
+min=uno;
+max=uno;
+
+si(dos>max){
+    max=dos;
+}
+si(dos<min){
+    min=dos;
 }
 
-declar cad frase = "El factorial de 5 es ";
-declar cad punto = ". ";
+si(tres>max){
+    max=tres;
+}
+si(tres<min){
+    min=tres;
+}
+
+si(cuatro>max){
+    max=cuatro;
+}
+si(cuatro<min){
+    min=cuatro;
+}
+
+si(cinco>max){
+    max=cinco;
+}
+si(cinco<min){
+    min=cinco;
+}
+
+si(seis>max){
+    max=seis;
+}
+si(seis<min){
+    min=seis;
+}
+
+si(siete>max){
+    max=siete;
+}
+si(siete<min){
+    min=siete;
+}
+
+si(ocho>max){
+    max=ocho;
+}
+si(ocho<min){
+    min=ocho;
+}
+
+si(nueve>max){
+    max=nueve;
+}
+si(nueve<min){
+    min=nueve;
+}
+
+declar cad frase = "Entre 3, 5, 229, 9, 0, -1, 88, 46, 90 y 55 el numero mas grande es ";
+declar cad segundaparte = " y el mas pequeno es ";
+declar cad punto = ".#";
 imprimir(frase);
-imprimir(factorial);
+imprimir(max);
+imprimir(segundaparte);
+imprimir(min);
 imprimir(punto);
-imprimir(esp);
+
+
