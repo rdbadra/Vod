@@ -28,7 +28,6 @@ extern int yylex();
 "!="		{return DIFERENTE;}
 si		{return SI;}
 mientras	{return MIENTRAS;}
-escanear	{return ESCANEAR;}
 imprimir	{return IMPRIMIR;}
 funcion		{return FUNCION;}
 declar		{return DECLAR;}

@@ -51,31 +51,26 @@ extern int yydebug;
     MENORQUE = 261,
     IGUAL = 262,
     DIFERENTE = 263,
-    ESCANEAR = 264,
-    IMPRIMIR = 265,
-    DECLAR = 266,
-    ASIGNACION = 267,
-    PYCOMA = 268,
-    FUNCION = 269,
-    ABREPAR = 270,
-    CIERRAPAR = 271,
-    ABRECOR = 272,
-    CIERRACOR = 273,
-    COMILLAS = 274,
-    SUMA = 275,
-    RESTA = 276,
-    MULTIPLICACION = 277,
-    DIVISION = 278,
-    CONCATENACION = 279,
-    ESPACIO = 280,
-    PUNTO = 281,
-    COMA = 282,
-    IDENTIFICADOR = 283,
-    RISTRA = 284,
-    EXTRA = 285,
-    CAD = 286,
-    ENT = 287,
-    NUMERO = 288
+    IMPRIMIR = 264,
+    DECLAR = 265,
+    ASIGNACION = 266,
+    PYCOMA = 267,
+    FUNCION = 268,
+    ABREPAR = 269,
+    CIERRAPAR = 270,
+    ABRECOR = 271,
+    CIERRACOR = 272,
+    COMILLAS = 273,
+    SUMA = 274,
+    RESTA = 275,
+    MULTIPLICACION = 276,
+    DIVISION = 277,
+    CONCATENACION = 278,
+    IDENTIFICADOR = 279,
+    RISTRA = 280,
+    CAD = 281,
+    ENT = 282,
+    NUMERO = 283
   };
 #endif
 
@@ -89,7 +84,7 @@ union YYSTYPE
 	int ent;
 	char *cad;
 
-#line 93 "miint.tab.h" /* yacc.c:1909  */
+#line 88 "miint.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

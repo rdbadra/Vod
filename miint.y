@@ -38,10 +38,10 @@ void gc(const char* code, ...);
 // by convention), and associate each with a field of the union:
 %token <ent> MIENTRAS SI
 %token MAYORQUE MENORQUE IGUAL DIFERENTE
-%token ESCANEAR IMPRIMIR
+%token IMPRIMIR
 %token <ent> DECLAR ASIGNACION PYCOMA FUNCION ABREPAR CIERRAPAR ABRECOR CIERRACOR COMILLAS
-%token SUMA RESTA MULTIPLICACION DIVISION CONCATENACION ESPACIO PUNTO COMA
-%token <cad> IDENTIFICADOR RISTRA EXTRA
+%token SUMA RESTA MULTIPLICACION DIVISION CONCATENACION
+%token <cad> IDENTIFICADOR RISTRA
 %token CAD ENT
 %token <ent> NUMERO
 %type <cad> identi operacioncad
@@ -74,17 +74,14 @@ body:
 	| body sentencias
 	;
 
-//los conflictos empezaron despues de añadir sentencias
-//la ultima regla genero muchos conflictos
 sentencias:
 	sentencias declare PYCOMA
 	{
+	// Para saber el numero de bytes que hay que reservar en memoria
 	$$ = $$ + $2;
-	printf("%d\n", $$);
 	}
 	| sentencias inicializar PYCOMA
 	| sentencias callfunc PYCOMA
-	| sentencias escaneo PYCOMA
 	| sentencias imprime PYCOMA
 	| sentencias si
 	| sentencias mientras 
@@ -165,9 +162,7 @@ cond:
 		gc("\tR%d=R%d<R%d;\n", res, res, add);
 		$$ = res;
 		mem.liberaRegistro(add);
-
 	}
-	
 	}
 	| identi IGUAL identi 
 	{
@@ -185,7 +180,6 @@ cond:
 		$$ = res;
 		mem.liberaRegistro(add);
 	}
-	
 	}
 	| identi DIFERENTE identi 
 	{
@@ -203,29 +197,20 @@ cond:
 		$$ = res;
 		mem.liberaRegistro(add);
 	}
-	
 	}
 	;
-
-//completar funciones escanear e imprimir
-escaneo:
-	ESCANEAR ABREPAR CIERRAPAR {}
-	;
-
 imprime:
 	IMPRIMIR ABREPAR IDENTIFICADOR CIERRAPAR 
 	{
 	if(!stack.existsVariable($3)){
-		printf("la variable no existe\n");
+		printf("la variable %s no existe\n", $3);
 	} else {
 		if (mem.getStat()==mem.getCode()+1){
 				gc("CODE(%d)\n", mem.getCode());
 				mem.incrementCode();
 		}		
-
 		if(strcmp(stack.getVariable($3).getTipo(), "cad")==0){
 			//imprimir cadena
-			
 			int ret, ristra;
 			ret = mem.devuelveRegistroLibre();
 			ristra = mem.devuelveRegistroLibre();
@@ -236,20 +221,14 @@ imprime:
 				gc("\tGT(-12);\nL %d:\n", etiqueta);
 				etiqueta++;	
 			}
-			//gc("\tR%d=%d;\n", ret, etiqueta);
-			//gc("\tR%d=%d;\n", ristra, 35);
-			//gc("\tGT(-12);\n\tL %d:\n", etiqueta);
-			//etiqueta++;
 			mem.liberaRegistro(ret);
 			mem.liberaRegistro(ristra);
 		}
 		else{
 			//imprimir numero
-
 			int ret, numero;
 			ret = mem.devuelveRegistroLibre();
 			numero = mem.devuelveRegistroLibre();
-			
 			gc("\tR%d=%d;\n", ret, etiqueta);
 			gc("\tR%d=I(0x%x);\n", numero, stack.getVariable($3).getDireccion());
 			gc("\tGT(-13);\nL %d:\n", etiqueta);
@@ -279,6 +258,9 @@ callfunc:
 
 operacionent:
 	ABREPAR operacionent CIERRAPAR
+	{
+	$$ = $2;
+	}
 	| suma
 	| resta
 	| multiplicacion
@@ -301,7 +283,6 @@ suma:
 		gc("\tR%d=R%d+R%d;\n", res, res, add);
 		$$ = res;
 		mem.liberaRegistro(add);
-		
 	}
 	;
 	}
@@ -435,30 +416,24 @@ division:
 		gc("\tR%d=R%d/R%d;\n", res, res, add);
 		$$ = res;
 		mem.liberaRegistro(add);
-
 	}
 	;
-	
 
 declare:
 	declare declareent
 	{
-	printf("declareent: %d\n", $2);
 	$$ += $2;
 	}
 	| declare declarecad
 	{
-	printf("declarecad: %d\n", $2);
 	$$ += $2;
 	}
 	| declarecad
 	{
-	printf("declarecad: %d\n", $1);
 	$$ = $1;
 	}
 	| declareent
 	{
-	printf("declareent: %d\n", $1);
 	$$ = $1;
 	}
 	;
@@ -467,13 +442,12 @@ declarefunc:
 	FUNCION IDENTIFICADOR ABREPAR CIERRAPAR
 	{
 	if(stack.existsFuncion($2)){
-		printf("ya existe\n");
+		printf("ya existe %s\n", $2);
 	} else {
 		if (mem.getStat()==mem.getCode()+1){
 			gc("CODE(%d)\n", mem.getCode());
 			mem.incrementCode();
 		}
-
 		mem.setAmbito($2);
 		int etiq = etiqueta;
 		etiqueta++;
@@ -506,7 +480,7 @@ declareent:
 	{
 	$$ = 4;
 	if(stack.existsVariable($3)){
-		printf("ya existe\n");
+		printf("ya existe %s\n", $3);
 	} else {
 		int dir = mem.cogerDireccionDeMemoriaEnt();
 		if (mem.getStat()==mem.getCode()){
@@ -530,7 +504,7 @@ declarecad:
 	DECLAR CAD IDENTIFICADOR ASIGNACION RISTRA	
 	{
 	if(stack.existsVariable($3)){
-		printf("ya existe\n");
+		printf("ya existe %s\n", $3);
 	} else {
 		int size = strlen($5);
 		char h[size-2];
@@ -550,8 +524,6 @@ declarecad:
 			gc("CODE(%d)\n", mem.getCode());
 			mem.incrementCode();
 		}
-		
-
 		int id=mem.devuelveRegistroLibre();
 		gc("\tR%d=0x%x;\n", id, stack.getVariable($3).getDireccion());
 		int val = mem.devuelveRegistroLibre();
@@ -633,20 +605,18 @@ declarecad:
 	;
 
 inicializar:
-	IDENTIFICADOR ASIGNACION escaneo {}
-	| inicializarent
+	inicializarent
 	;
 
 inicializarent:
 	IDENTIFICADOR ASIGNACION identi 
 	{
 	if(!stack.existsVariable($1)){
-		printf("la variable no existe\n");
+		printf("la variable %s no existe\n", $1);
 	} else {
 		if(!stack.existsVariable($3)){
-			printf("la variable no existe\n");
+			printf("la variable %s no existe\n", $3);
 		} else {
-		printf("si\n");
 		if (mem.getStat()==mem.getCode()+1){
 			gc("CODE(%d)\n", mem.getCode());
 			mem.incrementCode();
@@ -658,15 +628,14 @@ inicializarent:
 		gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
 		gc("\tI(R%d)=R%d;\n", res, add);
 		mem.liberaRegistro(add);
-		mem.liberaRegistro(res);
-			
+		mem.liberaRegistro(res);	
 	}
 	}
 	}
 	|IDENTIFICADOR ASIGNACION NUMERO {
 	
 	if(!stack.existsVariable($1)){
-		printf("la variable no existe\n");
+		printf("la variable %s no existe\n", $1);
 	} else {
 		if (mem.getStat()==mem.getCode()+1){
 			gc("CODE(%d)\n", mem.getCode());
@@ -685,7 +654,7 @@ inicializarent:
 	| IDENTIFICADOR ASIGNACION operacionent 
 	{
 	if(!stack.existsVariable($1)){
-		printf("la variable no existe\n");
+		printf("la variable %s no existe\n", $1);
 	} else {
 		int reg = mem.devuelveRegistroLibre();
 		gc("\tR%d=0x%x;\n", reg, stack.getVariable($1).getDireccion() );
