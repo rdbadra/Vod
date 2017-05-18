@@ -25,7 +25,7 @@ STAT(3)
 	MEM(0x11ff0, 4);
 CODE(3)
 	R0=0x11ff0;
-	R1=3;
+	R1=2;
 	I(R0)=R1;
 	GT(2);
 L 1:

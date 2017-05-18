@@ -1,11 +1,12 @@
 declar ent c;
+
 c = 3;
 declar ent d;
 d = 1;
 declar ent a;
 a = 3;
 declar ent b;
-b = 3;
+b = 2;
 funcion expo(){
 	si(c > d){
 		c = c - d;

@@ -40,8 +40,8 @@ void gc(const char* code, ...);
 %token MAYORQUE MENORQUE IGUAL DIFERENTE
 %token ESCANEAR IMPRIMIR
 %token <ent> DECLAR ASIGNACION PYCOMA FUNCION ABREPAR CIERRAPAR ABRECOR CIERRACOR COMILLAS
-%token SUMA RESTA MULTIPLICACION DIVISION CONCATENACION
-%token <cad> IDENTIFICADOR RISTRA
+%token SUMA RESTA MULTIPLICACION DIVISION CONCATENACION ESPACIO PUNTO COMA
+%token <cad> IDENTIFICADOR RISTRA EXTRA
 %token CAD ENT
 %token <ent> NUMERO
 %type <cad> identi operacioncad ristra
@@ -264,8 +264,6 @@ imprime:
 callfunc:
 	IDENTIFICADOR ABREPAR CIERRAPAR 
 	{
-
-	/*gc("\tR6=R7;\n\tR7=R7-8;\n\tI(R6-4)=R6;\n\tI(R6-8)=%d;\n", etiqueta);*/
 	if (mem.getStat()==mem.getCode()+1){
 				gc("CODE(%d)\n", mem.getCode());
 				mem.incrementCode();
@@ -276,18 +274,11 @@ callfunc:
 	gc("\tGT(%d);\n", stack.getFuncion($1).getEtiqueta());
 	gc("L %d:\n", etiqueta);
 	etiqueta++;
-	/*gc("\tR4=R6;\n\tR6=I(R4-4);\n\tR5=I(R4-8);\n\tR7=R4;\n\tGT(R5);\n");
-	stack.cleanDinamicStack($1);
-	mem.setAmbito(global);*/
 	}
 	;
 
 operacionent:
-	operacionent resta
-	| operacionent multiplicacion
-	| operacionent division
-	| operacionent suma
-	| operacionent ABREPAR operacionent CIERRAPAR
+	ABREPAR operacionent CIERRAPAR
 	| suma
 	| resta
 	| multiplicacion
@@ -701,8 +692,10 @@ ristra:
 int main(int argc, char** argv) {
 	// open a file handle to a particular file:
 	if(argc>1) yyin=fopen(argv[1], "r");
+		
 	yyparse();
 	stack.printStack();
+	
 	
 	
 }
