@@ -44,7 +44,7 @@ void gc(const char* code, ...);
 %token <cad> IDENTIFICADOR RISTRA EXTRA
 %token CAD ENT
 %token <ent> NUMERO
-%type <cad> identi operacioncad ristra
+%type <cad> identi operacioncad
 %type <ent> suma resta division multiplicacion operacionent cond sentencias declare declareent declarecad
 %type <ent> mientras declarefunc
 
@@ -520,7 +520,7 @@ declareent:
 	;
 
 operacioncad:
-	ristra CONCATENACION ristra
+	RISTRA CONCATENACION RISTRA
 	{
 		$$ = strcat($1, $3);
 	}
@@ -538,7 +538,6 @@ declarecad:
 		for(int i = 0; i < size-2; i++){
 			h[i] = $5[i+1];
 		}
-		//h[size-2] = '\0';
 		$$ = strlen(h);
 		int dir = mem.cogerDireccionDeMemoriaCad(strlen(h));
 		if (mem.getStat()==mem.getCode()){
@@ -695,11 +694,6 @@ inicializarent:
 		mem.liberaRegistro($3);
 	}
 	}
-	;
-
-ristra:
-	COMILLAS IDENTIFICADOR COMILLAS
-	{$$ = $2;}
 	;
 %%
 
