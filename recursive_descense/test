@@ -1,3 +1,22 @@
-declar ent a;
-a = 4;
-a = 5 + 5 ;
+declar ent res;
+declar ent expo;    
+expo = 4;
+res = 1;
+
+
+funcion expo(){
+    declar ent uno;
+    declar ent cero;
+    declar ent base;
+    base = 3;
+    uno = 1;
+    cero = 0;
+    si(expo > cero){
+        res = base * res;
+        expo = expo - uno;
+        expo();
+    }
+}
+
+expo();
+imprimir(res);

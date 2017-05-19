@@ -35,7 +35,7 @@ cad		{return CAD;}
 ent		{return ENT;}
 [-]?[0-9]+          { yylval.ent = atoi(yytext);return NUMERO; }
 [a-zA-Z0-9]+	{yylval.cad = strdup(yytext);return IDENTIFICADOR;}
-\"[a-zA-Z0-9 \-\.\,\#]+\" {yylval.cad = strdup(yytext);return RISTRA;}
+\"[a-zA-Z0-9 \-\.\,\#]*\" {yylval.cad = strdup(yytext);return RISTRA;}
 %%
 
 void error(char* mens) {

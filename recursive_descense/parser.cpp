@@ -10,8 +10,9 @@ void error();
 void declaracion();
 void declaracionYInicializacionCadena();
 void declaracionEntero();
-void inicializacionEntero();
-int numlin = 1;
+void inicializacionEnteroOLlamaAFuncion();
+void body(void);
+void bodyFunction();
 
 
 void nextSymbol(void){
@@ -39,18 +40,95 @@ void error() {
 	exit(0);
 }
 
+
+void cond(){
+	expect(IDENTIFICADOR);
+	if(accept(IGUAL) || accept(MAYORQUE) || accept(MENORQUE) || accept(DIFERENTE)){
+		expect(IDENTIFICADOR);
+	} else {
+		error();
+	}
+}
+
+void si(){
+	expect(ABREPAR);
+	cond();
+	expect(CIERRAPAR);
+	expect(ABRECOR);
+	bodyFunction();
+	expect(CIERRACOR);
+}
+
+void mientras(){
+	expect(ABREPAR);
+	cond();
+	expect(CIERRAPAR);
+	expect(ABRECOR);
+	bodyFunction();
+	expect(CIERRACOR);
+}
+
+void funcion(){
+	expect(IDENTIFICADOR);
+	expect(ABREPAR);
+	expect(CIERRAPAR);
+	expect(ABRECOR);
+	bodyFunction();
+	expect(CIERRACOR);
+}
+
+void imprimir(){
+	expect(ABREPAR);
+	expect(IDENTIFICADOR);
+	expect(CIERRAPAR);
+	expect(PYCOMA);
+
+}
+
+
+void bodyFunction(){
+	while(currentSymbol != 0 && currentSymbol != CIERRACOR){
+			if (accept(DECLAR)){
+				declaracion();
+			} else if(accept(IDENTIFICADOR)){
+				inicializacionEnteroOLlamaAFuncion();
+			} else if(accept(SI)){
+				si();
+			} else if(accept(MIENTRAS)){
+				mientras();
+			} else if(accept(IMPRIMIR)){
+				imprimir();
+			} else {
+				error();
+			}
+	}
+}
+
+void body(void){
+	if (accept(DECLAR)){
+		declaracion();
+	} else if(accept(IDENTIFICADOR)){
+		inicializacionEnteroOLlamaAFuncion();
+	} else if(accept(SI)){
+		si();
+	} else if(accept(MIENTRAS)){
+		mientras();
+	} else if(accept(FUNCION)){
+		funcion();
+	} else if(accept(IMPRIMIR)){
+		imprimir();
+	} else {
+		error();
+	}
+	
+}
+
 void program(void){
 	nextSymbol();
 	while(currentSymbol != 0){
-		if (accept(DECLAR)){
-			declaracion();
-		} else if(accept(IDENTIFICADOR)){
-			inicializacionEntero();
-
-		} else {
-			error();
-		}
+		body();
 	}
+
 }
 
 void declaracion(void){
@@ -59,57 +137,73 @@ void declaracion(void){
 	}
 	else if (accept(ENT)){
 		declaracionEntero();
+	} else {
+		error();
 	}
 }
 
 void declaracionEntero(void){
-	if (accept(IDENTIFICADOR)){
-		expect(PYCOMA);
-		numlin++;
-	}
+	expect(IDENTIFICADOR);
+	expect(PYCOMA);
+	
 }
 
-void inicializacionEntero(void){
+void inicializacionEnteroOLlamaAFuncion(void){
 	if(accept(ASIGNACION)){
 		if(accept(NUMERO)){
 			if(accept(SUMA) || accept(RESTA) || accept(MULTIPLICACION) || accept(DIVISION)){
 				expect(NUMERO);
 				expect(PYCOMA);
-				numlin++;
+
 			} else{
 				expect(PYCOMA);
-				numlin++;
+
 			}
-		}
-		else if(accept(IDENTIFICADOR)){
+		} else if(accept(IDENTIFICADOR)){
 				if(accept(SUMA) || accept(RESTA) || accept(MULTIPLICACION) || accept(DIVISION)){
 					expect(IDENTIFICADOR);
 					expect(PYCOMA);
-					numlin++;
+
 				} else{
 					expect(PYCOMA);
-					numlin++;
+
 			}		
+		} else {
+			error();
 		}
+	} else if(accept(ABREPAR)){
+		expect(CIERRAPAR);
+		expect(PYCOMA);
+	} else {
+		error();
 	}
 }
 
 void declaracionYInicializacionCadena(void){
-	if (accept(IDENTIFICADOR)){
-		expect(ASIGNACION);
-		expect(RISTRA);
+	expect(IDENTIFICADOR);
+	expect(ASIGNACION);
+	if(accept(RISTRA)){
+		if(accept(CONCATENACION)){
+			expect(RISTRA);
+		}
 		expect(PYCOMA);
-		numlin++;
+	} else if(accept(IDENTIFICADOR)){
+			if(accept(CONCATENACION)){
+				expect(IDENTIFICADOR);
+			}
+			expect(PYCOMA);
+	} else {
+		error();
 	}
+	
 }
 
 
 int main(int argc, char** argv){
 
 	if(argc > 1) yyin=fopen(argv[1], "r");
-	program();	
+	program();
+	printf("Finalizado con exito\n");	
 
-	//do printf("%i \n", s = yylex()); while(s!= 0);
-	//cout << ASIGNACION << endl;
 	return 0;
 }
