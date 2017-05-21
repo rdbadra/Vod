@@ -1,0 +1,23 @@
+declar ent a;
+declar ent b;
+declar ent c;
+declar ent d;
+declar ent e;
+declar cad esp = "#";
+a = 0;
+b = 1;
+c = 1;
+d = 15;
+e = 0;
+funcion fibo(){
+   si(c < d){
+  	 e = b;
+  	 b = a + b;
+  	 a = e;
+  	 d = d - c;
+  	 fibo();
+   }
+}
+fibo();
+imprimir(b);
+imprimir(esp);

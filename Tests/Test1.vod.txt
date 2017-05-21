@@ -1,0 +1,14 @@
+declar ent cero;
+cero = 0;
+declar ent uno;
+uno = 1;
+
+declar ent n;
+declar ent f;
+n = 5;
+f = 1;
+mientras(n>cero){
+f = f + n;
+imprimir(f);
+ 	n = n-uno;
+}

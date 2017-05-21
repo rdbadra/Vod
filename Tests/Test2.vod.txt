@@ -1,0 +1,10 @@
+declar cad titulo="El principito";
+declar cad autor="Antoine de Saint-Exupery";
+declar cad frase="El autor de ";
+declar cad verbo=" es ";
+declar cad punto=".";
+declar cad frase1 =frase conc titulo;
+declar cad frase2=frase1 conc verbo;
+declar cad frase3=frase2 conc autor;
+declar cad frase4=frase3 conc punto;
+imprimir(frase4);

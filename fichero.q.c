@@ -59,6 +59,11 @@ L 4:
 	R1=U(0x11ff4+3);
 	GT(-12);
 L 5:
+	R0=I(0x11ffc);
+	R1=I(0x11ffc);
+	R0=R0>R1;
+	IF(!R0) GT(6);
+L 6:
 	R0=0;
 	GT(-2);
 END

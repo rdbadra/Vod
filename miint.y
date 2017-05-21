@@ -74,6 +74,15 @@ body:
 	| body sentencias
 	;
 
+sentenciassi:
+	| sentenciassi inicializar PYCOMA
+	| sentenciassi callfunc PYCOMA
+	| sentenciassi imprime PYCOMA
+	| sentenciassi si
+	| sentenciassi mientras 
+	| sentenciassi PYCOMA
+	;
+
 sentencias:
 	sentencias declare PYCOMA
 	{
@@ -104,7 +113,7 @@ si:
 	etiqueta++;
 	mem.liberaRegistro($4);
 	}
-	ABRECOR sentencias CIERRACOR 
+	ABRECOR sentenciassi CIERRACOR 
 	{
 	gc("L %d:\n",$3);
 	}
@@ -124,7 +133,7 @@ mientras:
 	etiqueta++;
 	mem.liberaRegistro($4);
 	}
-	ABRECOR sentencias CIERRACOR 
+	ABRECOR sentenciassi CIERRACOR 
 	{
 	gc("\tGT(%d);\nL %d:\n", $1, $3);
 	}
@@ -146,6 +155,8 @@ cond:
 		gc("\tR%d=R%d>R%d;\n", res, res, add);
 		$$ = res;
 		mem.liberaRegistro(add);
+	} else {
+		yyerror("syntax error");
 	}
 	}
 	| identi MENORQUE identi 
@@ -163,6 +174,8 @@ cond:
 		gc("\tR%d=R%d<R%d;\n", res, res, add);
 		$$ = res;
 		mem.liberaRegistro(add);
+	} else {
+		yyerror("syntax error");
 	}
 	}
 	| identi IGUAL identi 
@@ -180,6 +193,8 @@ cond:
 		gc("\tR%d=R%d==R%d;\n", res, res, add);
 		$$ = res;
 		mem.liberaRegistro(add);
+	} else {
+		yyerror("syntax error");
 	}
 	}
 	| identi DIFERENTE identi 
@@ -197,6 +212,8 @@ cond:
 		gc("\tR%d=R%d!=R%d;\n", res, res, add);
 		$$ = res;
 		mem.liberaRegistro(add);
+	} else {
+		yyerror("syntax error");
 	}
 	}
 	;
@@ -205,6 +222,7 @@ imprime:
 	{
 	if(!stack.existsVariable($3)){
 		printf("la variable %s no existe\n", $3);
+		yyerror("syntax error");
 	} else {
 		if (mem.getStat()==mem.getCode()+1){
 				gc("CODE(%d)\n", mem.getCode());
@@ -444,6 +462,7 @@ declarefunc:
 	{
 	if(stack.existsFuncion($2)){
 		printf("ya existe %s\n", $2);
+		yyerror("syntax error");
 	} else {
 		if (mem.getStat()==mem.getCode()+1){
 			gc("CODE(%d)\n", mem.getCode());
@@ -482,6 +501,7 @@ declareent:
 	$$ = 4;
 	if(stack.existsVariable($3)){
 		printf("ya existe %s\n", $3);
+		yyerror("syntax error");
 	} else {
 		int dir = mem.cogerDireccionDeMemoriaEnt();
 		if (mem.getStat()==mem.getCode()){
@@ -499,6 +519,7 @@ declarecad:
 	{
 	if(stack.existsVariable($3)){
 		printf("ya existe %s\n", $3);
+		yyerror("syntax error");
 	} else {
 		int size = strlen($5);
 		char h[size-2];
@@ -579,9 +600,11 @@ inicializarent:
 	{
 	if(!stack.existsVariable($1)){
 		printf("la variable %s no existe\n", $1);
+		yyerror("syntax error");
 	} else {
 		if(!stack.existsVariable($3)){
 			printf("la variable %s no existe\n", $3);
+			yyerror("syntax error");
 		} else {
 		if (mem.getStat()==mem.getCode()+1){
 			gc("CODE(%d)\n", mem.getCode());
@@ -602,6 +625,7 @@ inicializarent:
 	
 	if(!stack.existsVariable($1)){
 		printf("la variable %s no existe\n", $1);
+		yyerror("syntax error");
 	} else {
 		if (mem.getStat()==mem.getCode()+1){
 			gc("CODE(%d)\n", mem.getCode());
@@ -621,6 +645,7 @@ inicializarent:
 	{
 	if(!stack.existsVariable($1)){
 		printf("la variable %s no existe\n", $1);
+		yyerror("syntax error");
 	} else {
 		int reg = mem.devuelveRegistroLibre();
 		gc("\tR%d=0x%x;\n", reg, stack.getVariable($1).getDireccion() );
@@ -644,7 +669,6 @@ int main(int argc, char** argv) {
 }
 
 void gc(const char* code, ...){
-	//printf("dentro\n");
 	va_list args;
 	va_start (args, code);
 	vfprintf(qFile, code, args);
@@ -653,4 +677,5 @@ void gc(const char* code, ...){
 
 void yyerror(const char *s) {
 	printf("error sintactico: %s\n", s);
+	exit(0);
 }
