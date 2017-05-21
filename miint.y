@@ -44,7 +44,7 @@ void gc(const char* code, ...);
 %token <cad> IDENTIFICADOR RISTRA
 %token CAD ENT
 %token <ent> NUMERO
-%type <cad> identi operacioncad
+%type <cad> identi
 %type <ent> suma resta division multiplicacion operacionent cond sentencias declare declareent declarecad
 %type <ent> mientras declarefunc
 
@@ -494,13 +494,6 @@ declareent:
 	}
 	;
 
-operacioncad:
-	RISTRA CONCATENACION RISTRA
-	{
-		$$ = strcat($1, $3);
-	}
-	;
-
 declarecad:
 	DECLAR CAD IDENTIFICADOR ASIGNACION RISTRA	
 	{
@@ -574,34 +567,6 @@ declarecad:
 			mem.liberaRegistro(reg2);
 		}
 		
-	}
-	| DECLAR CAD IDENTIFICADOR ASIGNACION operacioncad
-	{
-		int size = strlen($5);
-		$$ = size;
-		int dir = mem.cogerDireccionDeMemoriaCad(size);
-		if (mem.getStat()==mem.getCode()){
-			gc("STAT(%d)\n", mem.getStat());
-			mem.incrementStat();
-		}
-		gc("\tSTR(0x%x, \"%s\");\n", dir, $5);
-		stack.addVariable($3, "cad", mem.getAmbito(), dir, size);
-				if (mem.getStat()==mem.getCode()+1){
-			gc("CODE(%d)\n", mem.getCode());
-			mem.incrementCode();
-		}
-		
-
-		int id=mem.devuelveRegistroLibre();
-		gc("\tR%d=0x%x;\n", id, stack.getVariable($3).getDireccion());
-		int val = mem.devuelveRegistroLibre();
-		char* palabra = $5;
-		for(int i = 0; i < strlen(palabra); i++){
-			gc("\tR%d=%d;\n", val, palabra[i]);
-			gc("\tU(R%d+%d)=R%d;\n", id,i, val);
-		}
-		mem.liberaRegistro(id);
-		mem.liberaRegistro(val);
 	}
 	;
 

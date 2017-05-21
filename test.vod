@@ -1,1 +1,7 @@
-;
+declar ent 1a;
+1a = 5;
+imprimir(1a);
+declar cad b = "si";
+declar cad c = "no";
+declar cad d = b conc c;
+imprimir(d);
