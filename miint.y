@@ -85,6 +85,7 @@ sentencias:
 	| sentencias imprime PYCOMA
 	| sentencias si
 	| sentencias mientras 
+	| sentencias PYCOMA
 	|
 	{
 	$$ = 0;
