@@ -1,7 +1,7 @@
 declar ent res;
 declar ent expo;    
 expo = 4;
-res = 1;
+res = 1
 
 
 funcion expo(){

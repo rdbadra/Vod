@@ -1,0 +1,30 @@
+declar ent numero;
+numero=5;
+
+funcion calculaFactorial(){
+   declar ent k;
+   declar ent factorial;
+
+  	 factorial=1;
+ 	 k=0;
+   declar ent j;
+   j = 0;
+   declar ent kk;
+   kk = numero - k;
+   declar ent uno;
+   uno = 1;
+
+  	 mientras kk>j){
+  		 factorial=factorial*kk;
+      		 k=k+uno;
+  	 kk = numero - k;
+  	 }
+   
+  	 declar cad frase = "El factorial de 5 es ";
+  	 declar cad punto = ".#";
+   
+  	 imprimir(frase);
+   imprimir(factorial);
+   imprimir(punto);
+}
+calculaFactorial();

@@ -35,5 +35,5 @@ cad		{return CAD;}
 ent 		{return ENT;}
 [-]?[0-9]+          {return NUMERO; }
 [a-zA-Z0-9]+	{return IDENTIFICADOR;}
-\"[a-zA-Z0-9 \-\.\,\#]*\" {return RISTRA;}
+\"[a-zA-Z0-9 \-\.\,\#\¿\?\¡\!\_\;\*\']*\" {return RISTRA;}
 %%

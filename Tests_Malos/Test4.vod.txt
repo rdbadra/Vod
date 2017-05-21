@@ -1,0 +1,17 @@
+declar ent anos;
+declar cad nombre = "Mario es mayor de edad.#";
+declar cad no = "Mario no es mayor de edad.#";
+anos=17;
+declar ent eda;
+eda = 18;
+si(anos>eda){
+	imprimir(nombre);    
+}
+
+si(anos=eda){
+	imprimir(nombre);    
+}
+
+si(anos<eda){
+	imprimir(no);    
+}

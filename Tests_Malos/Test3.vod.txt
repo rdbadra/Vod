@@ -1,0 +1,27 @@
+declar ent factorial;
+declar ent numero;
+declar ent k;
+declar ent f;
+declar ent cero;
+declar ent uno;
+declar cad esp = "#";
+uno = 1;
+cero = 0;
+
+numero=5;  
+factorial=1;
+k=0;
+f = numero - k;
+
+mientras(f>cero){
+	factorial=factorial*f;
+   	k=k+uno;
+	f = numero - k;
+}
+
+decla cad frase = "El factorial de 5 es ";
+declar cad punto = ". ";
+imprimir(frase);
+imprimir(factorial);
+imprimir(punto);
+imprimir(esp);
