@@ -17,6 +17,7 @@ extern FILE *yyin;
 char global[7] = "global";
 GestorDeMemoria mem;
 Stack stack;
+int pila = 0;
 int etiqueta = 0;
 int etiqFunc = 0;
 void yyerror(const char *s);
@@ -245,15 +246,27 @@ imprime:
 		}
 		else{
 			//imprimir numero
-			int ret, numero;
-			ret = mem.devuelveRegistroLibre();
-			numero = mem.devuelveRegistroLibre();
-			gc("\tR%d=%d;\n", ret, etiqueta);
-			gc("\tR%d=I(0x%x);\n", numero, stack.getVariable($3).getDireccion());
-			gc("\tGT(-13);\nL %d:\n", etiqueta);
-			etiqueta++;
-			mem.liberaRegistro(ret);
-			mem.liberaRegistro(numero);
+			if(strcmp(mem.getAmbito(), global)==0){
+				int ret, numero;
+				ret = mem.devuelveRegistroLibre();
+				numero = mem.devuelveRegistroLibre();
+				gc("\tR%d=%d;\n", ret, etiqueta);
+				gc("\tR%d=I(0x%x);\n", numero, stack.getVariable($3).getDireccion());
+				gc("\tGT(-13);\nL %d:\n", etiqueta);
+				etiqueta++;
+				mem.liberaRegistro(ret);
+				mem.liberaRegistro(numero);
+			} else {
+				int ret, numero;
+				ret = mem.devuelveRegistroLibre();
+				numero = mem.devuelveRegistroLibre();
+				gc("\tR%d=%d;\n", ret, etiqueta);
+				gc("\tR%d=I(R7+%d);\n", numero, pila-stack.getVariable($3).getDireccion());
+				gc("\tGT(-13);\nL %d:\n", etiqueta);
+				etiqueta++;
+				mem.liberaRegistro(ret);
+				mem.liberaRegistro(numero);
+			}
 		}	
 	}
 	}
@@ -503,13 +516,22 @@ declareent:
 		printf("ya existe %s\n", $3);
 		yyerror("syntax error");
 	} else {
-		int dir = mem.cogerDireccionDeMemoriaEnt();
-		if (mem.getStat()==mem.getCode()){
+		if(strcmp(mem.getAmbito(), global)==0){
+			if (mem.getStat()==mem.getCode()){
 			gc("STAT(%d)\n", mem.getStat());
 			mem.incrementStat();
+			}
+			int dir = mem.cogerDireccionDeMemoriaEnt();
+			stack.addVariable($3, "ent", mem.getAmbito(), dir, 4);	
+			gc("\tMEM(0x%x, %d);\n", dir, 4);
+		} else {
+			pila += 4;
+			gc("\tR7=R7-%d; //declaramos variables locales pila: %d\n", 4, pila);
+			stack.addVariable($3, "ent", mem.getAmbito(), pila, 4);	
+			//pila += 4;
 		}
-		gc("\tMEM(0x%x, %d);\n", dir, 4);
-		stack.addVariable($3, "ent", mem.getAmbito(), dir, 4);		
+		
+			
 	}
 	}
 	;
@@ -610,14 +632,17 @@ inicializarent:
 			gc("CODE(%d)\n", mem.getCode());
 			mem.incrementCode();
 		}
-		int res, add;
-		res = mem.devuelveRegistroLibre();
-		add = mem.devuelveRegistroLibre();
-		gc("\tR%d=0x%x;\n", res, stack.getVariable($1).getDireccion());
-		gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
-		gc("\tI(R%d)=R%d;\n", res, add);
-		mem.liberaRegistro(add);
-		mem.liberaRegistro(res);	
+		if(strcmp(stack.getVariable($1).getContext(), global)==0){
+			int res, add;
+			res = mem.devuelveRegistroLibre();
+			add = mem.devuelveRegistroLibre();
+			gc("\tR%d=0x%x;\n", res, stack.getVariable($1).getDireccion());
+			gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
+			gc("\tI(R%d)=R%d;\n", res, add);
+			mem.liberaRegistro(add);
+			mem.liberaRegistro(res);
+		}
+	
 	}
 	}
 	}
@@ -631,13 +656,23 @@ inicializarent:
 			gc("CODE(%d)\n", mem.getCode());
 			mem.incrementCode();
 		}
-		int id=mem.devuelveRegistroLibre();
-		gc("\tR%d=0x%x;\n", id, stack.getVariable($1).getDireccion());
-		int val = mem.devuelveRegistroLibre();
-		gc("\tR%d=%d;\n", val, $3);
-		gc("\tI(R%d)=R%d;\n", id, val);
-		mem.liberaRegistro(id);
-		mem.liberaRegistro(val);
+		if(strcmp(stack.getVariable($1).getContext(), global)==0){
+			int id=mem.devuelveRegistroLibre();
+			gc("\tR%d=0x%x;\n", id, stack.getVariable($1).getDireccion());
+			int val = mem.devuelveRegistroLibre();
+			gc("\tR%d=%d;\n", val, $3);
+			gc("\tI(R%d)=R%d;\n", id, val);
+			mem.liberaRegistro(id);
+			mem.liberaRegistro(val);
+		} else {
+			int id=mem.devuelveRegistroLibre();
+			gc("\tR%d=R7+%d;\n", id, pila-stack.getVariable($1).getDireccion());
+			int val = mem.devuelveRegistroLibre();
+			gc("\tR%d=%d;\n", val, $3);
+			gc("\tI(R%d)=R%d;\n", id, val);
+			mem.liberaRegistro(id);
+			mem.liberaRegistro(val);
+		}
 	}	
 	
 	}
@@ -647,11 +682,13 @@ inicializarent:
 		printf("la variable %s no existe\n", $1);
 		yyerror("syntax error");
 	} else {
-		int reg = mem.devuelveRegistroLibre();
-		gc("\tR%d=0x%x;\n", reg, stack.getVariable($1).getDireccion() );
-		gc("\tI(R%d)=R%d;\n", reg, $3);
-		mem.liberaRegistro(reg);
-		mem.liberaRegistro($3);
+		if(strcmp(stack.getVariable($1).getContext(), global)==0){
+			int reg = mem.devuelveRegistroLibre();
+			gc("\tR%d=0x%x;\n", reg, stack.getVariable($1).getDireccion() );
+			gc("\tI(R%d)=R%d;\n", reg, $3);
+			mem.liberaRegistro(reg);
+			mem.liberaRegistro($3);
+		}
 	}
 	}
 	;

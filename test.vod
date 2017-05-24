@@ -1,11 +1,37 @@
-;declar ent 1a;
-1a = 5;
-imprimir(1a);
-declar cad b = "si";
-declar cad c = "no";
-declar cad d = b conc c;
-imprimir(d);
-;
-si(1a > 1a){
-	
+declar ent p;
+declar ent r;
+declar cad esp = "#";
+declar ent uno;
+uno = 1;
+declar ent dos;
+dos = 2;
+
+funcion fibo(){
+	declar ent f1;
+	declar ent f2;
+	declar ent n;
+	n = p;
+	si(n < dos){
+		r = n;
+	}
+	si(n > uno){
+		p = n - uno;
+		fibo();
+		f1 = r;
+		p = n - dos;
+		fibo();
+		f2 = r;
+		r = f1 + f2;
+	}
+}
+declar ent i;
+declar ent max;
+i = 0;
+max = 3;
+mientras(i < max){
+	p = i;
+	fibo();
+	imprimir(r);
+	imprimir(esp);
+	i = i + uno;
 }

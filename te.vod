@@ -1,0 +1,14 @@
+declar ent a;
+funcion ba(){
+	declar ent b;
+	b = 3;
+	declar ent c;
+	declar ent d;
+	declar ent e;
+	e = 9;
+	d = 6;
+	c = 7;
+	imprimir(b);
+	imprimir(c);
+}
+ba();
