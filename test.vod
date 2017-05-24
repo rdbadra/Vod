@@ -11,7 +11,7 @@ funcion fibo(){
 	declar ent f2;
 	declar ent n;
 	n = p;
-	si(dos > n){
+	si(n < dos){
 		r = n;
 	}
 	si(n > uno){
@@ -28,7 +28,7 @@ declar ent i;
 declar ent max;
 i = 0;
 max = 3;
-mientras(max > i){
+mientras(i < max){
 	p = i;
 	fibo();
 	imprimir(r);

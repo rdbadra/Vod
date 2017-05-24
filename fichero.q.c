@@ -32,15 +32,15 @@ L 1:
 	R0=R7+0; //local gets global value 
 	R1=I(0x11ffc);
 	I(R0)=R1;
-	R0=I(0x11fef); // global mayor que local
-	R1=I(R7+0);
-	R0=R0>R1;
+	R0=I(R7+0);  // n menor que dos
+	R1=I(0x11fef);
+	R0=R0<R1;
 	IF(!R0) GT(3);
 	R0=0x11ff8; //global gets local value
 	R1=I(R7+0);
 	I(R0)=R1;
 L 3:
-	R0=I(R7+0);  // local mayor que global
+	R0=I(R7+0);  // n mayor que uno
 	R1=I(0x11ff3);
 	R0=R0>R1;
 	IF(!R0) GT(4);
@@ -54,10 +54,10 @@ L 3:
 	P(R7)=5;
 	GT(1);
 L 5:
-	R0=R7+8; //local gets global value 
+	R0=R7+-4; //local gets global value 
 	R1=I(0x11ff8);
 	I(R0)=R1;
-	R0=I(R7+0);  // local menos global
+	R0=I(R7+-12);  // local menos global
 	R1=I(0x11fef);
 	R0=R0-R1;
 	R1=0x11ffc;
@@ -67,11 +67,11 @@ L 5:
 	P(R7)=6;
 	GT(1);
 L 6:
-	R0=R7+4; //local gets global value 
+	R0=R7+-8; //local gets global value 
 	R1=I(0x11ff8);
 	I(R0)=R1;
-	R0=I(R7+8); // local mas local
-	R1=I(R7+4);
+	R0=I(R7+-4); // local mas local
+	R1=I(R7+-8);
 	R0=R0+R1;
 	R1=0x11ff8;
 	I(R1)=R0;
@@ -92,9 +92,9 @@ CODE(3)
 	R1=3;
 	I(R0)=R1;
 L 7:
-	R0=I(0x11fe7);  // global mayor que global
-	R1=I(0x11feb);
-	R0=R0>R1;
+	R0=I(0x11feb);  // i menor que max
+	R1=I(0x11fe7);
+	R0=R0<R1;
 	IF(!R0) GT(8);
 	R0=0x11ffc; //global gets global value
 	R1=I(0x11feb);

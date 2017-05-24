@@ -1,15 +1,37 @@
-declar ent a;
-declar ent b;
-a = 6;
-b = 5;
-declar ent c;
-c = a + b;
-imprimir(c);
-funcion sumar(){
-	declar ent e;
-	e = a + b;
-	imprimir(e);
+declar ent p;
+declar ent r;
+declar cad esp = "#";
+declar ent uno;
+uno = 1;
+declar ent dos;
+dos = 2;
 
+funcion fibo(){
+	declar ent f1;
+	declar ent f2;
+	declar ent n;
+	n = p;
+	si(n < dos){
+		r = n;
+	}
+	si(n > uno){
+		p = n - uno;
+		fibo();
+		f1 = r;
+		p = n - dos;
+		fibo();
+		f2 = r;
+		r = f1 + f2;
+	}
 }
-sumar();
-
+declar ent i;
+declar ent max;
+i = 0;
+max = 3;
+mientras(i < max){
+	p = i;
+	fibo();
+	imprimir(r);
+	imprimir(esp);
+	i = i + uno;
+}
