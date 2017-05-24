@@ -1,14 +1,15 @@
 declar ent a;
-funcion ba(){
-	declar ent b;
-	b = 3;
-	declar ent c;
-	declar ent d;
+declar ent b;
+a = 6;
+b = 5;
+declar ent c;
+c = a + b;
+imprimir(c);
+funcion sumar(){
 	declar ent e;
-	e = 9;
-	d = 6;
-	c = 7;
-	imprimir(b);
-	imprimir(c);
+	e = a + b;
+	imprimir(e);
+
 }
-ba();
+sumar();
+

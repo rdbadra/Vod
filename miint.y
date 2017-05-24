@@ -144,20 +144,63 @@ cond:
 	identi MAYORQUE identi 
 	{
 	if(strcmp(stack.getVariable($1).getTipo(), "ent")==0 && strcmp(stack.getVariable($3).getTipo(), "ent")==0){
-		if (mem.getStat()==mem.getCode()+1){
-			gc("CODE(%d)\n", mem.getCode());
-			mem.incrementCode();
-		}
-		int res, add;
-		res = mem.devuelveRegistroLibre();
-		add = mem.devuelveRegistroLibre();
-		gc("\tR%d=I(0x%x);\n", res, stack.getVariable($1).getDireccion());
-		gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
-		gc("\tR%d=R%d>R%d;\n", res, res, add);
-		$$ = res;
-		mem.liberaRegistro(add);
-	} else {
-		yyerror("syntax error");
+		if(strcmp(stack.getVariable($1).getContext(), global)==0){
+			if(strcmp(stack.getVariable($3).getContext(), global)==0){
+				if (mem.getStat()==mem.getCode()+1){
+					gc("CODE(%d)\n", mem.getCode());
+					mem.incrementCode();
+				}
+				int res, add;
+				res = mem.devuelveRegistroLibre();
+				add = mem.devuelveRegistroLibre();
+				gc("\tR%d=I(0x%x);  // global mayor que global\n", res, stack.getVariable($1).getDireccion());
+				gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
+				gc("\tR%d=R%d>R%d;\n", res, res, add);
+				$$ = res;
+				mem.liberaRegistro(add);
+			} else {
+				if (mem.getStat()==mem.getCode()+1){
+					gc("CODE(%d)\n", mem.getCode());
+					mem.incrementCode();
+				}
+				int res, add;
+				res = mem.devuelveRegistroLibre();
+				add = mem.devuelveRegistroLibre();
+				gc("\tR%d=I(0x%x); // global mayor que local\n", res, stack.getVariable($1).getDireccion());
+				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariable($3).getDireccion());
+				gc("\tR%d=R%d>R%d;\n", res, res, add);
+				$$ = res;
+				mem.liberaRegistro(add);
+			}
+		} else {
+			if(strcmp(stack.getVariable($3).getContext(), global)==0){
+				if (mem.getStat()==mem.getCode()+1){
+					gc("CODE(%d)\n", mem.getCode());
+					mem.incrementCode();
+				}
+				int res, add;
+				res = mem.devuelveRegistroLibre();
+				add = mem.devuelveRegistroLibre();
+				gc("\tR%d=I(R7+%d);  // local mayor que global\n", res, pila-stack.getVariable($1).getDireccion());
+				gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
+				gc("\tR%d=R%d>R%d;\n", res, res, add);
+				$$ = res;
+				mem.liberaRegistro(add);
+			} else {
+				if (mem.getStat()==mem.getCode()+1){
+					gc("CODE(%d)\n", mem.getCode());
+					mem.incrementCode();
+				}
+				int res, add;
+				res = mem.devuelveRegistroLibre();
+				add = mem.devuelveRegistroLibre();
+				gc("\tR%d=I(R7+%d); // local mayor que local\n", res, pila-stack.getVariable($1).getDireccion());
+				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariable($3).getDireccion());
+				gc("\tR%d=R%d>R%d;\n", res, res, add);
+				$$ = res;
+				mem.liberaRegistro(add);
+			}
+	}
 	}
 	}
 	| identi MENORQUE identi 
@@ -246,7 +289,7 @@ imprime:
 		}
 		else{
 			//imprimir numero
-			if(strcmp(mem.getAmbito(), global)==0){
+			if(strcmp(stack.getVariable($3).getContext(), global)==0){
 				int ret, numero;
 				ret = mem.devuelveRegistroLibre();
 				numero = mem.devuelveRegistroLibre();
@@ -303,18 +346,63 @@ suma:
 	identi SUMA identi 
 	{
 	if(strcmp(stack.getVariable($1).getTipo(), "ent")==0 && strcmp(stack.getVariable($3).getTipo(), "ent")==0){
-		if (mem.getStat()==mem.getCode()+1){
-			gc("CODE(%d)\n", mem.getCode());
-			mem.incrementCode();
-		}
-		int res, add;
-		res = mem.devuelveRegistroLibre();
-		add = mem.devuelveRegistroLibre();
-		gc("\tR%d=I(0x%x);\n", res, stack.getVariable($1).getDireccion());
-		gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
-		gc("\tR%d=R%d+R%d;\n", res, res, add);
-		$$ = res;
-		mem.liberaRegistro(add);
+		if(strcmp(stack.getVariable($1).getContext(), global)==0){
+			if(strcmp(stack.getVariable($3).getContext(), global)==0){
+				if (mem.getStat()==mem.getCode()+1){
+					gc("CODE(%d)\n", mem.getCode());
+					mem.incrementCode();
+				}
+				int res, add;
+				res = mem.devuelveRegistroLibre();
+				add = mem.devuelveRegistroLibre();
+				gc("\tR%d=I(0x%x);  // suma de globales\n", res, stack.getVariable($1).getDireccion());
+				gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
+				gc("\tR%d=R%d+R%d;\n", res, res, add);
+				$$ = res;
+				mem.liberaRegistro(add);
+			} else {
+				if (mem.getStat()==mem.getCode()+1){
+					gc("CODE(%d)\n", mem.getCode());
+					mem.incrementCode();
+				}
+				int res, add;
+				res = mem.devuelveRegistroLibre();
+				add = mem.devuelveRegistroLibre();
+				gc("\tR%d=I(0x%x); // global mas local\n", res, stack.getVariable($1).getDireccion());
+				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariable($3).getDireccion());
+				gc("\tR%d=R%d+R%d;\n", res, res, add);
+				$$ = res;
+				mem.liberaRegistro(add);
+			}
+		} else {
+			if(strcmp(stack.getVariable($3).getContext(), global)==0){
+				if (mem.getStat()==mem.getCode()+1){
+					gc("CODE(%d)\n", mem.getCode());
+					mem.incrementCode();
+				}
+				int res, add;
+				res = mem.devuelveRegistroLibre();
+				add = mem.devuelveRegistroLibre();
+				gc("\tR%d=I(R7+%d);  // local mas global\n", res, pila-stack.getVariable($1).getDireccion());
+				gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
+				gc("\tR%d=R%d+R%d;\n", res, res, add);
+				$$ = res;
+				mem.liberaRegistro(add);
+			} else {
+				if (mem.getStat()==mem.getCode()+1){
+					gc("CODE(%d)\n", mem.getCode());
+					mem.incrementCode();
+				}
+				int res, add;
+				res = mem.devuelveRegistroLibre();
+				add = mem.devuelveRegistroLibre();
+				gc("\tR%d=I(R7+%d); // local mas local\n", res, pila-stack.getVariable($1).getDireccion());
+				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariable($3).getDireccion());
+				gc("\tR%d=R%d+R%d;\n", res, res, add);
+				$$ = res;
+				mem.liberaRegistro(add);
+			}
+	}
 	}
 	;
 	}
@@ -346,18 +434,63 @@ resta:
 	identi RESTA identi 
 	{
 	if(strcmp(stack.getVariable($1).getTipo(), "ent")==0 && strcmp(stack.getVariable($3).getTipo(), "ent")==0){
-		if (mem.getStat()==mem.getCode()+1){
-			gc("CODE(%d)\n", mem.getCode());
-			mem.incrementCode();
-		}
-		int res, add;
-		res = mem.devuelveRegistroLibre();
-		add = mem.devuelveRegistroLibre();
-		gc("\tR%d=I(0x%x);\n", res, stack.getVariable($1).getDireccion());
-		gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
-		gc("\tR%d=R%d-R%d;\n", res, res, add);
-		$$ = res;
-		mem.liberaRegistro(add);
+			if(strcmp(stack.getVariable($1).getContext(), global)==0){
+			if(strcmp(stack.getVariable($3).getContext(), global)==0){
+				if (mem.getStat()==mem.getCode()+1){
+					gc("CODE(%d)\n", mem.getCode());
+					mem.incrementCode();
+				}
+				int res, add;
+				res = mem.devuelveRegistroLibre();
+				add = mem.devuelveRegistroLibre();
+				gc("\tR%d=I(0x%x);  // resta de globales\n", res, stack.getVariable($1).getDireccion());
+				gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
+				gc("\tR%d=R%d-R%d;\n", res, res, add);
+				$$ = res;
+				mem.liberaRegistro(add);
+			} else {
+				if (mem.getStat()==mem.getCode()+1){
+					gc("CODE(%d)\n", mem.getCode());
+					mem.incrementCode();
+				}
+				int res, add;
+				res = mem.devuelveRegistroLibre();
+				add = mem.devuelveRegistroLibre();
+				gc("\tR%d=I(0x%x); // global menos local\n", res, stack.getVariable($1).getDireccion());
+				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariable($3).getDireccion());
+				gc("\tR%d=R%d-R%d;\n", res, res, add);
+				$$ = res;
+				mem.liberaRegistro(add);
+			}
+		} else {
+			if(strcmp(stack.getVariable($3).getContext(), global)==0){
+				if (mem.getStat()==mem.getCode()+1){
+					gc("CODE(%d)\n", mem.getCode());
+					mem.incrementCode();
+				}
+				int res, add;
+				res = mem.devuelveRegistroLibre();
+				add = mem.devuelveRegistroLibre();
+				gc("\tR%d=I(R7+%d);  // local menos global\n", res, pila-stack.getVariable($1).getDireccion());
+				gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
+				gc("\tR%d=R%d-R%d;\n", res, res, add);
+				$$ = res;
+				mem.liberaRegistro(add);
+			} else {
+				if (mem.getStat()==mem.getCode()+1){
+					gc("CODE(%d)\n", mem.getCode());
+					mem.incrementCode();
+				}
+				int res, add;
+				res = mem.devuelveRegistroLibre();
+				add = mem.devuelveRegistroLibre();
+				gc("\tR%d=I(R7+%d); // local menos local\n", res, pila-stack.getVariable($1).getDireccion());
+				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariable($3).getDireccion());
+				gc("\tR%d=R%d-R%d;\n", res, res, add);
+				$$ = res;
+				mem.liberaRegistro(add);
+			}
+	}
 	}
 	;
 	}
@@ -382,18 +515,63 @@ multiplicacion:
 	identi MULTIPLICACION identi 
 	{
 	if(strcmp(stack.getVariable($1).getTipo(), "ent")==0 && strcmp(stack.getVariable($3).getTipo(), "ent")==0){
-		if (mem.getStat()==mem.getCode()+1){
-			gc("CODE(%d)\n", mem.getCode());
-			mem.incrementCode();
-		}
-		int res, add;
-		res = mem.devuelveRegistroLibre();
-		add = mem.devuelveRegistroLibre();
-		gc("\tR%d=I(0x%x);\n", res, stack.getVariable($1).getDireccion());
-		gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
-		gc("\tR%d=R%d*R%d;\n", res, res, add);
-		$$ = res;
-		mem.liberaRegistro(add);
+		if(strcmp(stack.getVariable($1).getContext(), global)==0){
+			if(strcmp(stack.getVariable($3).getContext(), global)==0){
+				if (mem.getStat()==mem.getCode()+1){
+					gc("CODE(%d)\n", mem.getCode());
+					mem.incrementCode();
+				}
+				int res, add;
+				res = mem.devuelveRegistroLibre();
+				add = mem.devuelveRegistroLibre();
+				gc("\tR%d=I(0x%x);  // multiplicacion de globales\n", res, stack.getVariable($1).getDireccion());
+				gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
+				gc("\tR%d=R%d*R%d;\n", res, res, add);
+				$$ = res;
+				mem.liberaRegistro(add);
+			} else {
+				if (mem.getStat()==mem.getCode()+1){
+					gc("CODE(%d)\n", mem.getCode());
+					mem.incrementCode();
+				}
+				int res, add;
+				res = mem.devuelveRegistroLibre();
+				add = mem.devuelveRegistroLibre();
+				gc("\tR%d=I(0x%x); // global por local\n", res, stack.getVariable($1).getDireccion());
+				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariable($3).getDireccion());
+				gc("\tR%d=R%*R%d;\n", res, res, add);
+				$$ = res;
+				mem.liberaRegistro(add);
+			}
+		} else {
+			if(strcmp(stack.getVariable($3).getContext(), global)==0){
+				if (mem.getStat()==mem.getCode()+1){
+					gc("CODE(%d)\n", mem.getCode());
+					mem.incrementCode();
+				}
+				int res, add;
+				res = mem.devuelveRegistroLibre();
+				add = mem.devuelveRegistroLibre();
+				gc("\tR%d=I(R7+%d);  // local por global\n", res, pila-stack.getVariable($1).getDireccion());
+				gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
+				gc("\tR%d=R%d*R%d;\n", res, res, add);
+				$$ = res;
+				mem.liberaRegistro(add);
+			} else {
+				if (mem.getStat()==mem.getCode()+1){
+					gc("CODE(%d)\n", mem.getCode());
+					mem.incrementCode();
+				}
+				int res, add;
+				res = mem.devuelveRegistroLibre();
+				add = mem.devuelveRegistroLibre();
+				gc("\tR%d=I(R7+%d); // local por local\n", res, pila-stack.getVariable($1).getDireccion());
+				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariable($3).getDireccion());
+				gc("\tR%d=R%d*R%d;\n", res, res, add);
+				$$ = res;
+				mem.liberaRegistro(add);
+			}
+	}
 	}
 	;
 	}
@@ -419,18 +597,63 @@ division:
 	identi DIVISION identi 
 	{
 	if(strcmp(stack.getVariable($1).getTipo(), "ent")==0 && strcmp(stack.getVariable($3).getTipo(), "ent")==0){
-		if (mem.getStat()==mem.getCode()+1){
-			gc("CODE(%d)\n", mem.getCode());
-			mem.incrementCode();
-		}
-		int res, add;
-		res = mem.devuelveRegistroLibre();
-		add = mem.devuelveRegistroLibre();
-		gc("\tR%d=I(0x%x);\n", res, stack.getVariable($1).getDireccion());
-		gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
-		gc("\tR%d=R%d/R%d;\n", res, res, add);
-		$$ = res;
-		mem.liberaRegistro(add);
+		if(strcmp(stack.getVariable($1).getContext(), global)==0){
+			if(strcmp(stack.getVariable($3).getContext(), global)==0){
+				if (mem.getStat()==mem.getCode()+1){
+					gc("CODE(%d)\n", mem.getCode());
+					mem.incrementCode();
+				}
+				int res, add;
+				res = mem.devuelveRegistroLibre();
+				add = mem.devuelveRegistroLibre();
+				gc("\tR%d=I(0x%x);  // division de globales\n", res, stack.getVariable($1).getDireccion());
+				gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
+				gc("\tR%d=R%d/R%d;\n", res, res, add);
+				$$ = res;
+				mem.liberaRegistro(add);
+			} else {
+				if (mem.getStat()==mem.getCode()+1){
+					gc("CODE(%d)\n", mem.getCode());
+					mem.incrementCode();
+				}
+				int res, add;
+				res = mem.devuelveRegistroLibre();
+				add = mem.devuelveRegistroLibre();
+				gc("\tR%d=I(0x%x); // global dividido por local\n", res, stack.getVariable($1).getDireccion());
+				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariable($3).getDireccion());
+				gc("\tR%d=R%/R%d;\n", res, res, add);
+				$$ = res;
+				mem.liberaRegistro(add);
+			}
+		} else {
+			if(strcmp(stack.getVariable($3).getContext(), global)==0){
+				if (mem.getStat()==mem.getCode()+1){
+					gc("CODE(%d)\n", mem.getCode());
+					mem.incrementCode();
+				}
+				int res, add;
+				res = mem.devuelveRegistroLibre();
+				add = mem.devuelveRegistroLibre();
+				gc("\tR%d=I(R7+%d);  // local dividido por global\n", res, pila-stack.getVariable($1).getDireccion());
+				gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
+				gc("\tR%d=R%d/R%d;\n", res, res, add);
+				$$ = res;
+				mem.liberaRegistro(add);
+			} else {
+				if (mem.getStat()==mem.getCode()+1){
+					gc("CODE(%d)\n", mem.getCode());
+					mem.incrementCode();
+				}
+				int res, add;
+				res = mem.devuelveRegistroLibre();
+				add = mem.devuelveRegistroLibre();
+				gc("\tR%d=I(R7+%d); // local dividido por local\n", res, pila-stack.getVariable($1).getDireccion());
+				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariable($3).getDireccion());
+				gc("\tR%d=R%d/R%d;\n", res, res, add);
+				$$ = res;
+				mem.liberaRegistro(add);
+			}
+	}
 	}
 	;
 	}
@@ -633,14 +856,45 @@ inicializarent:
 			mem.incrementCode();
 		}
 		if(strcmp(stack.getVariable($1).getContext(), global)==0){
-			int res, add;
-			res = mem.devuelveRegistroLibre();
-			add = mem.devuelveRegistroLibre();
-			gc("\tR%d=0x%x;\n", res, stack.getVariable($1).getDireccion());
-			gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
-			gc("\tI(R%d)=R%d;\n", res, add);
-			mem.liberaRegistro(add);
-			mem.liberaRegistro(res);
+			if(strcmp(stack.getVariable($3).getContext(), global)==0){
+				int res, add;
+				res = mem.devuelveRegistroLibre();
+				add = mem.devuelveRegistroLibre();
+				gc("\tR%d=0x%x; //global gets global value\n", res, stack.getVariable($1).getDireccion());
+				gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
+				gc("\tI(R%d)=R%d;\n", res, add);
+				mem.liberaRegistro(add);
+				mem.liberaRegistro(res);
+			} else {
+				int res, add;
+				res = mem.devuelveRegistroLibre();
+				add = mem.devuelveRegistroLibre();
+				gc("\tR%d=0x%x; //global gets local value\n", res, stack.getVariable($1).getDireccion());
+				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariable($3).getDireccion());
+				gc("\tI(R%d)=R%d;\n", res, add);
+				mem.liberaRegistro(add);
+				mem.liberaRegistro(res);
+			}
+		} else {
+			if(strcmp(stack.getVariable($3).getContext(), global)==0){
+				int res, add;
+				res = mem.devuelveRegistroLibre();
+				add = mem.devuelveRegistroLibre();
+				gc("\tR%d=R7+%d; //local gets global value \n", res, pila-stack.getVariable($1).getDireccion());
+				gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
+				gc("\tI(R%d)=R%d;\n", res, add);
+				mem.liberaRegistro(add);
+				mem.liberaRegistro(res);
+			} else {
+				int res, add;
+				res = mem.devuelveRegistroLibre();
+				add = mem.devuelveRegistroLibre();
+				gc("\tR%d=R7+%d; //local gets local value\n", res, pila-stack.getVariable($1).getDireccion());
+				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariable($3).getDireccion());
+				gc("\tI(R%d)=R%d;\n", res, add);
+				mem.liberaRegistro(add);
+				mem.liberaRegistro(res);
+			}
 		}
 	
 	}
@@ -685,6 +939,12 @@ inicializarent:
 		if(strcmp(stack.getVariable($1).getContext(), global)==0){
 			int reg = mem.devuelveRegistroLibre();
 			gc("\tR%d=0x%x;\n", reg, stack.getVariable($1).getDireccion() );
+			gc("\tI(R%d)=R%d;\n", reg, $3);
+			mem.liberaRegistro(reg);
+			mem.liberaRegistro($3);
+		} else {
+			int reg = mem.devuelveRegistroLibre();
+			gc("\tR%d=R7+%d;\n", reg, pila-stack.getVariable($1).getDireccion() );
 			gc("\tI(R%d)=R%d;\n", reg, $3);
 			mem.liberaRegistro(reg);
 			mem.liberaRegistro($3);

@@ -41,8 +41,8 @@ void Stack::cleanDinamicStack(const char * name){
 	for(int i = 0; i < size; i++){
 		if(strcmp(variableStack.at(i).getContext(), name)==0){
 			size--;
-			i--;
 			variableStack.erase(variableStack.begin()+i);
+			i--;
 		}
 	}
 
