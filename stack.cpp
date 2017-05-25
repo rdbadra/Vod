@@ -26,7 +26,7 @@ void Stack::printStack(void){
 		Funcion el = funcionStack.at(i);
 		cout << "name: " << el.getName();
 		cout << " label: " << el.getEtiqueta();
-		cout << " used space: " << el.getEspacioParaLasVariables();
+		cout << " stack: " << el.getPila();
 		cout << endl;
 	}
 	cout << "END" << endl;
@@ -55,14 +55,30 @@ void Stack::cleanDinamicStack(int context){
 
 }
 
+void Stack::setPila(int p, int eti, char *n){
+	int pil;
+	int size = funcionStack.size();
+	for(int i = 0; i < size; i++){
+		if(funcionStack.at(i).getEtiqueta()==eti){
+			size--;
+			pil = funcionStack.at(i).getPila();
+			funcionStack.erase(funcionStack.begin()+i);
+			i--;
+		}
+	}
+	
+	p = p + pil;
+	funcionStack.push_back(Funcion(n, eti, p));
+}
+
 void Stack::addVariable(const char *name, const char *type, const char* c, int amb, int direc, int s){
 	//hay que comprobar si ya esta en la tabla
 	variableStack.push_back(Variable(name, type, c, amb, direc, s));
 }
 
-void Stack::addFuncion(const char *name, int etiqueta){
+void Stack::addFuncion(const char *name, int etiqueta, int pila){
 	//hay que comprobar si ya esta en la tabla
-	funcionStack.push_back(Funcion(name, etiqueta));
+	funcionStack.push_back(Funcion(name, etiqueta, pila));
 }
 
 bool Stack::existsVariable(const char *name){

@@ -21,13 +21,12 @@ class Funcion {
   	public:
 		char* getName(void);
 		int getEtiqueta();
-		int getEspacioParaLasVariables();
-		void setEspacioParaLasVariables(int espacio);
-		Funcion(const char* n, int etiqueta);
+		Funcion(const char* n, int etiqueta, int p);
+		int getPila();
 
 	private:
 		char name[20];
+		int pila;
 		int etiqueta;
-		int espacioParaLasVariables;
 };
 

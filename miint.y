@@ -839,7 +839,7 @@ declarefunc:
 		int etiq = etiqueta;
 		etiqueta++;
 		contexto++;
-		stack.addFuncion($2, etiq);
+		stack.addFuncion($2, etiq, 0);
 		mem.setAmbito($2);
 		etiqFunc = etiqueta;
 		gc("\tGT(%d);		// se declara la funcion\n", etiqueta);
@@ -858,7 +858,7 @@ declarefunc:
 	gc("\tR6=P(R7+4);\n");
 	gc("\tR5=P(R7);			// se coge la etiqueta de retorno\n");
 	int last = stack.getLastPosition();
-	gc("\tR7=R7+8;\n");
+	//gc("\tR7=R7+8;\n");
 	gc("\tGT(R5);\n");
 	gc("L %d: \n", etiqFunc);
 	stack.cleanDinamicStack(contexto);
@@ -882,15 +882,13 @@ declareent:
 			}
 			int dir = mem.cogerDireccionDeMemoriaEnt();
 			stack.addVariable($3, "ent", mem.getAmbito(), contexto, dir, 4);	
-			gc("\tMEM(0x%x, %d);		// declaramos variables ent globales\n", dir, 4);
+			gc("\tMEM(0x%x, %d);		// declaramos variables ent globales %s\n", dir, 4, $3);
 		} else {
-			pila += 4;
-			gc("\tR7=R7-%d; 		//declaramos variables locales pila: %d\n", 4, pila);
-			stack.addVariable($3, "ent", mem.getAmbito(), contexto, pila, 4);	
-			//pila += 4;
-		}
-		
-			
+			//local
+			stack.setPila(4, stack.getFuncion(mem.getAmbito()).getEtiqueta(), stack.getFuncion(mem.getAmbito()).getName());
+			gc("\tR7=R7-%d; 		//declaramos variables locales %s pila: %d\n", 4,$3, stack.getFuncion(mem.getAmbito()).getPila());
+			stack.addVariable($3, "ent", mem.getAmbito(), contexto, stack.getFuncion(mem.getAmbito()).getPila(), 4);	
+		}	
 	}
 	}
 	;
@@ -1002,31 +1000,34 @@ inicializarent:
 				mem.liberaRegistro(add);
 				mem.liberaRegistro(res);
 			} else {
+				//$3 local
 				int res, add;
 				res = mem.devuelveRegistroLibre();
 				add = mem.devuelveRegistroLibre();
 				gc("\tR%d=0x%x; //global gets local value\n", res, stack.getVariable($1).getDireccion());
-				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariableWithContext($3, contexto).getDireccion());
+				gc("\tR%d=I(R6-%d);\n", add, stack.getVariableWithContext($3, contexto).getDireccion());
 				gc("\tI(R%d)=R%d;\n", res, add);
 				mem.liberaRegistro(add);
 				mem.liberaRegistro(res);
 			}
 		} else {
+			//$1 local
 			if(strcmp(stack.getVariable($3).getContext(), global)==0){
 				int res, add;
 				res = mem.devuelveRegistroLibre();
 				add = mem.devuelveRegistroLibre();
-				gc("\tR%d=R7+%d; //local gets global value \n", res, pila-stack.getVariableWithContext($1, contexto).getDireccion());
+				gc("\tR%d=R6-%d; //local gets global value \n", res, stack.getVariableWithContext($1, contexto).getDireccion());
 				gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
 				gc("\tI(R%d)=R%d;\n", res, add);
 				mem.liberaRegistro(add);
 				mem.liberaRegistro(res);
 			} else {
+				//$1 y $3 locales
 				int res, add;
 				res = mem.devuelveRegistroLibre();
 				add = mem.devuelveRegistroLibre();
-				gc("\tR%d=R7+%d; //local gets local value\n", res, pila-stack.getVariableWithContext($1, contexto).getDireccion());
-				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariableWithContext($3, contexto).getDireccion());
+				gc("\tR%d=R6-%d; //local gets local value\n", res, stack.getVariableWithContext($1, contexto).getDireccion());
+				gc("\tR%d=I(R6-%d);\n", add, stack.getVariableWithContext($3, contexto).getDireccion());
 				gc("\tI(R%d)=R%d;\n", res, add);
 				mem.liberaRegistro(add);
 				mem.liberaRegistro(res);
@@ -1056,7 +1057,7 @@ inicializarent:
 			mem.liberaRegistro(val);
 		} else {
 			int id=mem.devuelveRegistroLibre();
-			gc("\tR%d=R7+%d;	// Se asigna valor ent a variable local\n", id, pila-stack.getVariableWithContext($1, contexto).getDireccion());
+			gc("\tR%d=R6-%d;	// Se asigna valor ent a variable local\n", id, stack.getVariableWithContext($1, contexto).getDireccion());
 			int val = mem.devuelveRegistroLibre();
 			gc("\tR%d=%d;\n", val, $3);
 			gc("\tI(R%d)=R%d;\n", id, val);
@@ -1080,7 +1081,7 @@ inicializarent:
 			mem.liberaRegistro($3);
 		} else {
 			int reg = mem.devuelveRegistroLibre();
-			gc("\tR%d=R7+%d;\n", reg, pila-stack.getVariable($1).getDireccion() );
+			gc("\tR%d=R6-%d;\n", reg, stack.getVariableWithContext($1, contexto).getDireccion() );
 			gc("\tI(R%d)=R%d;\n", reg, $3);
 			mem.liberaRegistro(reg);
 			mem.liberaRegistro($3);

@@ -1,6 +1,7 @@
 funcion a(){
 	declar ent a;
-	a = 5;
-	imprimir(a);
+	declar ent b;
+	declar ent c;
+	declar ent d;
 }
 a();

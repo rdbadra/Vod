@@ -4,8 +4,8 @@
 BEGIN
 L 0:
 STAT(0)
-	MEM(0x11ffc, 4);		// declaramos variables ent globales
-	MEM(0x11ff8, 4);		// declaramos variables ent globales
+	MEM(0x11ffc, 4);		// declaramos variables ent globales p
+	MEM(0x11ff8, 4);		// declaramos variables ent globales r
 	MEM(0x11ff7, 1);
 CODE(0)
 	R0=0x11ff7;
@@ -76,19 +76,19 @@ CODE(5)
 	R1=32;
 	U(R0+4)=R1;
 STAT(6)
-	MEM(0x11fdd, 4);		// declaramos variables ent globales
+	MEM(0x11fdd, 4);		// declaramos variables ent globales uno
 CODE(6)
 	R0=0x11fdd;		// Se asigna valor ent a variable global
 	R1=1;
 	I(R0)=R1;
 STAT(7)
-	MEM(0x11fd9, 4);		// declaramos variables ent globales
+	MEM(0x11fd9, 4);		// declaramos variables ent globales dos
 CODE(7)
 	R0=0x11fd9;		// Se asigna valor ent a variable global
 	R1=2;
 	I(R0)=R1;
 STAT(8)
-	MEM(0x11fd5, 4);		// declaramos variables ent globales
+	MEM(0x11fd5, 4);		// declaramos variables ent globales cero
 CODE(8)
 	R0=0x11fd5;		// Se asigna valor ent a variable global
 	R1=0;
@@ -96,25 +96,25 @@ CODE(8)
 	GT(2);		// se declara la funcion
 L 1:
 	R6=R7;
-	R7=R7-4; 		//declaramos variables locales pila: 4
-	R7=R7-4; 		//declaramos variables locales pila: 8
-	R7=R7-4; 		//declaramos variables locales pila: 12
-	R0=R7+0; //local gets global value 
+	R7=R7-4; 		//declaramos variables locales f1 pila: 4
+	R7=R7-4; 		//declaramos variables locales f2 pila: 8
+	R7=R7-4; 		//declaramos variables locales n pila: 12
+	R0=R6-12; //local gets global value 
 	R1=I(0x11ffc);
 	I(R0)=R1;
-	R0=I(R7+0);  // n menor que dos
+	R0=I(R7+-12);  // n menor que dos
 	R1=I(0x11fd9);
 	R0=R0<R1;
 	IF(!R0) GT(3);
 	R0=0x11ff8; //global gets local value
-	R1=I(R7+0);
+	R1=I(R6-12);
 	I(R0)=R1;
 L 3:
-	R0=I(R7+0);  // n mayor que uno
+	R0=I(R7+-12);  // n mayor que uno
 	R1=I(0x11fdd);
 	R0=R0>R1;
 	IF(!R0) GT(4);
-	R0=I(R7+0);  // local menos global
+	R0=I(R7+-12);  // local menos global
 	R1=I(0x11fdd);
 	R0=R0-R1;
 	R1=0x11ffc;
@@ -124,7 +124,7 @@ L 3:
 	P(R7)=5;		// guardamos etiqueta de retorno
 	GT(1);
 L 5:
-	R0=R7+-4; //local gets global value 
+	R0=R6-4; //local gets global value 
 	R1=I(0x11ff8);
 	I(R0)=R1;
 	R0=I(R7+-12);  // local menos global
@@ -137,7 +137,7 @@ L 5:
 	P(R7)=6;		// guardamos etiqueta de retorno
 	GT(1);
 L 6:
-	R0=R7+-8; //local gets global value 
+	R0=R6-8; //local gets global value 
 	R1=I(0x11ff8);
 	I(R0)=R1;
 	R0=I(R7+-4); // local mas local
@@ -149,12 +149,11 @@ L 4:
 	R7=R6;
 	R6=P(R7+4);
 	R5=P(R7);			// se coge la etiqueta de retorno
-	R7=R7+8;
 	GT(R5);
 L 2: 
 STAT(9)
-	MEM(0x11fd1, 4);		// declaramos variables ent globales
-	MEM(0x11fcd, 4);		// declaramos variables ent globales
+	MEM(0x11fd1, 4);		// declaramos variables ent globales i
+	MEM(0x11fcd, 4);		// declaramos variables ent globales max
 CODE(9)
 	R0=0x11fd1;		// Se asigna valor ent a variable global
 	R1=0;

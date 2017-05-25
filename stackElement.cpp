@@ -40,10 +40,10 @@ int Variable::getSize(){
 }
 
 //funcion
-Funcion::Funcion(const char* n, int etiq){
+Funcion::Funcion(const char* n, int etiq, int p){
 	strcpy(name, n);
 	etiqueta=etiq;
-	espacioParaLasVariables=0;
+	pila=p;
 }
 
 char* Funcion::getName(){
@@ -54,10 +54,6 @@ int Funcion::getEtiqueta(){
 	return etiqueta;
 }
 
-int Funcion::getEspacioParaLasVariables(){
-	return espacioParaLasVariables;
-}
-
-void Funcion::setEspacioParaLasVariables(int espacio){
-	espacioParaLasVariables=espacio;
+int Funcion::getPila(){
+	return pila;
 }
