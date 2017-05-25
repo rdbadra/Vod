@@ -2706,6 +2706,6 @@ void gc(const char* code, ...){
 }
 
 void yyerror(const char *s) {
-	printf("error sintactico: %s\n", s);
+	printf("error sintactico: %s en lina %d\n", s, numlin);
 	exit(0);
 }

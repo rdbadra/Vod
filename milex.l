@@ -9,7 +9,8 @@ extern int yylex();
 %}
 
 %%
-[ \t\n]         ;
+[ \t]         ;
+[\n]		{numlin++;}
 "conc" 		{return CONCATENACION;}
 "+"		{return SUMA;}
 "-"		{return RESTA;}

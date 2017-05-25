@@ -21,4 +21,5 @@ class Stack {
 
 };
 
+extern int numlin;
 
