@@ -35,7 +35,7 @@ funcion fibo(){
 declar ent i;
 declar ent max;
 i = 0;
-max = 6;
+max = 9;
 mientras(i < max){
 	p = i;
 	fibo();

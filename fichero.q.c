@@ -102,7 +102,7 @@ L 1:
 	R0=R6-12; //local gets global value 
 	R1=I(0x11ffc);
 	I(R0)=R1;
-	R0=I(R7+-12);  // n menor que dos
+	R0=I(R6-12);  // n menor que dos
 	R1=I(0x11fd9);
 	R0=R0<R1;
 	IF(!R0) GT(3);
@@ -110,11 +110,11 @@ L 1:
 	R1=I(R6-12);
 	I(R0)=R1;
 L 3:
-	R0=I(R7+-12);  // n mayor que uno
+	R0=I(R6-12);  // n mayor que uno
 	R1=I(0x11fdd);
 	R0=R0>R1;
 	IF(!R0) GT(4);
-	R0=I(R7+-12);  // local menos global
+	R0=I(R6-12);  // local menos global
 	R1=I(0x11fdd);
 	R0=R0-R1;
 	R1=0x11ffc;
@@ -127,7 +127,7 @@ L 5:
 	R0=R6-4; //local gets global value 
 	R1=I(0x11ff8);
 	I(R0)=R1;
-	R0=I(R7+-12);  // local menos global
+	R0=I(R6-12);  // local menos global
 	R1=I(0x11fd9);
 	R0=R0-R1;
 	R1=0x11ffc;
@@ -140,8 +140,8 @@ L 6:
 	R0=R6-8; //local gets global value 
 	R1=I(0x11ff8);
 	I(R0)=R1;
-	R0=I(R7+-4); // local mas local
-	R1=I(R7+-8);
+	R0=I(R6-4); // local mas local
+	R1=I(R6-8);
 	R0=R0+R1;
 	R1=0x11ff8;
 	I(R1)=R0;
@@ -159,7 +159,7 @@ CODE(9)
 	R1=0;
 	I(R0)=R1;
 	R0=0x11fcd;		// Se asigna valor ent a variable global
-	R1=6;
+	R1=9;
 	I(R0)=R1;
 L 7:
 	R0=I(0x11fd1);  // i menor que max

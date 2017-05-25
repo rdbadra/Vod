@@ -168,7 +168,7 @@ cond:
 				res = mem.devuelveRegistroLibre();
 				add = mem.devuelveRegistroLibre();
 				gc("\tR%d=I(0x%x); // %s mayor que %s\n", res, stack.getVariable($1).getDireccion(), $1, $3);
-				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariable($3).getDireccion());
+				gc("\tR%d=I(R6-%d);\n", add, stack.getVariableWithContext($3, contexto).getDireccion());
 				gc("\tR%d=R%d>R%d;\n", res, res, add);
 				$$ = res;
 				mem.liberaRegistro(add);
@@ -182,7 +182,7 @@ cond:
 				int res, add;
 				res = mem.devuelveRegistroLibre();
 				add = mem.devuelveRegistroLibre();
-				gc("\tR%d=I(R7+%d);  // %s mayor que %s\n", res, pila-stack.getVariable($1).getDireccion(), $1, $3);
+				gc("\tR%d=I(R6-%d);  // %s mayor que %s\n", res, stack.getVariableWithContext($1, contexto).getDireccion(), $1, $3);
 				gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
 				gc("\tR%d=R%d>R%d;\n", res, res, add);
 				$$ = res;
@@ -195,8 +195,8 @@ cond:
 				int res, add;
 				res = mem.devuelveRegistroLibre();
 				add = mem.devuelveRegistroLibre();
-				gc("\tR%d=I(R7+%d); // %s mayor que %s\n", res, pila-stack.getVariable($1).getDireccion(), $1, $3);
-				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariable($3).getDireccion());
+				gc("\tR%d=I(R6-%d); // %s mayor que %s\n", res, stack.getVariableWithContext($1, contexto).getDireccion(), $1, $3);
+				gc("\tR%d=I(R6-%d);\n", add, stack.getVariableWithContext($3, contexto).getDireccion());
 				gc("\tR%d=R%d>R%d;\n", res, res, add);
 				$$ = res;
 				mem.liberaRegistro(add);
@@ -230,7 +230,7 @@ cond:
 				res = mem.devuelveRegistroLibre();
 				add = mem.devuelveRegistroLibre();
 				gc("\tR%d=I(0x%x); // %s menor que %s\n", res, stack.getVariable($1).getDireccion(), $1, $3);
-				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariable($3).getDireccion());
+				gc("\tR%d=I(R6-%d);\n", add, stack.getVariableWithContext($3, contexto).getDireccion());
 				gc("\tR%d=R%d<R%d;\n", res, res, add);
 				$$ = res;
 				mem.liberaRegistro(add);
@@ -244,7 +244,7 @@ cond:
 				int res, add;
 				res = mem.devuelveRegistroLibre();
 				add = mem.devuelveRegistroLibre();
-				gc("\tR%d=I(R7+%d);  // %s menor que %s\n", res, pila-stack.getVariable($1).getDireccion(), $1, $3);
+				gc("\tR%d=I(R6-%d);  // %s menor que %s\n", res, stack.getVariableWithContext($1, contexto).getDireccion(), $1, $3);
 				gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
 				gc("\tR%d=R%d<R%d;\n", res, res, add);
 				$$ = res;
@@ -257,8 +257,8 @@ cond:
 				int res, add;
 				res = mem.devuelveRegistroLibre();
 				add = mem.devuelveRegistroLibre();
-				gc("\tR%d=I(R7+%d); // %s menor que %s\n", res, pila-stack.getVariable($1).getDireccion(), $1, $3);
-				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariable($3).getDireccion());
+				gc("\tR%d=I(R6-%d); // %s menor que %s\n", res, stack.getVariableWithContext($1, contexto).getDireccion(), $1, $3);
+				gc("\tR%d=I(R6-%d);\n", add, stack.getVariableWithContext($3, contexto).getDireccion());
 				gc("\tR%d=R%d<R%d;\n", res, res, add);
 				$$ = res;
 				mem.liberaRegistro(add);
@@ -292,7 +292,7 @@ cond:
 				res = mem.devuelveRegistroLibre();
 				add = mem.devuelveRegistroLibre();
 				gc("\tR%d=I(0x%x); // %s igual que %s\n", res, stack.getVariable($1).getDireccion(), $1, $3);
-				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariable($3).getDireccion());
+				gc("\tR%d=I(R6-%d);\n", add, stack.getVariableWithContext($3, contexto).getDireccion());
 				gc("\tR%d=R%d==R%d;\n", res, res, add);
 				$$ = res;
 				mem.liberaRegistro(add);
@@ -306,7 +306,7 @@ cond:
 				int res, add;
 				res = mem.devuelveRegistroLibre();
 				add = mem.devuelveRegistroLibre();
-				gc("\tR%d=I(R7+%d);  // %s igual que %s\n", res, pila-stack.getVariable($1).getDireccion(), $1, $3);
+				gc("\tR%d=I(R6-%d);  // %s igual que %s\n", res, stack.getVariableWithContext($1, contexto).getDireccion(), $1, $3);
 				gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
 				gc("\tR%d=R%d==R%d;\n", res, res, add);
 				$$ = res;
@@ -319,8 +319,8 @@ cond:
 				int res, add;
 				res = mem.devuelveRegistroLibre();
 				add = mem.devuelveRegistroLibre();
-				gc("\tR%d=I(R7+%d); // %s igual que %s\n", res, pila-stack.getVariable($1).getDireccion(), $1, $3);
-				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariable($3).getDireccion());
+				gc("\tR%d=I(R6-%d); // %s igual que %s\n", res, stack.getVariableWithContext($1, contexto).getDireccion(), $1, $3);
+				gc("\tR%d=I(R6-%d);\n", add, stack.getVariableWithContext($3, contexto).getDireccion());
 				gc("\tR%d=R%d==R%d;\n", res, res, add);
 				$$ = res;
 				mem.liberaRegistro(add);
@@ -354,7 +354,7 @@ cond:
 				res = mem.devuelveRegistroLibre();
 				add = mem.devuelveRegistroLibre();
 				gc("\tR%d=I(0x%x); // %s diferente que %s\n", res, stack.getVariable($1).getDireccion(), $1, $3);
-				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariable($3).getDireccion());
+				gc("\tR%d=I(R6-%d);\n", add, stack.getVariableWithContext($3, contexto).getDireccion());
 				gc("\tR%d=R%d!=R%d;\n", res, res, add);
 				$$ = res;
 				mem.liberaRegistro(add);
@@ -368,7 +368,7 @@ cond:
 				int res, add;
 				res = mem.devuelveRegistroLibre();
 				add = mem.devuelveRegistroLibre();
-				gc("\tR%d=I(R7+%d);  // %s diferente que %s\n", res, pila-stack.getVariable($1).getDireccion(), $1, $3);
+				gc("\tR%d=I(R6-%d);  // %s diferente que %s\n", res, stack.getVariableWithContext($1, contexto).getDireccion(), $1, $3);
 				gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
 				gc("\tR%d=R%d!=R%d;\n", res, res, add);
 				$$ = res;
@@ -381,8 +381,8 @@ cond:
 				int res, add;
 				res = mem.devuelveRegistroLibre();
 				add = mem.devuelveRegistroLibre();
-				gc("\tR%d=I(R7+%d); // %s diferente que %s\n", res, pila-stack.getVariable($1).getDireccion(), $1, $3);
-				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariable($3).getDireccion());
+				gc("\tR%d=I(R6-%d); // %s diferente que %s\n", res, stack.getVariableWithContext($1, contexto).getDireccion(), $1, $3);
+				gc("\tR%d=I(R6-%d);\n", add, stack.getVariableWithContext($3, contexto).getDireccion());
 				gc("\tR%d=R%d!=R%d;\n", res, res, add);
 				$$ = res;
 				mem.liberaRegistro(add);
@@ -434,7 +434,7 @@ imprime:
 				ret = mem.devuelveRegistroLibre();
 				numero = mem.devuelveRegistroLibre();
 				gc("\tR%d=%d;		// imprimimos ent local\n", ret, etiqueta);
-				gc("\tR%d=I(R7+%d);\n", numero, pila-stack.getVariable($3).getDireccion());
+				gc("\tR%d=I(R6-%d);\n", numero, stack.getVariable($3).getDireccion());
 				gc("\tGT(-13);\nL %d:\n", etiqueta);
 				etiqueta++;
 				mem.liberaRegistro(ret);
@@ -456,8 +456,7 @@ callfunc:
 	gc("\tP(R7+4)=R6;	// guardamos R6\n");		
 	gc("\tP(R7)=%d;		// guardamos etiqueta de retorno\n", etiqueta);
 	gc("\tGT(%d);\n", stack.getFuncion($1).getEtiqueta());
-	gc("L %d:\n", etiqueta, pila);
-	pila = 0;
+	gc("L %d:\n", etiqueta);
 	etiqueta++;
 	}
 	;
@@ -500,7 +499,7 @@ suma:
 				res = mem.devuelveRegistroLibre();
 				add = mem.devuelveRegistroLibre();
 				gc("\tR%d=I(0x%x); // global mas local\n", res, stack.getVariable($1).getDireccion());
-				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariable($3).getDireccion());
+				gc("\tR%d=I(R6-%d);\n", add, stack.getVariableWithContext($3, contexto).getDireccion());
 				gc("\tR%d=R%d+R%d;\n", res, res, add);
 				$$ = res;
 				mem.liberaRegistro(add);
@@ -514,7 +513,7 @@ suma:
 				int res, add;
 				res = mem.devuelveRegistroLibre();
 				add = mem.devuelveRegistroLibre();
-				gc("\tR%d=I(R7+%d);  // local mas global\n", res, pila-stack.getVariable($1).getDireccion());
+				gc("\tR%d=I(R6-%d);  // local mas global\n", res, stack.getVariableWithContext($1, contexto).getDireccion());
 				gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
 				gc("\tR%d=R%d+R%d;\n", res, res, add);
 				$$ = res;
@@ -527,8 +526,8 @@ suma:
 				int res, add;
 				res = mem.devuelveRegistroLibre();
 				add = mem.devuelveRegistroLibre();
-				gc("\tR%d=I(R7+%d); // local mas local\n", res, pila-stack.getVariable($1).getDireccion());
-				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariable($3).getDireccion());
+				gc("\tR%d=I(R6-%d); // local mas local\n", res, stack.getVariableWithContext($1, contexto).getDireccion());
+				gc("\tR%d=I(R6-%d);\n", add, stack.getVariableWithContext($3, contexto).getDireccion());
 				gc("\tR%d=R%d+R%d;\n", res, res, add);
 				$$ = res;
 				mem.liberaRegistro(add);
@@ -588,7 +587,7 @@ resta:
 				res = mem.devuelveRegistroLibre();
 				add = mem.devuelveRegistroLibre();
 				gc("\tR%d=I(0x%x); // global menos local\n", res, stack.getVariable($1).getDireccion());
-				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariable($3).getDireccion());
+				gc("\tR%d=I(R6-%d);\n", add, stack.getVariableWithContext($3, contexto).getDireccion());
 				gc("\tR%d=R%d-R%d;\n", res, res, add);
 				$$ = res;
 				mem.liberaRegistro(add);
@@ -602,7 +601,7 @@ resta:
 				int res, add;
 				res = mem.devuelveRegistroLibre();
 				add = mem.devuelveRegistroLibre();
-				gc("\tR%d=I(R7+%d);  // local menos global\n", res, pila-stack.getVariable($1).getDireccion());
+				gc("\tR%d=I(R6-%d);  // local menos global\n", res, stack.getVariableWithContext($1, contexto).getDireccion());
 				gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
 				gc("\tR%d=R%d-R%d;\n", res, res, add);
 				$$ = res;
@@ -615,17 +614,17 @@ resta:
 				int res, add;
 				res = mem.devuelveRegistroLibre();
 				add = mem.devuelveRegistroLibre();
-				gc("\tR%d=I(R7+%d); // local menos local\n", res, pila-stack.getVariable($1).getDireccion());
-				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariable($3).getDireccion());
+				gc("\tR%d=I(R6-%d); // local menos local\n", res, stack.getVariableWithContext($1, contexto).getDireccion());
+				gc("\tR%d=I(R6-%d);\n", add, stack.getVariableWithContext($3, contexto).getDireccion());
 				gc("\tR%d=R%d-R%d;\n", res, res, add);
 				$$ = res;
 				mem.liberaRegistro(add);
 			}
 	}
 	}
-	;
+	
 	}
-	| NUMERO RESTA NUMERO 
+	|NUMERO RESTA NUMERO
 	{
 		if (mem.getStat()==mem.getCode()+1){
 			gc("CODE(%d)\n", mem.getCode());
@@ -648,6 +647,7 @@ multiplicacion:
 	if(strcmp(stack.getVariable($1).getTipo(), "ent")==0 && strcmp(stack.getVariable($3).getTipo(), "ent")==0){
 		if(strcmp(stack.getVariable($1).getContext(), global)==0){
 			if(strcmp(stack.getVariable($3).getContext(), global)==0){
+				//$1 y $3 globales
 				if (mem.getStat()==mem.getCode()+1){
 					gc("CODE(%d)\n", mem.getCode());
 					mem.incrementCode();
@@ -661,6 +661,7 @@ multiplicacion:
 				$$ = res;
 				mem.liberaRegistro(add);
 			} else {
+				//$1 global y $3 local
 				if (mem.getStat()==mem.getCode()+1){
 					gc("CODE(%d)\n", mem.getCode());
 					mem.incrementCode();
@@ -669,13 +670,14 @@ multiplicacion:
 				res = mem.devuelveRegistroLibre();
 				add = mem.devuelveRegistroLibre();
 				gc("\tR%d=I(0x%x); // global por local\n", res, stack.getVariable($1).getDireccion());
-				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariable($3).getDireccion());
+				gc("\tR%d=I(R6-%d);\n", add, stack.getVariableWithContext($3, contexto).getDireccion());
 				gc("\tR%d=R%*R%d;\n", res, res, add);
 				$$ = res;
 				mem.liberaRegistro(add);
 			}
 		} else {
 			if(strcmp(stack.getVariable($3).getContext(), global)==0){
+				//$3 global y $1 local
 				if (mem.getStat()==mem.getCode()+1){
 					gc("CODE(%d)\n", mem.getCode());
 					mem.incrementCode();
@@ -683,12 +685,13 @@ multiplicacion:
 				int res, add;
 				res = mem.devuelveRegistroLibre();
 				add = mem.devuelveRegistroLibre();
-				gc("\tR%d=I(R7+%d);  // local por global\n", res, pila-stack.getVariable($1).getDireccion());
+				gc("\tR%d=I(R6-%d);  // local por global\n", res, stack.getVariableWithContext($1,contexto).getDireccion());
 				gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
 				gc("\tR%d=R%d*R%d;\n", res, res, add);
 				$$ = res;
 				mem.liberaRegistro(add);
 			} else {
+				//$1 y $3 locales
 				if (mem.getStat()==mem.getCode()+1){
 					gc("CODE(%d)\n", mem.getCode());
 					mem.incrementCode();
@@ -696,8 +699,8 @@ multiplicacion:
 				int res, add;
 				res = mem.devuelveRegistroLibre();
 				add = mem.devuelveRegistroLibre();
-				gc("\tR%d=I(R7+%d); // local por local\n", res, pila-stack.getVariable($1).getDireccion());
-				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariable($3).getDireccion());
+				gc("\tR%d=I(R6-%d); // local por local\n", res, stack.getVariableWithContext($1, contexto).getDireccion());
+				gc("\tR%d=I(R6-%d);\n", add, stack.getVariableWithContext($3, contexto).getDireccion());
 				gc("\tR%d=R%d*R%d;\n", res, res, add);
 				$$ = res;
 				mem.liberaRegistro(add);
@@ -751,7 +754,7 @@ division:
 				res = mem.devuelveRegistroLibre();
 				add = mem.devuelveRegistroLibre();
 				gc("\tR%d=I(0x%x); // global dividido por local\n", res, stack.getVariable($1).getDireccion());
-				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariable($3).getDireccion());
+				gc("\tR%d=I(R6-%d);\n", add, stack.getVariableWithContext($3, contexto).getDireccion());
 				gc("\tR%d=R%/R%d;\n", res, res, add);
 				$$ = res;
 				mem.liberaRegistro(add);
@@ -765,7 +768,7 @@ division:
 				int res, add;
 				res = mem.devuelveRegistroLibre();
 				add = mem.devuelveRegistroLibre();
-				gc("\tR%d=I(R7+%d);  // local dividido por global\n", res, pila-stack.getVariable($1).getDireccion());
+				gc("\tR%d=I(R6-%d);  // local dividido por global\n", res, stack.getVariableWithContext($1, contexto).getDireccion());
 				gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
 				gc("\tR%d=R%d/R%d;\n", res, res, add);
 				$$ = res;
@@ -778,8 +781,8 @@ division:
 				int res, add;
 				res = mem.devuelveRegistroLibre();
 				add = mem.devuelveRegistroLibre();
-				gc("\tR%d=I(R7+%d); // local dividido por local\n", res, pila-stack.getVariable($1).getDireccion());
-				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariable($3).getDireccion());
+				gc("\tR%d=I(R6-%d); // local dividido por local\n", res, stack.getVariableWithContext($1, contexto).getDireccion());
+				gc("\tR%d=I(R6-%d);\n", add, stack.getVariableWithContext($3, contexto).getDireccion());
 				gc("\tR%d=R%d/R%d;\n", res, res, add);
 				$$ = res;
 				mem.liberaRegistro(add);
