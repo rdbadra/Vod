@@ -1,11 +1,11 @@
 declar ent p;
 declar ent r;
 declar cad esp = "#";
-declar cad ene = "n- #";
-declar cad ere = "r-- #";
-declar cad in = "dentro #";
-declar cad f11 = "f1-- ";
-declar cad f22 = " f2-- ";
+declar cad ene = "n: ";
+declar cad ere = "r: ";
+declar cad in = "dentro ";
+declar cad f11 = "f1: ";
+declar cad f22 = " f2: ";
 declar ent uno;
 uno = 1;
 declar ent dos;
@@ -21,13 +21,6 @@ funcion fibo(){
 
 	si(n < dos){
 		r = n;
-		imprimir(ene);
-		imprimir(ere);
-		imprimir(r);
-		imprimir(esp);
-	}
-	si(n < cero){
-		r = cero;
 	}
 	si(n > uno){
 		p = n - uno;
@@ -37,16 +30,12 @@ funcion fibo(){
 		fibo();
 		f2 = r;
 		r = f1 + f2;
-		imprimir(f11);
-		imprimir(ere);
-		imprimir(r);
-		imprimir(esp);
 	}
 }
 declar ent i;
 declar ent max;
 i = 0;
-max = 8;
+max = 6;
 mientras(i < max){
 	p = i;
 	fibo();

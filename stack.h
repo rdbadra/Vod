@@ -3,17 +3,18 @@
 class Stack {
 
 	public:
-		void addVariable(const char *name, const char *type, const char* c, int direc, int s);
+		void addVariable(const char *name, const char *type, const char* c, int amb, int direc, int s);
 		Variable getVariable(const char *name);
+		Variable getVariableWithContext(const char *name, int context);
 		void addFuncion(const char *name, int etiqueta);
 		Funcion getFuncion(const char *name);
 
 		int size(void);
 		void printStack(void);
-		void setDirection(const char *name, const char *type, const char* c, int direc, int s);
 		bool existsVariable(const char *name);
 		bool existsFuncion(const char *name);
-		void cleanDinamicStack(const char * name);
+		void cleanDinamicStack(int context);
+		int getLastPosition();
 
 	private:
 		std::vector<Variable> variableStack;

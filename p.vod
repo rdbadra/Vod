@@ -1,0 +1,6 @@
+funcion a(){
+	declar ent a;
+	a = 5;
+	imprimir(a);
+}
+a();

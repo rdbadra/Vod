@@ -16,6 +16,7 @@ void Stack::printStack(void){
 		cout << "name: " << el.getName();
 		cout << " type: " << el.getTipo();
 		cout << " context: " << el.getContext();
+		cout << " ambito: " << el.getAmbito();
 		cout << " address: " << el.getDireccion();
 		cout << endl;
 	}
@@ -31,15 +32,21 @@ void Stack::printStack(void){
 	cout << "END" << endl;
 }
 
+int Stack::getLastPosition(){
+	int size = variableStack.size();
+	return variableStack.at(size-1).getDireccion();
+
+}
+
 
 int Stack::size(void){
 	return (variableStack.size() + funcionStack.size());
 }
 
-void Stack::cleanDinamicStack(const char * name){
+void Stack::cleanDinamicStack(int context){
 	int size = variableStack.size();
 	for(int i = 0; i < size; i++){
-		if(strcmp(variableStack.at(i).getContext(), name)==0){
+		if(variableStack.at(i).getAmbito()==context){
 			size--;
 			variableStack.erase(variableStack.begin()+i);
 			i--;
@@ -48,19 +55,9 @@ void Stack::cleanDinamicStack(const char * name){
 
 }
 
-void Stack::addVariable(const char *name, const char *type, const char* c, int direc, int s){
+void Stack::addVariable(const char *name, const char *type, const char* c, int amb, int direc, int s){
 	//hay que comprobar si ya esta en la tabla
-	variableStack.push_back(Variable(name, type, c, direc, s));
-}
-
-void Stack::setDirection(const char *name, const char *type, const char* c, int direc, int s){
-	int size = variableStack.size();
-	for(int i = 0; i < size; i++){
-		if(strcmp(variableStack.at(i).getName(), name)==0){
-			variableStack.erase(variableStack.begin()+i);
-		}
-	}
-	variableStack.push_back(Variable(name, type, c, direc, s));
+	variableStack.push_back(Variable(name, type, c, amb, direc, s));
 }
 
 void Stack::addFuncion(const char *name, int etiqueta){
@@ -84,6 +81,13 @@ bool Stack::existsFuncion(const char *name){
 		if(strcmp(funcionStack.at(i).getName(), name)==0) return true;
 	}
 	return false;
+}
+Variable Stack::getVariableWithContext(const char *name, int context){
+	int size = variableStack.size();
+	for(int i = 0; i < size; i++){
+		if(strcmp(variableStack.at(i).getName(), name)==0 && variableStack.at(i).getAmbito()==context) return variableStack.at(i);
+	}
+
 }
 
 Variable Stack::getVariable(const char *name){

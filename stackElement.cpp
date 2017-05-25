@@ -6,12 +6,17 @@
 
 using namespace std;
 //variable
-Variable::Variable(const char* n, const char* t, const char* c, int d, int s){
+Variable::Variable(const char* n, const char* t, const char* c, int amb, int d, int s){
 	strcpy(name, n);
 	strcpy(tipo, t);
 	strcpy(context, c);
 	direccion = d;
+	ambito = amb;
 	size = s;
+}
+
+int Variable::getAmbito(){
+	return ambito;
 }
 
 char* Variable::getName(){

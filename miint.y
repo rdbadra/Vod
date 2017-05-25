@@ -11,6 +11,7 @@
 
 
 // stuff from flex that bison needs to know about:
+int contexto = 0;
 extern int yylex();
 extern int yyparse();
 extern FILE *yyin;
@@ -422,7 +423,7 @@ imprime:
 				int ret, numero;
 				ret = mem.devuelveRegistroLibre();
 				numero = mem.devuelveRegistroLibre();
-				gc("\tR%d=%d;\n", ret, etiqueta);
+				gc("\tR%d=%d;		// imprimimos ent global\n", ret, etiqueta);
 				gc("\tR%d=I(0x%x);\n", numero, stack.getVariable($3).getDireccion());
 				gc("\tGT(-13);\nL %d:\n", etiqueta);
 				etiqueta++;
@@ -432,7 +433,7 @@ imprime:
 				int ret, numero;
 				ret = mem.devuelveRegistroLibre();
 				numero = mem.devuelveRegistroLibre();
-				gc("\tR%d=%d;\n", ret, etiqueta);
+				gc("\tR%d=%d;		// imprimimos ent local\n", ret, etiqueta);
 				gc("\tR%d=I(R7+%d);\n", numero, pila-stack.getVariable($3).getDireccion());
 				gc("\tGT(-13);\nL %d:\n", etiqueta);
 				etiqueta++;
@@ -451,9 +452,9 @@ callfunc:
 				gc("CODE(%d)\n", mem.getCode());
 				mem.incrementCode();
 	}
-	gc("\tR7=R7-8;\n");
-	gc("\tP(R7+4)=R6;\n");	
-	gc("\tP(R7)=%d;\n", etiqueta);
+	gc("\tR7=R7-8;  	// vamos a llamar a la funcion\n");
+	gc("\tP(R7+4)=R6;	// guardamos R6\n");		
+	gc("\tP(R7)=%d;		// guardamos etiqueta de retorno\n", etiqueta);
 	gc("\tGT(%d);\n", stack.getFuncion($1).getEtiqueta());
 	gc("L %d:\n", etiqueta, pila);
 	pila = 0;
@@ -834,12 +835,14 @@ declarefunc:
 			gc("CODE(%d)\n", mem.getCode());
 			mem.incrementCode();
 		}
-		mem.setAmbito($2);
+		
 		int etiq = etiqueta;
 		etiqueta++;
+		contexto++;
 		stack.addFuncion($2, etiq);
+		mem.setAmbito($2);
 		etiqFunc = etiqueta;
-		gc("\tGT(%d);\n", etiqueta);
+		gc("\tGT(%d);		// se declara la funcion\n", etiqueta);
 		gc("L %d:\n", etiq);
 		gc("\tR6=R7;\n");	
 		etiqueta++;
@@ -853,11 +856,14 @@ declarefunc:
 	}
 	gc("\tR7=R6;\n");
 	gc("\tR6=P(R7+4);\n");
-	gc("\tR5=P(R7);\n");
+	gc("\tR5=P(R7);			// se coge la etiqueta de retorno\n");
+	int last = stack.getLastPosition();
+	gc("\tR7=R7+8;\n");
 	gc("\tGT(R5);\n");
 	gc("L %d: \n", etiqFunc);
-	stack.cleanDinamicStack($2);
+	stack.cleanDinamicStack(contexto);
 	mem.setAmbito(global);
+	contexto--;
 	}	
 	;
 
@@ -865,7 +871,7 @@ declareent:
 	DECLAR ENT IDENTIFICADOR	
 	{
 	$$ = 4;
-	if(stack.existsVariable($3)){
+	if(stack.existsVariable($3) && strcmp(stack.getVariable($3).getContext(),global)==0 || stack.existsVariable($3) && stack.getVariable($3).getAmbito()==contexto){
 		printf("ya existe %s\n", $3);
 		yyerror("syntax error");
 	} else {
@@ -875,12 +881,12 @@ declareent:
 			mem.incrementStat();
 			}
 			int dir = mem.cogerDireccionDeMemoriaEnt();
-			stack.addVariable($3, "ent", mem.getAmbito(), dir, 4);	
-			gc("\tMEM(0x%x, %d);\n", dir, 4);
+			stack.addVariable($3, "ent", mem.getAmbito(), contexto, dir, 4);	
+			gc("\tMEM(0x%x, %d);		// declaramos variables ent globales\n", dir, 4);
 		} else {
 			pila += 4;
-			gc("\tR7=R7-%d; //declaramos variables locales pila: %d\n", 4, pila);
-			stack.addVariable($3, "ent", mem.getAmbito(), pila, 4);	
+			gc("\tR7=R7-%d; 		//declaramos variables locales pila: %d\n", 4, pila);
+			stack.addVariable($3, "ent", mem.getAmbito(), contexto, pila, 4);	
 			//pila += 4;
 		}
 		
@@ -909,7 +915,7 @@ declarecad:
 			mem.incrementStat();
 		}
 		gc("\tMEM(0x%x, %d);\n", dir, strlen(h));
-		stack.addVariable($3, "cad", mem.getAmbito(), dir, strlen(h));
+		stack.addVariable($3, "cad", mem.getAmbito(), contexto, dir, strlen(h));
 				if (mem.getStat()==mem.getCode()+1){
 			gc("CODE(%d)\n", mem.getCode());
 			mem.incrementCode();
@@ -938,7 +944,7 @@ declarecad:
 				mem.incrementStat();
 			}
 			gc("\tMEM(0x%x, %d);\n", dir, size);
-			stack.addVariable($3, "cad", mem.getAmbito(), dir, size);
+			stack.addVariable($3, "cad", mem.getAmbito(), contexto, dir, size);
 					if (mem.getStat()==mem.getCode()+1){
 				gc("CODE(%d)\n", mem.getCode());
 				mem.incrementCode();
@@ -1000,7 +1006,7 @@ inicializarent:
 				res = mem.devuelveRegistroLibre();
 				add = mem.devuelveRegistroLibre();
 				gc("\tR%d=0x%x; //global gets local value\n", res, stack.getVariable($1).getDireccion());
-				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariable($3).getDireccion());
+				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariableWithContext($3, contexto).getDireccion());
 				gc("\tI(R%d)=R%d;\n", res, add);
 				mem.liberaRegistro(add);
 				mem.liberaRegistro(res);
@@ -1010,7 +1016,7 @@ inicializarent:
 				int res, add;
 				res = mem.devuelveRegistroLibre();
 				add = mem.devuelveRegistroLibre();
-				gc("\tR%d=R7+%d; //local gets global value \n", res, pila-stack.getVariable($1).getDireccion());
+				gc("\tR%d=R7+%d; //local gets global value \n", res, pila-stack.getVariableWithContext($1, contexto).getDireccion());
 				gc("\tR%d=I(0x%x);\n", add, stack.getVariable($3).getDireccion());
 				gc("\tI(R%d)=R%d;\n", res, add);
 				mem.liberaRegistro(add);
@@ -1019,8 +1025,8 @@ inicializarent:
 				int res, add;
 				res = mem.devuelveRegistroLibre();
 				add = mem.devuelveRegistroLibre();
-				gc("\tR%d=R7+%d; //local gets local value\n", res, pila-stack.getVariable($1).getDireccion());
-				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariable($3).getDireccion());
+				gc("\tR%d=R7+%d; //local gets local value\n", res, pila-stack.getVariableWithContext($1, contexto).getDireccion());
+				gc("\tR%d=I(R7+%d);\n", add, pila-stack.getVariableWithContext($3, contexto).getDireccion());
 				gc("\tI(R%d)=R%d;\n", res, add);
 				mem.liberaRegistro(add);
 				mem.liberaRegistro(res);
@@ -1042,7 +1048,7 @@ inicializarent:
 		}
 		if(strcmp(stack.getVariable($1).getContext(), global)==0){
 			int id=mem.devuelveRegistroLibre();
-			gc("\tR%d=0x%x;\n", id, stack.getVariable($1).getDireccion());
+			gc("\tR%d=0x%x;		// Se asigna valor ent a variable global\n", id, stack.getVariable($1).getDireccion());
 			int val = mem.devuelveRegistroLibre();
 			gc("\tR%d=%d;\n", val, $3);
 			gc("\tI(R%d)=R%d;\n", id, val);
@@ -1050,7 +1056,7 @@ inicializarent:
 			mem.liberaRegistro(val);
 		} else {
 			int id=mem.devuelveRegistroLibre();
-			gc("\tR%d=R7+%d;\n", id, pila-stack.getVariable($1).getDireccion());
+			gc("\tR%d=R7+%d;	// Se asigna valor ent a variable local\n", id, pila-stack.getVariableWithContext($1, contexto).getDireccion());
 			int val = mem.devuelveRegistroLibre();
 			gc("\tR%d=%d;\n", val, $3);
 			gc("\tI(R%d)=R%d;\n", id, val);

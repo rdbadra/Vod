@@ -5,12 +5,14 @@ class Variable {
 		char* getContext();
 		int getDireccion();
 		int getSize();
-		Variable(const char* n, const char* t, const char* c, int d, int s);
+		int getAmbito();
+		Variable(const char* n, const char* t, const char* c, int amb, int d, int s);
 
 	private:
 		char name[20];
 		char tipo[10];
 		char context[20];
+		int ambito;
 		int direccion;
 		int size;
 };
