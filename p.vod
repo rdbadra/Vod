@@ -1,23 +1,8 @@
-declar cad ccc = "#";
-	declar ent a;
-	a=2- 5;
+
 funcion a(){
-
-	declar ent b;
-
-	a=2 - 5;
-	declar ent c;
-	declar ent r;
-	declar ent f;
-	declar ent 1d;
-	c=777;
-	
-	1d=c-a;
-	imprimir(a);
-	imprimir(ccc);
-	imprimir(c);
-	imprimir(ccc);
-	imprimir(1d);
+	declar cad ccc = "#";
+	declar ent a;
+	declar cad b = "hola";
 	imprimir(ccc);
 }
 a();

@@ -178,7 +178,7 @@ L 9:
 	R1=I(0x11ff8);
 	GT(-13);
 L 10:
-	R0=11;
+	R0=11;		// imprimimimos cad global
 	R1=U(0x11ff7+0);
 	GT(-12);
 L 11:

@@ -18,7 +18,6 @@ extern FILE *yyin;
 char global[7] = "global";
 GestorDeMemoria mem;
 Stack stack;
-int pila = 0;
 int etiqueta = 0;
 int etiqFunc = 0;
 void yyerror(const char *s);
@@ -404,18 +403,33 @@ imprime:
 		}		
 		if(strcmp(stack.getVariable($3).getTipo(), "cad")==0){
 			//imprimir cadena
-			int ret, ristra;
-			ret = mem.devuelveRegistroLibre();
-			ristra = mem.devuelveRegistroLibre();
-			int size = stack.getVariable($3).getSize();
-			for(int i = 0; i < size; i++){
-				gc("\tR%d=%d;\n", ret, etiqueta);
-				gc("\tR%d=U(0x%x+%d);\n", ristra, stack.getVariable($3).getDireccion(), i);
-				gc("\tGT(-12);\nL %d:\n", etiqueta);
-				etiqueta++;	
+			if(strcmp(stack.getVariable($3).getContext(), global)==0){
+				int ret, ristra;
+				ret = mem.devuelveRegistroLibre();
+				ristra = mem.devuelveRegistroLibre();
+				int size = stack.getVariable($3).getSize();
+				for(int i = 0; i < size; i++){
+					gc("\tR%d=%d;		// imprimimimos cad global\n", ret, etiqueta);
+					gc("\tR%d=U(0x%x+%d);\n", ristra, stack.getVariable($3).getDireccion(), i);
+					gc("\tGT(-12);\nL %d:\n", etiqueta);
+					etiqueta++;	
+				}
+				mem.liberaRegistro(ret);
+				mem.liberaRegistro(ristra);
+			} else {
+				int ret, ristra;
+				ret = mem.devuelveRegistroLibre();
+				ristra = mem.devuelveRegistroLibre();
+				int size = stack.getVariable($3).getSize();
+				for(int i = 0; i < size; i++){
+					gc("\tR%d=%d;		// imprimimimos cad local\n", ret, etiqueta);
+					gc("\tR%d=U(R6-%d);\n", ristra, stack.getVariableWithContext($3, contexto).getDireccion()- i);
+					gc("\tGT(-12);\nL %d:\n", etiqueta);
+					etiqueta++;	
+				}
+				mem.liberaRegistro(ret);
+				mem.liberaRegistro(ristra);
 			}
-			mem.liberaRegistro(ret);
-			mem.liberaRegistro(ristra);
 		}
 		else{
 			//imprimir numero
@@ -903,33 +917,60 @@ declarecad:
 		printf("ya existe %s\n", $3);
 		yyerror("syntax error");
 	} else {
-		int size = strlen($5);
-		char h[size-2];
-		for(int i = 0; i < size-2; i++){
-			h[i] = $5[i+1];
+		if(strcmp(mem.getAmbito(), global)==0){
+			int size = strlen($5);
+			char h[size-2];
+			for(int i = 0; i < size-2; i++){
+				h[i] = $5[i+1];
+			}
+			h[size-2] = '\0';
+			$$ = strlen(h);
+			int dir = mem.cogerDireccionDeMemoriaCad(strlen(h));
+			if (mem.getStat()==mem.getCode()){
+				gc("STAT(%d)\n", mem.getStat());
+				mem.incrementStat();
+			}
+			gc("\tMEM(0x%x, %d);\n", dir, strlen(h));
+			stack.addVariable($3, "cad", mem.getAmbito(), contexto, dir, strlen(h));
+					if (mem.getStat()==mem.getCode()+1){
+				gc("CODE(%d)\n", mem.getCode());
+				mem.incrementCode();
+			}
+			int id=mem.devuelveRegistroLibre();
+			gc("\tR%d=0x%x;\n", id, stack.getVariable($3).getDireccion());
+			int val = mem.devuelveRegistroLibre();
+			for(int i = 0; i < strlen(h); i++){
+				gc("\tR%d=%d;\n", val, h[i]);
+				gc("\tU(R%d+%d)=R%d;\n", id,i, val);
+			}
+			mem.liberaRegistro(id);
+			mem.liberaRegistro(val);
+		} else {
+			int size = strlen($5);
+			char h[size-2];
+			for(int i = 0; i < size-2; i++){
+				h[i] = $5[i+1];
+			}
+			h[size-2] = '\0';
+			$$ = strlen(h);
+			if (mem.getStat()==mem.getCode()+1){
+				gc("CODE(%d)\n", mem.getCode());
+				mem.incrementCode();
+			}
+			stack.setPila($$, stack.getFuncion(mem.getAmbito()).getEtiqueta(), stack.getFuncion(mem.getAmbito()).getName());
+			gc("\tR7=R7-%d;		// declaramos cad local %s pila: %d\n",strlen(h),$3, stack.getFuncion(mem.getAmbito()).getPila());
+			stack.addVariable($3, "cad", mem.getAmbito(), contexto, stack.getFuncion(mem.getAmbito()).getPila(), strlen(h));
+
+			int id=mem.devuelveRegistroLibre();
+			gc("\tR%d=R6-%d;\n", id, stack.getVariableWithContext($3, contexto).getDireccion());
+			int val = mem.devuelveRegistroLibre();
+			for(int i = 0; i < strlen(h); i++){
+				gc("\tR%d=%d;\n", val, h[i]);
+				gc("\tU(R%d+%d)=R%d;\n", id,i, val);
+			}
+			mem.liberaRegistro(id);
+			mem.liberaRegistro(val);
 		}
-		h[size-2] = '\0';
-		$$ = strlen(h);
-		int dir = mem.cogerDireccionDeMemoriaCad(strlen(h));
-		if (mem.getStat()==mem.getCode()){
-			gc("STAT(%d)\n", mem.getStat());
-			mem.incrementStat();
-		}
-		gc("\tMEM(0x%x, %d);\n", dir, strlen(h));
-		stack.addVariable($3, "cad", mem.getAmbito(), contexto, dir, strlen(h));
-				if (mem.getStat()==mem.getCode()+1){
-			gc("CODE(%d)\n", mem.getCode());
-			mem.incrementCode();
-		}
-		int id=mem.devuelveRegistroLibre();
-		gc("\tR%d=0x%x;\n", id, stack.getVariable($3).getDireccion());
-		int val = mem.devuelveRegistroLibre();
-		for(int i = 0; i < strlen(h); i++){
-			gc("\tR%d=%d;\n", val, h[i]);
-			gc("\tU(R%d+%d)=R%d;\n", id,i, val);
-		}
-		mem.liberaRegistro(id);
-		mem.liberaRegistro(val);
 	}
 	}
 	|
