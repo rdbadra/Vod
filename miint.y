@@ -457,6 +457,43 @@ imprime:
 		}	
 	}
 	}
+	| IMPRIMIR ABREPAR RISTRA CIERRAPAR
+	{
+		int size = strlen($3);
+		char h[size-2];
+		for(int i = 0; i < size-2; i++){
+			h[i] = $3[i+1];
+		}
+		h[size-2] = '\0';
+		size = strlen(h);
+		if (mem.getStat()==mem.getCode()+1){
+			gc("CODE(%d)\n", mem.getCode());
+			mem.incrementCode();
+		}
+		gc("\tR7=R7-%d;		// declaramos cad dinamico \n",strlen(h));
+
+		int val = mem.devuelveRegistroLibre();
+		for(int i = 0; i < strlen(h); i++){
+			gc("\tR%d=%d;\n", val, h[i]);
+			gc("\tU(R7+%d)=R%d;\n", i, val);
+		}
+		mem.liberaRegistro(id);
+		mem.liberaRegistro(val);
+
+
+		int ret, ristra;
+		ret = mem.devuelveRegistroLibre();
+		ristra = mem.devuelveRegistroLibre();
+	
+		for(int i = 0; i < size; i++){
+			gc("\tR%d=%d;		// imprimimimos cad dinamico\n", ret, etiqueta);
+			gc("\tR%d=U(R7+%d);\n", ristra, i);
+			gc("\tGT(-12);\nL %d:\n", etiqueta);
+			etiqueta++;	
+		}
+		mem.liberaRegistro(ret);
+		mem.liberaRegistro(ristra);
+	}
 	;
 
 callfunc:
@@ -908,6 +945,53 @@ declareent:
 		}	
 	}
 	}
+	| DECLAR ENT IDENTIFICADOR ASIGNACION NUMERO
+	{
+	$$ = 4;
+	if(stack.existsVariable($3) && strcmp(stack.getVariable($3).getContext(),global)==0 || stack.existsVariable($3) && stack.getVariable($3).getAmbito()==contexto){
+		printf("ya existe %s\n", $3);
+		yyerror("syntax error");
+	} else {
+		if(strcmp(mem.getAmbito(), global)==0){
+			// Variable global
+			if (mem.getStat()==mem.getCode()){
+			gc("STAT(%d)\n", mem.getStat());
+			mem.incrementStat();
+			}
+			int dir = mem.cogerDireccionDeMemoriaEnt();
+			stack.addVariable($3, "ent", mem.getAmbito(), contexto, dir, 4);	
+			gc("\tMEM(0x%x, %d);		// declaramos variables ent globales %s\n", dir, 4, $3);
+			if (mem.getStat()==mem.getCode()+1){
+				gc("CODE(%d)\n", mem.getCode());
+				mem.incrementCode();
+			}
+			int id=mem.devuelveRegistroLibre();
+			gc("\tR%d=0x%x;		// Se asigna valor ent a variable global\n", id, stack.getVariable($3).getDireccion());
+			int val = mem.devuelveRegistroLibre();
+			gc("\tR%d=%d;\n", val, $5);
+			gc("\tI(R%d)=R%d;\n", id, val);
+			mem.liberaRegistro(id);
+			mem.liberaRegistro(val);
+		} else {
+			// Variable local
+			stack.setPila(4, stack.getFuncion(mem.getAmbito()).getEtiqueta(), stack.getFuncion(mem.getAmbito()).getName());
+			gc("\tR7=R7-%d; 		//declaramos variables locales %s pila: %d\n", 4,$3, stack.getFuncion(mem.getAmbito()).getPila());
+			stack.addVariable($3, "ent", mem.getAmbito(), contexto, stack.getFuncion(mem.getAmbito()).getPila(), 4);
+			if (mem.getStat()==mem.getCode()+1){
+				gc("CODE(%d)\n", mem.getCode());
+				mem.incrementCode();
+			}	
+			int id=mem.devuelveRegistroLibre();
+			gc("\tR%d=R6-%d;	// Se asigna valor ent a variable local\n", id, stack.getVariableWithContext($3, contexto).getDireccion());
+			int val = mem.devuelveRegistroLibre();
+			gc("\tR%d=%d;\n", val, $5);
+			gc("\tI(R%d)=R%d;\n", id, val);
+			mem.liberaRegistro(id);
+			mem.liberaRegistro(val);
+		}	
+	}
+
+	}
 	;
 
 declarecad:
@@ -976,39 +1060,193 @@ declarecad:
 	|
 	DECLAR CAD IDENTIFICADOR ASIGNACION identi CONCATENACION identi
 	{
+		if(stack.existsVariable($3)){
+				printf("ya existe %s\n", $3);
+				yyerror("syntax error");
+		}
 		if(strcmp(stack.getVariable($5).getTipo(), "cad")==0 && strcmp(stack.getVariable($7).getTipo(), "cad")==0){
-		
-			int size = stack.getVariable($5).getSize() + stack.getVariable($7).getSize();
-			$$ = size;
-			int dir = mem.cogerDireccionDeMemoriaCad(size);
-			if (mem.getStat()==mem.getCode()){
-				gc("STAT(%d)\n", mem.getStat());
-				mem.incrementStat();
+			if(strcmp(mem.getAmbito(), global)==0){
+				int size = stack.getVariable($5).getSize() + stack.getVariable($7).getSize();
+				$$ = size;
+				int dir = mem.cogerDireccionDeMemoriaCad(size);
+				if (mem.getStat()==mem.getCode()){
+					gc("STAT(%d)\n", mem.getStat());
+					mem.incrementStat();
+				}
+				gc("\tMEM(0x%x, %d);\n", dir, size);
+				stack.addVariable($3, "cad", mem.getAmbito(), contexto, dir, size);
+						if (mem.getStat()==mem.getCode()+1){
+					gc("CODE(%d)\n", mem.getCode());
+					mem.incrementCode();
+				}
+				int reg0 = mem.devuelveRegistroLibre();
+				int reg1 = mem.devuelveRegistroLibre();
+				int reg2 = mem.devuelveRegistroLibre();
+				gc("\tR%d=0x%x;\n", reg0, stack.getVariable($3).getDireccion());
+				gc("\tR%d=0x%x;\n", reg1, stack.getVariable($5).getDireccion());
+				int i;
+				for(i = 0; i < stack.getVariable($5).getSize(); i++){
+					gc("\tR%d=U(R%d+%d);\n", reg2, reg1, i );
+					gc("\tU(R%d+%d)=R%d;\n", reg0, i, reg2 );
+				}
+				gc("\tR%d=0x%x;\n", reg1, stack.getVariable($7).getDireccion());
+				for(i = 0; i < stack.getVariable($7).getSize(); i++){
+					gc("\tR%d=U(R%d+%d);\n", reg2, reg1, i );
+					gc("\tU(R%d+%d)=R%d;\n", reg0, i+stack.getVariable($5).getSize(), reg2 );
+				}
+				mem.liberaRegistro(reg0);
+				mem.liberaRegistro(reg1);
+				mem.liberaRegistro(reg2);
+			} else {
+				//la primera variable es local
+
+				if(strcmp(stack.getVariable($7).getContext(), global)==0){
+					if(strcmp(stack.getVariable($5).getContext(), global)==0){
+						//$7 y $5 globales
+						int size = stack.getVariable($5).getSize() + stack.getVariable($7).getSize();
+						$$ = size;
+						int dir = mem.cogerDireccionDeMemoriaCad(size);
+						if (mem.getStat()==mem.getCode()+1){
+							gc("CODE(%d)\n", mem.getCode());
+							mem.incrementCode();
+						}
+						
+
+						stack.setPila($$, stack.getFuncion(mem.getAmbito()).getEtiqueta(), stack.getFuncion(mem.getAmbito()).getName());
+						gc("\tR7=R7-%d;		// declaramos cad local %s pila: %d\n",$$,$3, stack.getFuncion(mem.getAmbito()).getPila());
+						stack.addVariable($3, "cad", mem.getAmbito(), contexto, stack.getFuncion(mem.getAmbito()).getPila(), $$);
+
+						int reg0 = mem.devuelveRegistroLibre();
+						int reg1 = mem.devuelveRegistroLibre();
+						int reg2 = mem.devuelveRegistroLibre();
+
+						gc("\tR%d=R6-%d;\n", reg0, stack.getVariableWithContext($3, contexto).getDireccion());
+						gc("\tR%d=0x%x;\n", reg1, stack.getVariable($5).getDireccion());
+						int i;
+						for(i = 0; i < stack.getVariable($5).getSize(); i++){
+							gc("\tR%d=U(R%d+%d);\n", reg2, reg1, i );
+							gc("\tU(R%d+%d)=R%d;\n", reg0, i, reg2 );
+						}
+						gc("\tR%d=0x%x;\n", reg1, stack.getVariable($7).getDireccion());
+						for(i = 0; i < stack.getVariable($7).getSize(); i++){
+							gc("\tR%d=U(R%d+%d);\n", reg2, reg1, i );
+							gc("\tU(R%d+%d)=R%d;\n", reg0, i+stack.getVariable($5).getSize(), reg2 );
+						}
+						mem.liberaRegistro(reg0);
+						mem.liberaRegistro(reg1);
+						mem.liberaRegistro(reg2);
+					}
+					else {
+						//$5 local y $7 global
+						int size = stack.getVariableWithContext($5, contexto).getSize() + stack.getVariable($7).getSize();
+						$$ = size;
+						int dir = mem.cogerDireccionDeMemoriaCad(size);
+						if (mem.getStat()==mem.getCode()+1){
+							gc("CODE(%d)\n", mem.getCode());
+							mem.incrementCode();
+						}
+						
+
+						stack.setPila($$, stack.getFuncion(mem.getAmbito()).getEtiqueta(), stack.getFuncion(mem.getAmbito()).getName());
+						gc("\tR7=R7-%d;		// declaramos cad local %s pila: %d\n",$$,$3, stack.getFuncion(mem.getAmbito()).getPila());
+						stack.addVariable($3, "cad", mem.getAmbito(), contexto, stack.getFuncion(mem.getAmbito()).getPila(), $$);
+
+						int reg0 = mem.devuelveRegistroLibre();
+						int reg1 = mem.devuelveRegistroLibre();
+						int reg2 = mem.devuelveRegistroLibre();
+
+						gc("\tR%d=R6-%d;\n", reg0, stack.getVariableWithContext($3, contexto).getDireccion());
+						gc("\tR%d=R6-%d;\n", reg1, stack.getVariableWithContext($5, contexto).getDireccion());
+						int i;
+						for(i = 0; i < stack.getVariableWithContext($5, contexto).getSize(); i++){
+							gc("\tR%d=U(R%d+%d);\n", reg2, reg1, i );
+							gc("\tU(R%d+%d)=R%d;\n", reg0, i, reg2 );
+						}
+						gc("\tR%d=0x%x;\n", reg1, stack.getVariable($7).getDireccion());
+						for(i = 0; i < stack.getVariable($7).getSize(); i++){
+							gc("\tR%d=U(R%d+%d);\n", reg2, reg1, i );
+							gc("\tU(R%d+%d)=R%d;\n", reg0, i+stack.getVariableWithContext($5, contexto).getSize(), reg2 );
+						}
+						mem.liberaRegistro(reg0);
+						mem.liberaRegistro(reg1);
+						mem.liberaRegistro(reg2);
+						
+					}
+				}
+				else {
+					if(strcmp(stack.getVariable($5).getContext(), global)==0){
+						//$7 local y $5 global
+						int size = stack.getVariable($5).getSize() + stack.getVariableWithContext($7, contexto).getSize();
+						$$ = size;
+						int dir = mem.cogerDireccionDeMemoriaCad(size);
+						if (mem.getStat()==mem.getCode()+1){
+							gc("CODE(%d)\n", mem.getCode());
+							mem.incrementCode();
+						}
+						
+
+						stack.setPila($$, stack.getFuncion(mem.getAmbito()).getEtiqueta(), stack.getFuncion(mem.getAmbito()).getName());
+						gc("\tR7=R7-%d;		// declaramos cad local %s pila: %d\n",$$,$3, stack.getFuncion(mem.getAmbito()).getPila());
+						stack.addVariable($3, "cad", mem.getAmbito(), contexto, stack.getFuncion(mem.getAmbito()).getPila(), $$);
+
+						int reg0 = mem.devuelveRegistroLibre();
+						int reg1 = mem.devuelveRegistroLibre();
+						int reg2 = mem.devuelveRegistroLibre();
+
+						gc("\tR%d=R6-%d;\n", reg0, stack.getVariableWithContext($3, contexto).getDireccion());
+						gc("\tR%d=0x%x;\n", reg1, stack.getVariable($5).getDireccion());
+						int i;
+						for(i = 0; i < stack.getVariable($5).getSize(); i++){
+							gc("\tR%d=U(R%d+%d);\n", reg2, reg1, i );
+							gc("\tU(R%d+%d)=R%d;\n", reg0, i, reg2 );
+						}
+						gc("\tR%d=R6-%d;\n", reg1, stack.getVariableWithContext($7, contexto).getDireccion());
+						for(i = 0; i < stack.getVariableWithContext($7, contexto).getSize(); i++){
+							gc("\tR%d=U(R%d+%d);\n", reg2, reg1, i );
+							gc("\tU(R%d+%d)=R%d;\n", reg0, i+stack.getVariable($5).getSize(), reg2 );
+						}
+						mem.liberaRegistro(reg0);
+						mem.liberaRegistro(reg1);
+						mem.liberaRegistro(reg2);
+
+					}
+					else {
+						//$5 y $7 locales
+						int size = stack.getVariableWithContext($5, contexto).getSize() + stack.getVariableWithContext($7, contexto).getSize();
+						$$ = size;
+						int dir = mem.cogerDireccionDeMemoriaCad(size);
+						if (mem.getStat()==mem.getCode()+1){
+							gc("CODE(%d)\n", mem.getCode());
+							mem.incrementCode();
+						}
+						
+						stack.setPila($$, stack.getFuncion(mem.getAmbito()).getEtiqueta(), stack.getFuncion(mem.getAmbito()).getName());
+						gc("\tR7=R7-%d;		// declaramos cad local %s pila: %d\n",$$, $3, stack.getFuncion(mem.getAmbito()).getPila());
+						stack.addVariable($3, "cad", mem.getAmbito(), contexto, stack.getFuncion(mem.getAmbito()).getPila(), $$);
+
+						int reg0 = mem.devuelveRegistroLibre();
+						int reg1 = mem.devuelveRegistroLibre();
+						int reg2 = mem.devuelveRegistroLibre();
+
+						gc("\tR%d=R6-%d;\n", reg0, stack.getVariableWithContext($3, contexto).getDireccion());
+						gc("\tR%d=R6-%d;\n", reg1, stack.getVariableWithContext($5, contexto).getDireccion());
+						int i;
+						for(i = 0; i < stack.getVariableWithContext($5, contexto).getSize(); i++){
+							gc("\tR%d=U(R%d+%d);\n", reg2, reg1, i );
+							gc("\tU(R%d+%d)=R%d;\n", reg0, i, reg2 );
+						}
+						gc("\tR%d=R6-%d;\n", reg1, stack.getVariableWithContext($7, contexto).getDireccion());
+						for(i = 0; i < stack.getVariableWithContext($7, contexto).getSize(); i++){
+							gc("\tR%d=U(R%d+%d);\n", reg2, reg1, i );
+							gc("\tU(R%d+%d)=R%d;\n", reg0, i+stack.getVariableWithContext($5, contexto).getSize(), reg2 );
+						}
+						mem.liberaRegistro(reg0);
+						mem.liberaRegistro(reg1);
+						mem.liberaRegistro(reg2);
+					}
+				}
+
 			}
-			gc("\tMEM(0x%x, %d);\n", dir, size);
-			stack.addVariable($3, "cad", mem.getAmbito(), contexto, dir, size);
-					if (mem.getStat()==mem.getCode()+1){
-				gc("CODE(%d)\n", mem.getCode());
-				mem.incrementCode();
-			}
-			int reg0 = mem.devuelveRegistroLibre();
-			int reg1 = mem.devuelveRegistroLibre();
-			int reg2 = mem.devuelveRegistroLibre();
-			gc("\tR%d=0x%x;\n", reg0, stack.getVariable($3).getDireccion());
-			gc("\tR%d=0x%x;\n", reg1, stack.getVariable($5).getDireccion());
-			int i;
-			for(i = 0; i < stack.getVariable($5).getSize(); i++){
-				gc("\tR%d=U(R%d+%d);\n", reg2, reg1, i );
-				gc("\tU(R%d+%d)=R%d;\n", reg0, i, reg2 );
-			}
-			gc("\tR%d=0x%x;\n", reg1, stack.getVariable($7).getDireccion());
-			for(i = 0; i < stack.getVariable($7).getSize(); i++){
-				gc("\tR%d=U(R%d+%d);\n", reg2, reg1, i );
-				gc("\tU(R%d+%d)=R%d;\n", reg0, i+stack.getVariable($5).getSize(), reg2 );
-			}
-			mem.liberaRegistro(reg0);
-			mem.liberaRegistro(reg1);
-			mem.liberaRegistro(reg2);
 		}
 		
 	}
