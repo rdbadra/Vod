@@ -483,10 +483,10 @@ static const yytype_uint16 yyrline[] =
        0,    57,    57,    57,    72,    73,    74,    75,    78,    79,
       80,    81,    82,    83,    84,    88,    93,    94,    95,    96,
       97,    98,   100,   107,   111,   106,   125,   131,   124,   144,
-     206,   268,   330,   394,   460,   502,   518,   522,   523,   524,
-     525,   529,   592,   610,   611,   612,   613,   617,   680,   698,
-     765,   784,   847,   865,   869,   873,   877,   885,   884,   927,
-     950,  1000,  1063,  1258,  1262,  1324,  1354
+     206,   268,   330,   394,   460,   500,   516,   520,   521,   522,
+     523,   527,   590,   608,   609,   610,   611,   615,   678,   696,
+     763,   782,   845,   863,   867,   871,   875,   883,   882,   925,
+     948,   998,  1061,  1256,  1260,  1322,  1352
 };
 #endif
 
@@ -1785,14 +1785,11 @@ yyreduce:
 		}
 		gc("\tR7=R7-%d;		// declaramos cad dinamico \n",strlen(h));
 
-		int id=mem.devuelveRegistroLibre();
-		//gc("\tR%d=R7+%d;\n", id, size);
 		int val = mem.devuelveRegistroLibre();
 		for(int i = 0; i < strlen(h); i++){
 			gc("\tR%d=%d;\n", val, h[i]);
 			gc("\tU(R7+%d)=R%d;\n", i, val);
 		}
-		mem.liberaRegistro(id);
 		mem.liberaRegistro(val);
 
 
@@ -1808,12 +1805,13 @@ yyreduce:
 		}
 		mem.liberaRegistro(ret);
 		mem.liberaRegistro(ristra);
+		gc("\tR7=R7+%d;		// Liberamos el espacio dinamico \n",strlen(h));
 	}
-#line 1813 "miint.tab.c" /* yacc.c:1646  */
+#line 1811 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 503 "miint.y" /* yacc.c:1646  */
+#line 501 "miint.y" /* yacc.c:1646  */
     {
 	if (mem.getStat()==mem.getCode()+1){
 				gc("CODE(%d)\n", mem.getCode());
@@ -1826,19 +1824,19 @@ yyreduce:
 	gc("L %d:\n", etiqueta);
 	etiqueta++;
 	}
-#line 1830 "miint.tab.c" /* yacc.c:1646  */
+#line 1828 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 519 "miint.y" /* yacc.c:1646  */
+#line 517 "miint.y" /* yacc.c:1646  */
     {
 	(yyval.ent) = (yyvsp[-1].ent);
 	}
-#line 1838 "miint.tab.c" /* yacc.c:1646  */
+#line 1836 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 530 "miint.y" /* yacc.c:1646  */
+#line 528 "miint.y" /* yacc.c:1646  */
     {
 	if(strcmp(stack.getVariable((yyvsp[-2].cad)).getTipo(), "ent")==0 && strcmp(stack.getVariable((yyvsp[0].cad)).getTipo(), "ent")==0){
 		if(strcmp(stack.getVariable((yyvsp[-2].cad)).getContext(), global)==0){
@@ -1901,11 +1899,11 @@ yyreduce:
 	}
 	;
 	}
-#line 1905 "miint.tab.c" /* yacc.c:1646  */
+#line 1903 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 42:
-#line 593 "miint.y" /* yacc.c:1646  */
+#line 591 "miint.y" /* yacc.c:1646  */
     {
 		if (mem.getStat()==mem.getCode()+1){
 			gc("CODE(%d)\n", mem.getCode());
@@ -1920,35 +1918,35 @@ yyreduce:
 		(yyval.ent) = res;
 		mem.liberaRegistro(add);
 	}
-#line 1924 "miint.tab.c" /* yacc.c:1646  */
+#line 1922 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 43:
-#line 610 "miint.y" /* yacc.c:1646  */
+#line 608 "miint.y" /* yacc.c:1646  */
     {(yyval.cad)=(yyvsp[0].cad);}
-#line 1930 "miint.tab.c" /* yacc.c:1646  */
+#line 1928 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 44:
-#line 611 "miint.y" /* yacc.c:1646  */
+#line 609 "miint.y" /* yacc.c:1646  */
     {(yyval.cad)=(yyvsp[0].cad);}
-#line 1936 "miint.tab.c" /* yacc.c:1646  */
+#line 1934 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 45:
-#line 612 "miint.y" /* yacc.c:1646  */
+#line 610 "miint.y" /* yacc.c:1646  */
     {(yyval.cad) = (yyvsp[-1].cad);}
-#line 1942 "miint.tab.c" /* yacc.c:1646  */
+#line 1940 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 46:
-#line 613 "miint.y" /* yacc.c:1646  */
+#line 611 "miint.y" /* yacc.c:1646  */
     {(yyval.cad) = (yyvsp[-1].cad);}
-#line 1948 "miint.tab.c" /* yacc.c:1646  */
+#line 1946 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 47:
-#line 618 "miint.y" /* yacc.c:1646  */
+#line 616 "miint.y" /* yacc.c:1646  */
     {
 	if(strcmp(stack.getVariable((yyvsp[-2].cad)).getTipo(), "ent")==0 && strcmp(stack.getVariable((yyvsp[0].cad)).getTipo(), "ent")==0){
 			if(strcmp(stack.getVariable((yyvsp[-2].cad)).getContext(), global)==0){
@@ -2011,11 +2009,11 @@ yyreduce:
 	}
 	
 	}
-#line 2015 "miint.tab.c" /* yacc.c:1646  */
+#line 2013 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 48:
-#line 681 "miint.y" /* yacc.c:1646  */
+#line 679 "miint.y" /* yacc.c:1646  */
     {
 		if (mem.getStat()==mem.getCode()+1){
 			gc("CODE(%d)\n", mem.getCode());
@@ -2030,11 +2028,11 @@ yyreduce:
 		(yyval.ent) = res;
 		mem.liberaRegistro(add);	
 	}
-#line 2034 "miint.tab.c" /* yacc.c:1646  */
+#line 2032 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 49:
-#line 699 "miint.y" /* yacc.c:1646  */
+#line 697 "miint.y" /* yacc.c:1646  */
     {
 	if(strcmp(stack.getVariable((yyvsp[-2].cad)).getTipo(), "ent")==0 && strcmp(stack.getVariable((yyvsp[0].cad)).getTipo(), "ent")==0){
 		if(strcmp(stack.getVariable((yyvsp[-2].cad)).getContext(), global)==0){
@@ -2101,11 +2099,11 @@ yyreduce:
 	}
 	;
 	}
-#line 2105 "miint.tab.c" /* yacc.c:1646  */
+#line 2103 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 50:
-#line 766 "miint.y" /* yacc.c:1646  */
+#line 764 "miint.y" /* yacc.c:1646  */
     {
 		if (mem.getStat()==mem.getCode()+1){
 			gc("CODE(%d)\n", mem.getCode());
@@ -2121,11 +2119,11 @@ yyreduce:
 		mem.liberaRegistro(add);
 
 	}
-#line 2125 "miint.tab.c" /* yacc.c:1646  */
+#line 2123 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 51:
-#line 785 "miint.y" /* yacc.c:1646  */
+#line 783 "miint.y" /* yacc.c:1646  */
     {
 	if(strcmp(stack.getVariable((yyvsp[-2].cad)).getTipo(), "ent")==0 && strcmp(stack.getVariable((yyvsp[0].cad)).getTipo(), "ent")==0){
 		if(strcmp(stack.getVariable((yyvsp[-2].cad)).getContext(), global)==0){
@@ -2188,11 +2186,11 @@ yyreduce:
 	}
 	;
 	}
-#line 2192 "miint.tab.c" /* yacc.c:1646  */
+#line 2190 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 52:
-#line 848 "miint.y" /* yacc.c:1646  */
+#line 846 "miint.y" /* yacc.c:1646  */
     {
 		if (mem.getStat()==mem.getCode()+1){
 			gc("CODE(%d)\n", mem.getCode());
@@ -2207,43 +2205,43 @@ yyreduce:
 		(yyval.ent) = res;
 		mem.liberaRegistro(add);
 	}
-#line 2211 "miint.tab.c" /* yacc.c:1646  */
+#line 2209 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 53:
-#line 866 "miint.y" /* yacc.c:1646  */
+#line 864 "miint.y" /* yacc.c:1646  */
     {
 	(yyval.ent) += (yyvsp[0].ent);
 	}
-#line 2219 "miint.tab.c" /* yacc.c:1646  */
+#line 2217 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 54:
-#line 870 "miint.y" /* yacc.c:1646  */
+#line 868 "miint.y" /* yacc.c:1646  */
     {
 	(yyval.ent) += (yyvsp[0].ent);
 	}
-#line 2227 "miint.tab.c" /* yacc.c:1646  */
+#line 2225 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 55:
-#line 874 "miint.y" /* yacc.c:1646  */
+#line 872 "miint.y" /* yacc.c:1646  */
     {
 	(yyval.ent) = (yyvsp[0].ent);
 	}
-#line 2235 "miint.tab.c" /* yacc.c:1646  */
+#line 2233 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 56:
-#line 878 "miint.y" /* yacc.c:1646  */
+#line 876 "miint.y" /* yacc.c:1646  */
     {
 	(yyval.ent) = (yyvsp[0].ent);
 	}
-#line 2243 "miint.tab.c" /* yacc.c:1646  */
+#line 2241 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 57:
-#line 885 "miint.y" /* yacc.c:1646  */
+#line 883 "miint.y" /* yacc.c:1646  */
     {
 	if(stack.existsFuncion((yyvsp[-2].cad))){
 		printf("ya existe %s\n", (yyvsp[-2].cad));
@@ -2266,11 +2264,11 @@ yyreduce:
 		etiqueta++;
 	}
 	}
-#line 2270 "miint.tab.c" /* yacc.c:1646  */
+#line 2268 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 58:
-#line 908 "miint.y" /* yacc.c:1646  */
+#line 906 "miint.y" /* yacc.c:1646  */
     {
 	if (mem.getStat()==mem.getCode()+1){
 				gc("CODE(%d)\n", mem.getCode());
@@ -2287,11 +2285,11 @@ yyreduce:
 	mem.setAmbito(global);
 	contexto--;
 	}
-#line 2291 "miint.tab.c" /* yacc.c:1646  */
+#line 2289 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 59:
-#line 928 "miint.y" /* yacc.c:1646  */
+#line 926 "miint.y" /* yacc.c:1646  */
     {
 	(yyval.ent) = 4;
 	if(stack.existsVariable((yyvsp[0].cad)) && strcmp(stack.getVariable((yyvsp[0].cad)).getContext(),global)==0 || stack.existsVariable((yyvsp[0].cad)) && stack.getVariable((yyvsp[0].cad)).getAmbito()==contexto){
@@ -2314,11 +2312,11 @@ yyreduce:
 		}	
 	}
 	}
-#line 2318 "miint.tab.c" /* yacc.c:1646  */
+#line 2316 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 60:
-#line 951 "miint.y" /* yacc.c:1646  */
+#line 949 "miint.y" /* yacc.c:1646  */
     {
 	(yyval.ent) = 4;
 	if(stack.existsVariable((yyvsp[-2].cad)) && strcmp(stack.getVariable((yyvsp[-2].cad)).getContext(),global)==0 || stack.existsVariable((yyvsp[-2].cad)) && stack.getVariable((yyvsp[-2].cad)).getAmbito()==contexto){
@@ -2365,11 +2363,11 @@ yyreduce:
 	}
 
 	}
-#line 2369 "miint.tab.c" /* yacc.c:1646  */
+#line 2367 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 61:
-#line 1001 "miint.y" /* yacc.c:1646  */
+#line 999 "miint.y" /* yacc.c:1646  */
     {
 	if(stack.existsVariable((yyvsp[-2].cad))){
 		printf("ya existe %s\n", (yyvsp[-2].cad));
@@ -2431,11 +2429,11 @@ yyreduce:
 		}
 	}
 	}
-#line 2435 "miint.tab.c" /* yacc.c:1646  */
+#line 2433 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 62:
-#line 1064 "miint.y" /* yacc.c:1646  */
+#line 1062 "miint.y" /* yacc.c:1646  */
     {
 		if(stack.existsVariable((yyvsp[-4].cad))){
 				printf("ya existe %s\n", (yyvsp[-4].cad));
@@ -2627,11 +2625,11 @@ yyreduce:
 		}
 		
 	}
-#line 2631 "miint.tab.c" /* yacc.c:1646  */
+#line 2629 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 64:
-#line 1263 "miint.y" /* yacc.c:1646  */
+#line 1261 "miint.y" /* yacc.c:1646  */
     {
 	if(!stack.existsVariable((yyvsp[-2].cad))){
 		printf("la variable %s no existe\n", (yyvsp[-2].cad));
@@ -2693,11 +2691,11 @@ yyreduce:
 	}
 	}
 	}
-#line 2697 "miint.tab.c" /* yacc.c:1646  */
+#line 2695 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 65:
-#line 1324 "miint.y" /* yacc.c:1646  */
+#line 1322 "miint.y" /* yacc.c:1646  */
     {
 	
 	if(!stack.existsVariable((yyvsp[-2].cad))){
@@ -2728,11 +2726,11 @@ yyreduce:
 	}	
 	
 	}
-#line 2732 "miint.tab.c" /* yacc.c:1646  */
+#line 2730 "miint.tab.c" /* yacc.c:1646  */
     break;
 
   case 66:
-#line 1355 "miint.y" /* yacc.c:1646  */
+#line 1353 "miint.y" /* yacc.c:1646  */
     {
 	if(!stack.existsVariable((yyvsp[-2].cad))){
 		printf("la variable %s no existe\n", (yyvsp[-2].cad));
@@ -2753,11 +2751,11 @@ yyreduce:
 		}
 	}
 	}
-#line 2757 "miint.tab.c" /* yacc.c:1646  */
+#line 2755 "miint.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 2761 "miint.tab.c" /* yacc.c:1646  */
+#line 2759 "miint.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2985,7 +2983,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 1376 "miint.y" /* yacc.c:1906  */
+#line 1374 "miint.y" /* yacc.c:1906  */
 
 
 int main(int argc, char** argv) {

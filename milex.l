@@ -8,8 +8,16 @@ void error(char*);
 extern int yylex();
 %}
 
+%x COMMENT
+
 %%
 [ \t]         ;
+
+"/*"		BEGIN(COMMENT);
+<COMMENT>"*/"	BEGIN(INITIAL);
+<COMMENT>"EOF"	error((char*)"Se ha alcanzado el final de fichero mientras que se escaneaba el comentario.\n");
+<COMMENT>.|"\n"	;
+
 [\n]		{numlin++;}
 "conc" 		{return CONCATENACION;}
 "+"		{return SUMA;}

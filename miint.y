@@ -477,7 +477,6 @@ imprime:
 			gc("\tR%d=%d;\n", val, h[i]);
 			gc("\tU(R7+%d)=R%d;\n", i, val);
 		}
-		mem.liberaRegistro(id);
 		mem.liberaRegistro(val);
 
 
@@ -493,6 +492,7 @@ imprime:
 		}
 		mem.liberaRegistro(ret);
 		mem.liberaRegistro(ristra);
+		gc("\tR7=R7+%d;		// Liberamos el espacio dinamico \n",strlen(h));
 	}
 	;
 

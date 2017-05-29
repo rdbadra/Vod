@@ -6,18 +6,20 @@ declar cad ere = "r: ";
 declar cad in = "dentro ";
 declar cad f11 = "f1: ";
 declar cad f22 = " f2: ";
-declar ent uno;
-uno = 1;
+declar ent uno = 1;
+
 declar ent dos;
 dos = 2;
 declar ent cero;
 cero = 0;
-
+/* se declara la funcion fibo para implementar la serie de fibonacci*/
 funcion fibo(){
 	declar ent f1;
 	declar ent f2;
 	declar ent n;
 	n = p;
+	declar ent x = 4;
+	imprimir(x);
 
 	si(n < dos){
 		r = n;
@@ -36,6 +38,7 @@ declar ent i;
 declar ent max;
 i = 0;
 max = 9;
+imprimir("fibonacci#");
 mientras(i < max){
 	p = i;
 	fibo();
